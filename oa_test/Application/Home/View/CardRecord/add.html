@@ -1,0 +1,169 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script type="text/javascript" src="__JS__/supplier_add.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('CardRecord/index')}}">名片申请</a></li>
+			  <li class="active">新增/修改名片申请</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<div class="pd10 text-danger bg-info" style="padding:10px">------------ <strong>名片数量200份起印</strong> ------------</div>
+			<form action="###" method="post" name="forms" id="forms">
+				<input type="hidden" value="{{$info.id}}" name="id" id="id" >
+				<div class="list_main">		
+				
+					<div class="list">
+					  <div class="col-xs-2 name">姓名</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<input type="text" class="form-control" name="name" value="{{$info.name}}" id="name" placeholder="请输入姓名">
+					    </div>
+					  </div>
+					</div>
+					<div class="list">
+					  <div class="col-xs-2 name">英文名</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<input type="text" class="form-control" name="en_name" value="{{$info.en_name}}" id="en_name" placeholder="请输入英文名">
+					    </div>
+					  </div>
+					</div>
+					<div class="list">
+					  <div class="col-xs-2 name">职位</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<input type="text" class="form-control" name="title" value="{{$info.title}}" id="name" placeholder="请输入职位">
+					    </div>
+					  </div>
+					</div>
+					<div class="list">
+					  <div class="col-xs-2 name">职位英文名</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<input type="text" class="form-control" name="en_title" value="{{$info.en_title}}" id="en_title" placeholder="请输入职位英文名">
+					    </div>
+					  </div>
+					</div>
+
+					<div class="list">
+					  <div class="col-xs-2 name">电话</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<input type="text" class="form-control" name="tel" value="{{$info.tel}}"  id="tel" placeholder="请输入电话">
+					    </div>
+					  </div>
+					</div>
+					<div class="list">
+					  <div class="col-xs-2 name">手机号</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<input type="text" class="form-control" name="phone" value="{{$info.phone}}"  id="phone" placeholder="请输入手机号">
+					    </div>
+					  </div>
+					</div>
+					<div class="list">
+					  <div class="col-xs-2 name">邮箱</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<input type="text" class="form-control" name="email" value="{{$info.email}}"  id="email" placeholder="请输入邮箱">
+					    </div>
+					  </div>
+					</div>
+					
+					
+					
+					<div class="list">
+					  <div class="col-xs-2 name" style="height:54px">备注</div>
+					  <div class="col-xs-10  input_text" style="height:54px">
+					  	<div class="col-xs-12 col-md-3 col-sm-10">
+					    	<textarea name="remark" id="remark"  class="form-control" style="resize:none">{{$info.remark}}</textarea>
+					    </div>
+					  </div>
+					</div>
+					<div class="list">
+					  <div class="col-xs-2 name" style="height:52px">公司地址</div>
+					  <div class="col-xs-10 input_text" style="height:52px;line-height:49px">
+					    	<label>
+							  <input type="checkbox" name="address[]" value="上海" <in name="city='上海'" value="$info.address">checked</in>> 上海
+							</label>
+							<label>
+							  <input type="checkbox" name="address[]" value="北京" <in name="city='北京'" value="$info.address">checked</in>> 北京
+							</label>
+							<label>
+							  <input type="checkbox" name="address[]" value="福州" <in name="city='福州'" value="$info.address">checked</in>> 福州
+							</label>
+					  </div>
+					</div>
+
+					<div class="list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <a href="javascript:;" type="button" class="btn btn-primary" id="Submit">保存</a>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="exampleModalLabel">新增分类</h4>
+				  </div>
+				  <div class="modal-body">
+					<form>
+					  <div class="form-group">
+						<label for="cat_name" class="control-label">分类名称:</label>
+						<input type="text" class="form-control" id="cat_name">
+					  </div>
+					</form>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="closebtn">关闭</button>
+					<button type="button" class="btn btn-primary" id="saveCategory">保存</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div>
+		<!-- E-页面主要部分 -->
+		<script>
+		$('#Submit').click(function(){
+			var postdata = $("#forms").serializeArray();
+			$.ajax({
+				url:"{{:U('CardRecord/save')}}",
+				type:'post',
+				data:postdata,
+				dataType:'json',
+				success:function(data){
+					if(data.code==1){
+						window.location.href= "__URL__/index";
+					}else{
+						alert(data.msg);
+					}
+				}
+			})
+		})
+		$('#saveCategory').click(function(){
+			var cat_name = $('#cat_name').val();
+			$.ajax({
+				url:"{{:U('OfficeSuppliesCategory/save')}}",
+				type:'post',
+				data:{name:cat_name},
+				dataType:'json',
+				success:function(data){
+					if(data.code==1){
+						$('#closebtn').click();
+						$('#cid').append("<option value='"+data.id+"'>"+cat_name+"</option>");
+					}else{
+						alert(data.msg);
+					}
+				}
+			})
+		})
+		</script>

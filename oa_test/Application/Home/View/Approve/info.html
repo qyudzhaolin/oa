@@ -1,0 +1,337 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/borrow_money.css">
+<script type="text/javascript" src="__JS__/borrow_money.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">借款单</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<!-- S-部门项目等 -->
+		<table class="table table-striped table-bordered">
+			<tr>
+				<td class="col-md-2 active">部门</td>
+				<td class="col-md-4">
+					<input class="form-control input-sm" type="text" disabled="disabled" value="{{$depart.depart_name}}">
+				</td>
+				<td class="col-md-2 active">姓名</td>
+				<td class="col-md-4">
+					<input class="form-control input-sm" type="text" disabled="disabled" value="{{$real_name}}">
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">项目</td>
+				<td class="col-md-4">
+					<select name="" id="proj_id" class="form-control input-sm" disabled="disabled">
+						<option value="0">请选择项目</option>
+						<foreach name="projs" item="vo" key="k">
+  	  						<option value="{{$vo.proj_id}}" <eq name="borrow.proj_id" value="$vo.proj_id">selected="selected"</eq>>{{$vo.proj_name}}</option>
+  	  					</foreach>
+					</select>
+				</td>
+				<td class="col-md-2 active">项目编号</td>
+				<td class="col-md-4">
+					<input class="form-control input-sm" type="text" disabled="disabled" value="{{$borrow.proj_no}}" id="proj_no">
+				</td>
+			</tr>
+			<tr>
+				<td rowspan="2" class="active">
+					<br>借款<br>
+					方式
+				</td>
+				<td rowspan="2"><br>
+					<label class="radio-inline">
+					  <input disabled="disabled" type="radio" name="borrow_way" id="cash" value="1" <if condition="$borrow.borrow_way eq '1' or $borrow.borrow_way eq ''">checked="checked"</if>> 现金
+					</label><br>
+					<label class="radio-inline">
+					  <input disabled="disabled" type="radio" name="borrow_way" id="transfer" value="2" <if condition="$borrow.borrow_way eq 2">checked="checked"</if>> 转账
+					</label>
+				</td>
+				<td class="active">银行</td>
+				<td>
+					<select disabled="disabled" name="" id="bank_id" class="form-control input-sm" val="" <if condition="$borrow.borrow_way eq '1' or $borrow.borrow_way eq ''">disabled="disabled"</if>>
+						<option value="0">请选择银行</option>
+						<foreach name="banks" item="vo" key="k">
+  	  						<option value="{{$vo.bank_id}}" <eq name="borrow.bank_id" value="$vo.bank_id">selected="selected"</eq>>{{$vo.bank_name}}</option>
+  	  					</foreach>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="active">银行账号</td>
+				<td>
+					<input disabled="disabled" class="form-control input-sm" type="text" id="bnk_acct" val="{{$borrow.bnk_acct}}" value="{{$borrow.bnk_acct}}" <if condition="$borrow.borrow_way eq '1' or $borrow.borrow_way eq ''">readonly="readonly"</if>>
+				</td>
+			</tr>
+			<tr id="no_border">
+				<td colspan="4">.</td>
+			</tr>
+		</table>
+		<!-- E-部门项目等 -->
+		<!-- S-填写款项金额等 -->
+		<table class="table table-striped table-bordered">
+			<tr id="th">
+				<td class="col-md-1 active">款项</td>
+				<td class="col-md-1 active">金额</td>
+				<td class="col-md-1 active">可用余额</td>
+				<td class="col-md-9 active">备注说明</td>
+			</tr>
+			<if condition="!$money_list">
+			<tr class="fund">
+				<td class="col-md-1">
+					<input class="form-control input-sm money_name" type="text"  value="" maxlength="20">
+				</td>
+				<td class="col-md-1">
+					<input class="form-control input-sm money" type="text" maxlength="20" onkeyUp="addMoney(this)">
+				</td>
+				<td class="col-md-1">
+					<input class="form-control input-sm usable_money" type="text" maxlength="20">
+				</td>
+				<td class="col-md-9">
+					<input class="form-control input-sm comm" type="text" maxlength="100">
+				</td>
+			</tr>
+			<else/>
+			<foreach name="money_list" item="vo" key="k">
+			<tr class="fund">
+				<td class="col-md-1">
+					<input class="form-control input-sm money_name" type="text"  value="{{$vo.money_name}}" maxlength="20" disabled="disabled">
+				</td>
+				<td class="col-md-1">
+					<input class="form-control input-sm money" type="text" maxlength="20" onkeyUp="addMoney(this)" value="{{$vo.money}}" disabled="disabled">
+				</td>
+				<td class="col-md-1">
+					<input class="form-control input-sm usable_money" type="text" maxlength="20" value="{{$vo.usable_money}}" disabled="disabled">
+				</td>
+				<td class="col-md-9">
+					<input class="form-control input-sm comm" type="text" maxlength="100" value="{{$vo.comm}}" disabled="disabled">
+				</td>
+			</tr>
+			</foreach>
+			</if>
+			<!-- <tr>
+				<td colspan="4">
+					<button type="button" class="btn btn-primary btn-sm add_btn">&nbsp;&nbsp;+添加&nbsp;&nbsp;</button>
+				</td>
+			</tr> -->
+			<tr>
+				<td colspan="1" class="active">金额总计（小写）</td>
+				<td colspan="3">
+					<div class="col-xs-5">
+						<input class="form-control input-sm" type="text" id="tot_amt" disabled="disabled" value="{{$borrow.tot_amt}}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="1" class="active">金额总计（大写）</td>
+				<td colspan="3">
+					<div class="col-xs-5">
+						<input class="form-control input-sm" type="text" id="tot_amt_d" disabled="disabled" value="{{$borrow.tot_amt_d}}">
+					</div>
+				</td>
+			</tr>
+		</table>
+		<!-- E-填写款项金额等 -->
+		<!-- S-申请完操作 -->
+		<table class="table table-striped table-bordered">
+			<tr>
+				<td class="active">申请人</td>
+				<td class="active">项目经理</td>
+				<td class="active">部门领导</td>
+				<td class="active">总经理</td>
+				<td class="active">财务</td>
+				<td class="active">出纳</td>
+			</tr>
+			<tr>
+				<td>{{$apply_user.real_name}}</td>
+				<td>
+					<if condition="$schedule.aprv_result1 eq '1'">
+					同意（{{$schedule.user_real_name1}}）
+					<elseif condition="$schedule.aprv_result1 eq '-1'"/>
+					不同意（{{$schedule.user_real_name1}}）
+					<else/>
+					<eq name="user_id" value="$schedule.aprv_user_id1">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="1">同意</button>
+						<button type="button" class="btn btn-danger btn-sm" value="-1" val="1">不同意</button>
+					<else/>
+						<if condition="$schedule.aprv_user_id1 neq '0'">
+						等待审批（{{$schedule.user_real_name1}}）
+						<else/>
+						--
+						</if>
+					</eq>
+					</if>
+				</td>
+				<td>
+					<if condition="$schedule.aprv_result2 eq '1'">
+					同意（{{$schedule.user_real_name2}}）
+					<elseif condition="$schedule.aprv_result2 eq '-1'"/>
+					不同意（{{$schedule.user_real_name2}}）
+					<else/>
+					<eq name="user_id" value="$schedule.aprv_user_id2">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="2">同意</button>
+						<button type="button" class="btn btn-danger btn-sm" value="-1" val="2">不同意</button>
+					<else/>
+						<if condition="$schedule.aprv_user_id2 neq '0'">
+						等待审批（{{$schedule.user_real_name2}}）
+						<else/>
+						--
+						</if>
+					</eq>
+					</if>
+				</td>
+				<td>
+					<if condition="$schedule.aprv_result3 eq '1'">
+					同意（{{$schedule.user_real_name3}}）
+					<elseif condition="$schedule.aprv_result3 eq '-1'"/>
+					不同意（{{$schedule.user_real_name3}}）
+					<else/>
+					<eq name="user_id" value="$schedule.aprv_user_id3">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="3">同意</button>
+						<button type="button" class="btn btn-danger btn-sm" value="-1" val="3">不同意</button>
+					<else/>
+						<if condition="$schedule.aprv_user_id3 neq '0'">
+						等待审批（{{$schedule.user_real_name3}}）
+						<else/>
+						--
+						</if>
+					</eq>
+					</if>
+				</td>
+				<td>
+					<if condition="$schedule.aprv_result4 eq '1'">
+					同意（{{$schedule.user_real_name4}}）
+					<elseif condition="$schedule.aprv_result4 eq '-1'"/>
+					不同意（{{$schedule.user_real_name4}}）
+					<else/>
+					<eq name="user_id" value="$schedule.aprv_user_id4">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="4">同意</button>
+						<button type="button" class="btn btn-danger btn-sm" value="-1" val="4">不同意</button>
+					<else/>
+						<if condition="$schedule.aprv_user_id4 neq '0'">
+						等待审批（{{$schedule.user_real_name4}}）
+						<else/>
+						--
+						</if>
+					</eq>
+					</if>
+				</td>
+				<td>
+					<if condition="$schedule.aprv_result5 eq '1'">
+					同意（{{$schedule.user_real_name5}}）
+					<elseif condition="$schedule.aprv_result5 eq '-1'"/>
+					不同意（{{$schedule.user_real_name5}}）
+					<else/>
+					<eq name="user_id" value="$schedule.aprv_user_id5">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="5">同意</button>
+						<button type="button" class="btn btn-danger btn-sm" value="-1" val="5">不同意</button>
+					<else/>
+						<if condition="$schedule.aprv_user_id5 neq '0'">
+						等待审批（{{$schedule.user_real_name5}}）
+						<else/>
+						--
+						</if>
+					</eq>
+					</if>
+				</td>
+			</tr>
+			<if condition="$is_show_app eq 1">
+			<tr>
+				<td colspan="6">
+					<select name="" id="cur_approver_id">
+						<option value="0">请选择审批人</option>
+						<foreach name="approve_users" item="vo">
+  	  						<option value="{{$vo.user_id}}">{{$vo.real_name}}</option>
+  	  					</foreach>
+					</select>&nbsp;
+					<button type="button" class="btn btn-primary" id="Submit">提交</button>
+				</td>						
+			</tr>
+			</if>
+			<if condition="$is_restart eq 1">
+			<tr>
+				<td colspan="6">
+					<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+				</td>						
+			</tr>
+			</if>
+		</table>
+		<!-- E-申请完操作 -->
+	</div>
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$borrow.borrow_id}}" id="borrow_id" />
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#Submit").click(function(event) {
+		var cur_approver_id = $("#cur_approver_id").val();
+		var borrow_id = $("#borrow_id").val();
+		if (cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		$.ajax({
+			url:"{{:U('Borrow/choose')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'borrow_id':borrow_id,"cur_approver_id":cur_approver_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！","{{:U('Borrow/info')}}?id="+borrow_id);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var borrow_id = $("#borrow_id").val();
+		var msg = '同意';
+		if(val==-1){
+			msg = '不同意';
+		}
+		if(confirm('确定要执行'+msg+'操作吗？')){
+			$.ajax({
+				url:"{{:U('Borrow/operate')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'borrow_id':borrow_id,'num':$(this).attr("val"),'result':val},
+				success:function(data){
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Borrow/info')}}?id="+borrow_id);
+					}else{
+						alert(data.msg);
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	$("#Restart").click(function(){
+		if(confirm('确定要重新发启？')){
+			var borrow_id = $("#borrow_id").val();
+			$.ajax({
+				url:"{{:U('Borrow/restart')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'borrow_id':borrow_id},
+				success:function(data){
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Borrow/index')}}");
+					}else{
+						alert(data.msg);
+						return false;
+					}
+				}
+			});
+		}
+		
+	})
+});
+</script>

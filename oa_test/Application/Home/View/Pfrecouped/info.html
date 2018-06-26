@@ -1,0 +1,305 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script type="text/javascript" src="__JS__/recouped.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">个人报销单</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+		<!-- S-部门项目等 -->
+			<table class="table-striped table-bordered">
+				<tr>
+					<td class="col-md-2 active">部门</td>
+					<td class="col-md-4">{{$depart.depart_name}}</td>
+					<td class="col-md-2 active">姓名</td>
+					<td class="col-md-4">{{$apply_user.real_name}}</td>
+				</tr>
+				<tr>
+					<td class="active">
+						收款人类型
+					</td>
+					<td id="get_type">
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="get_type" value="1" <if condition="$recouped.get_type eq 1 or $recouped.get_type eq ''">checked="checked"</if>> 供应商
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="get_type" value="2" <if condition="$recouped.get_type eq 2">checked="checked"</if>> 个人
+						</label>
+					</td>
+					<td class="active">收款人</td>
+					<td>
+						<notempty name="recouped.get_user">{{$recouped.get_user}}<else/><empty name="suppler.sup_full_name">{{$app_real_name}}<else/>{{$suppler.sup_full_name}}</empty></notempty>
+					</td>
+				</tr>
+				<tr>
+					<td rowspan="2" class="active">
+						支付<br>
+						方式
+					</td>
+					<td rowspan="2"><br>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="borrow_way" id="cash" value="1" <if condition="$recouped.borrow_way eq '1' or $borrow.borrow_way eq ''">checked="checked"</if>> 现金
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="borrow_way" id="transfer" value="2" <if condition="$recouped.borrow_way eq 2">checked="checked"</if>> 转账
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="borrow_way" value="3" <if condition="$recouped.borrow_way eq 3">checked="checked"</if>> 其它
+						</label><br><br>
+						<span class="col-xs-12" id="else" <if condition="$recouped.borrow_way eq 3">style="display:block"</if>>
+				    		{{$recouped.other}}
+				    	</span>
+					</td>
+					<td class="active">银行</td>
+					<td>{{$recouped.bnk_branch}}</td>
+				</tr>
+				<tr>
+					<td class="active">银行账号</td>
+					<td>{{$recouped.bnk_acct}}</td>
+				</tr>
+				<tr>
+					<td class="active">是否TB费用</td>
+					<td>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="is_tb" value="1" <if condition="$recouped.is_tb eq '1' ">checked="checked"</if>> 是
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="is_tb" value="0" <if condition="$recouped.is_tb eq 0 or $recouped.is_tb eq ''">checked="checked"</if>> 否
+						</label>
+					</td>
+					<td colspan="2"  class="active"></td>
+				</tr>
+				<tr id="no_border">
+					<td colspan="4">.</td>
+				</tr>
+			</table>
+			<!-- E-部门项目等 -->
+		
+			<!-- S-填写款项金额等 -->
+			<table class="table-striped table-bordered">
+				<tr id="th">
+					<td class="col-md-1 active">报销金额</td>
+					<td class="col-md-6 active">备注说明</td>
+					<td class="col-md-2 active">上传文件</td>
+				</tr>
+				<foreach name="money_list" item="vo" key="k">
+				<tr class="fund">
+					<td class="col-md-1">{{$vo.money}}</td>
+					<td class="col-md-6">{{$vo.comm}}</td>
+					<td class="col-md-2">
+						<if condition="$vo.file_url neq ''"><a href="{{$vo.file_url}}" target="_blank">{{$vo.file_name}}</a><else/>--</if>
+					</td>
+				</tr>
+				</foreach>
+				<tr>
+					<td colspan="1" class="active">金额总计（小写）</td>
+					<td colspan="5">
+						<div class="col-xs-5">{{$recouped.tot_amt}}</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="1" class="active">金额总计（大写）</td>
+					<td colspan="5">
+						<div class="col-xs-5">{{$recouped.tot_amt_d}}</div>
+					</td>
+				</tr>
+			</table>
+			<!-- E-填写款项金额等 -->
+			<!-- S-申请完操作 -->
+			<table class="table-striped table-bordered">
+				<tr>
+					<td class="active">申请人</td>
+					<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+					<td class="active">{{$vo}}</td>
+					</foreach>
+				</tr>
+				<tr>
+					<td>{{$apply_user.real_name}}</td>
+					<include file="./Application/Home/View/approve_banner.html" />
+				</tr>
+			</table>
+			<!-- E-申请完操作 -->
+		
+			<!-- S-提交部分 -->
+			<if condition="$is_restart eq 1">
+			<div class="edit text-center">
+				<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+			</div>
+			</if>
+			<!-- E-提交部分 -->
+		
+		
+			<!-- S-输入理由的弹出框 -->
+			<include file="./Application/Home/View/noagree.html" />
+			<!-- E-输入理由的弹出框 -->
+		
+			<!-- S-选择审批人的弹出框 -->
+			<include file="./Application/Home/View/approve.html" />
+			<!-- E-选择审批人的弹出框 -->
+		
+		</div>
+	
+		<div style="text-align: center;margin-top:20px">
+			<a class="btn btn-primary" href="{{:U('Print/pfrecouped')}}?id={{$Think.get.id}}" target="_blank">&nbsp;&nbsp;去打印&nbsp;&nbsp;</a>
+			<if condition="$user_id eq '87'">
+				第{{$recouped.print_num}}次打印
+			</if>
+		</div>
+	</div>
+	
+	
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$recouped.pf_id}}" id="pf_id" />
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	var click=true;
+	$("#btn-success").click(function(){
+		if(click){
+			var pf_id = $("#pf_id").val();
+			var num = $("#agree_num").val();
+			var cur_approver_id = $("#cur_approver_id").val();
+			if(confirm('确定要执行同意操作吗？')){
+				click = false;
+				$(".approve_users").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Pfrecouped/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'pf_id':pf_id,'num':num,'result':1,'cur_approver_id':cur_approver_id,'option':$("#agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Pfrecouped/info')}}?id="+pf_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click = true;	
+			}
+		}
+	})
+	
+	
+	var click1=true; 
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var pf_id = $("#pf_id").val();
+		var num = $(this).attr("val");
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".noagree").modal('show');
+		}else{
+			$("#agree_num").val(num);
+			<if condition="$is_show_app eq 1">
+			$(".approve_users").modal('show');
+			<else/>
+			$("#btn-success").click();
+			</if>
+		}
+	});
+	
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var pf_id = $("#pf_id").val();
+		if(click3){
+			if(confirm('确定要执行不同意操作吗？')){
+				click3 = false;
+				$(".account").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Pfrecouped/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'pf_id':pf_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Pfrecouped/info')}}?id="+pf_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+	
+	var click2 = true;
+	$("#Restart").click(function(){
+		if(click2){
+			click2 = false;
+			if(confirm('确定要重新发启？')){
+				var pf_id = $("#pf_id").val();
+				$.ajax({
+					url:"{{:U('Pfrecouped/restart')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'pf_id':pf_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Pfrecouped/index')}}");
+						}else{
+							alert(data.msg);
+							click2 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click2 = true;
+			}
+		}
+	});
+	
+	var click4 = true;
+	$(".btn-warning").click(function(){
+		if(click4){
+			click4 = false;
+			if(confirm('确定要返回操作吗？')){
+				var pf_id = $("#pf_id").val();
+				$.ajax({
+					url:"{{:U('Pfrecouped/back')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'obj_id':pf_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Pfrecouped/info')}}?id="+pf_id);
+						}else{
+							alert(data.msg);
+							click4 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click4 = true;
+			}
+		}
+	})
+});
+</script>

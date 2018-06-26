@@ -1,0 +1,199 @@
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<style>
+	.search_main .mg-right-15{float:left}
+	.breadcrumb{padding: 8px 0;}
+	.cause label{display:block;padding: 5px 20px;}
+	.over-hidden{overflow: hidden;}
+	textarea{ resize:none;}
+	.write label{margin-bottom: 15px;}
+	.apply-info p{margin-bottom: 0px}
+</style>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent col-xs-12">
+			<ol class="breadcrumb">
+				<li><a href="#">离职信息填写</a></li>
+				<li class="active">HR填写</li>
+			</ol>
+			<div class="content_main">
+				<div class="alert alert-danger apply-info" role="alert">
+					<div class="over-hidden">					
+					  <div class="pull-left">					  	
+					  	<strong>申请人姓名：</strong>
+					  </div>
+					  <div class="pull-left">					  	
+						  <p>{{$user.real_name}}</p>
+					  </div>
+					</div>
+					<div class="over-hidden">					
+					  <div class="pull-left">					  	
+					  	<strong>职位：</strong>
+					  </div>
+					  <div class="pull-left">					  	
+						  <p>{{$user_hr.job}}</p>
+					  </div>
+					</div>
+					<div class="over-hidden">					
+					  <div class="pull-left">					  	
+					  	<strong>入职日期：</strong>
+					  </div>
+					  <div class="pull-left">					  	
+						  <p>{{$user_hr.entry_date}}</p>
+					  </div>
+					</div>
+					<div class="over-hidden">					
+					  <div class="pull-left">					  	
+					  	<strong>期望离职日期：</strong>
+					  </div>
+					  <div class="pull-left">					  	
+						  <p>{{$resign.apply_date}}</p>
+					  </div>
+					</div>
+					<notempty name="resign.campay_reson">
+					<div class="over-hidden">					
+					  <div class="pull-left">					  	
+					  	<strong>公司原因：</strong>
+					  </div>
+					  <div class="pull-left">	
+					  	  <foreach name="company_reson" item="vo" key="k">
+					  	  <in name="k+1" value="$resign.campay_reson">				  	
+						  <p>{{$vo}}</p>
+						  </in>
+						  </foreach>
+					  </div>
+					</div>
+					</notempty>
+					<notempty name="resign.person_reson">
+					<div class="over-hidden">					
+					  <div class="pull-left">					  	
+					  	<strong>个人原因：</strong>
+					  </div>
+					  <div class="pull-left">					  	
+						  <foreach name="person_reson" item="vo" key="k">
+					  	  <in name="k+1" value="$resign.person_reson">				  	
+						  <p>{{$vo}}</p>
+						  </in>
+						  </foreach>
+					  </div>
+					</div>
+					</notempty>
+				</div>
+			
+			
+				<!-- S-离职原因 -->
+				<form action="" method="post" id="form1" enctype="multipart/form-data">
+				<div class="panel panel-default">
+				  	<div class="panel-heading"><strong>离职原因(Reason of leaving)</strong><span style="color:red;margin-left:5px;">请指出员工离职最主要的原因（请在恰当处打勾）或列举</span></div>
+					<div class="panel-body">
+						<div class="col-xs-12 cause">
+							<!-- S-公司原因 -->
+							<h4><strong>公司原因(Company reason)</strong></h4>
+							<div class="checkbox col-xs-12">
+							  <foreach name="company_reson" item="vo" key="k">   
+							  <label>
+							    <input type="checkbox" value="{{$k+1}}" <in name="k+1" value="$resign_hr.campay_reson">checked="checked"</in> name="campay_reson[]" />
+							   {{$vo}}
+							  </label>
+							</foreach>
+							</div>
+							<!-- E-公司原因 -->
+							<!-- S-个人原因 -->
+							<div class="checkbox col-xs-12">
+							  <h4><strong>个人原因(Personal reason)</strong></h4>
+							  <foreach name="person_reson" item="vo" key="k">   
+								  <label>
+								    <input type="checkbox" value="{{$k+1}}" <in name="k+1" value="$resign_hr.person_reson">checked="checked"</in> name="person_reson[]" />
+								   {{$vo}}
+								  </label>
+								</foreach>
+							</div>
+							<!-- E-个人原因 -->
+						</div>
+					</div>
+				</div>
+				<!-- E-离职原因 -->
+				<!-- S-填写部分 -->
+				<div class="over-hidden write">
+					<label class="col-xs-12">						
+						<p class="lead"><strong>1、请问让你离职原因中最主要的三个原因是什么？(Please state the top three reasons for you to leave the company?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_1">{{$resign_hr.item_1}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>2、请评价一下公司的文化和氛围?(What is your overall view of the Company’s culture and atmosphere?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_2">{{$resign_hr.item_2}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>3、你认为公司管理层是否愿意去倾听员工的心声并作出相应改进措施吗？(How do you feel about Management’s willingness to hear voices and make changes?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_3">{{$resign_hr.item_3}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>4、你的主管是否及时地给你的工作表现提出反馈？(Did your line manager providing feedback on your performance from time to time?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_4">{{$resign_hr.item_4}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>5、你的主管是否有给你提供这个职位所需要的职业和技能培训？(Did your line manager providing relevant on-job training and knowledge training?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_5">{{$resign_hr.item_5}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>6、你的团队是否能给予你支持和帮助？当你需要跨部门合作的时候遇到最大的挫折是什么？(Did your team support or help you when you needed them? What is your biggest setback when you worked cross-department?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_6">{{$resign_hr.item_6}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>7、你觉得在公司期间有没有学到新的知识或技能？(Did you learn some new knowledge or technical skills when you are here?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_7">{{$resign_hr.item_7}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>8.有没有想过以后再重新加入MAX?(Would you consider returning to this company in the future?)</strong></p>
+					    <textarea class="form-control" rows="4" name="item_8">{{$resign_hr.item_8}}</textarea>
+					</label>
+					<label class="col-xs-12">						
+						<p class="lead"><strong>9.有其他补充的点吗？(Do you have any other comments about your experience of working at Max? )</strong></p>
+					    <textarea class="form-control" rows="4" name="item_9">{{$resign_hr.item_9}}</textarea>
+					</label>
+				  </div>
+				<!-- E-填写部分 -->
+				<div class="col-xs-12" style="margin-top:20px;">
+					<a class="btn btn-primary" href="javascript:;" id="submit_btn">&nbsp;&nbsp;提交&nbsp;&nbsp;</a>
+				</div>	
+				<input type="hidden" name="r_id" value="{{$resign.id}}" />	
+				</form>
+			</div>	
+			
+		</div>
+		<!-- E-页面主要部分 -->
+
+
+
+		<script type="text/javascript">
+			$("#submit_btn").click(function(event) {
+				var checkedSize = $(".cause input[type='checkbox']:checked").length;
+				if (checkedSize == 0) {
+					alert("请选择离职原因");
+					return false;
+				}
+				for(var i = 0; i < $(".write label").length;i++  ){
+					if ($(".write label").eq(i).find("textarea").val() == "") {
+						alert("请填写第"+ (i+1) +"题");
+						return false;
+					};
+				}
+				//提交数据
+				$("#form1").ajaxSubmit({
+			          url: "{{:U('UserHrResign/hr_save')}}",
+			          type:'post',
+			          dataType: 'json',
+			          contentType: "application/json; charset=utf-8",
+			          success:function(data){
+			            if(data.status == 1){
+			                alert("保存成功",window.location.href);
+			            }else{
+			                alert(data.msg);
+			            }            
+			          },error:function(){
+			            alert("保存失败");
+			          }
+			    })
+			});
+		</script>
+

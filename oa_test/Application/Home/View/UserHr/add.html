@@ -1,0 +1,181 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script src="__JS__/userhr.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('UserHr/index')}}">招聘管理</a></li>
+			  <li class="active">新增/修改招聘</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form class="form-horizontal" role="form" action="{{:U('UserHr/save')}}" method="post" name="forms" id="forms">
+			<div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+			 基本信息
+			</div>
+			  <div class="form-group ">
+				<label for="firstname" class="col-xs-2 control-label">名字</label>
+				<div class="bg"> 
+					<div class="col-xs-3">
+						<input type="text" class="form-control" name="name" value="{{$info.name}}" id="name" placeholder="姓名">
+					</div>
+				</div>
+					
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">电话</label>
+				<div class="col-xs-3 name">
+					<input type="text" class="form-control" name="phone" value="{{$info.phone}}" id="phone" placeholder="电话">
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">邮箱</label>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" name="email" value="{{$info.email}}" id="email" placeholder="邮箱">
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">性别</label>
+				<div class="col-xs-3">
+					<label class="checkbox-inline">
+						<input type="radio" name="sex" id="optionsRadios3" value="女"  <eq name="info.sex" value="女">checked</eq>>女
+					  </label>
+					  <label class="checkbox-inline">
+						<input type="radio" name="sex" id="optionsRadios4" value="男"  <eq name="info.sex" value="男">checked</eq>>男
+					  </label>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">面试岗位</label>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" name="job"  value="{{$info.job}}"  id="job" placeholder="面试岗位">
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">期望薪资</label>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" name="pre_salary"  value="{{$info.pre_salary}}"  id="pre_salary" placeholder="期望薪资">
+				</div>
+			  </div>
+			  
+			  
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">备注</label>
+				<div class="col-xs-3">
+					<textarea name="remark" id="remark"  class="form-control" style="resize:none">{{$info.remark}}</textarea>
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">简历</label>
+				<div class="col-xs-3">
+					<div class="file_input">
+						<form action="" method="post" enctype="multipart/form-data">
+							<input class="form-control input-sm" type="text" name="file_name" value="{{$info.file_name}}" placeholder="点击上传文件">
+							<input type="file" class="file_click" name="file">
+							<input type="hidden" class="file_id" value="{{$info.file_id}}" id="file_id" name="file_id"/>
+						</form>
+					</div>
+				</div>
+			  </div>
+			  <div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+				 初试信息
+			  </div>
+			  <!--div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">基本薪资</label>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" name="salary"  value="{{$info.salary}}"  id="salary" placeholder="基本薪资">
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">津贴</label>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" name="subsidy"  value="{{$info.subsidy}}"  id="subsidy" placeholder="津贴">
+				</div>
+			  </div-->
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">优点</label>
+				<div class="col-xs-3">
+					<textarea name="advantage" id="advantage"  class="form-control" style="resize:none">{{$itvinfo.advantage}}</textarea>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="disadvantage" class="col-xs-2 control-label">缺点</label>
+				<div class="col-xs-3">
+					<textarea name="disadvantage" id="disadvantage"  class="form-control" style="resize:none">{{$itvinfo.disadvantage}}</textarea>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">面试意见</label>
+				<div class="col-xs-3">
+					<textarea name="result" id="result"  class="form-control" style="resize:none">{{$itvinfo.result}}</textarea>
+				</div>
+			  </div>
+			  <div class="form-group ">
+				<label for="lastname" class="col-xs-2 control-label">面试结果</label>
+				<div class="col-xs-3">
+					 <label class="checkbox-inline result_status">
+						<input type="radio" name="result_status" id="optionsRadios3" value="1"  <eq name="itvinfo.status" value="1">checked</eq>>通过
+					  </label>
+					  <label class="checkbox-inline result_status">
+						<input type="radio" name="result_status" id="optionsRadios4" value="2"  <eq name="itvinfo.status" value="2">checked</eq>>暂定
+					  </label>
+					  <label class="checkbox-inline result_status">
+						<input type="radio" name="result_status" id="optionsRadios4" value="-1"  <eq name="itvinfo.status" value="-1">checked</eq>>不通过
+					  </label>
+				</div>
+			  </div>
+			  <div id="flowdiv" <eq name="itvinfo.status" value="1"><else/>class="hide"</eq>>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">流转部门</label>
+				<div class="col-xs-3">
+					<select class="form-control" name="depart_id" id="depart_id">
+						<option name="">请选择面试部门</option>
+						<volist name="departments" id="vo">   
+						<option value="{{$vo.depart_id}}" <eq name="vo.depart_id" value="$flowinfo.next_depart_id">selected="selected"</eq>>{{$vo.html}}{{$vo.depart_name}}</option>
+						</volist>
+					</select>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">面试人员</label>
+				<div class="col-xs-5">
+					<div  id="flowuser">
+					请先选择部门
+					</div>
+					<input type="hidden" name="user_ids" id="user_ids" value="{{$flowinfo.next_uids}}" />
+					<input type="hidden" name="id" id="id" value="{{$info.id}}" />
+					<input type="hidden" name="pre_user_ids" id="pre_user_ids" value="{{$flowinfo.next_uids}}" />
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="lastname" class="col-xs-2 control-label">下轮面试时间</label>
+				<div class="col-xs-3">
+					<input type="text" class="form-control" placeholder="面试时间" id="next_date" onclick="WdatePicker()" value="{{$itvinfo.next_date}}">
+				</div>
+			  </div>
+			 </div>
+			 <div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<div class="Submit_btn">
+					      <button type="button" class="btn btn-primary" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					</div>
+				</div>
+			  </div>
+			</form>
+			<!-- E-填写部分 -->
+			<!--S modal-填写部分 -->
+			
+			<!--E modal-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->
+
+		<style>
+			.form-group{
+				overflow:hidden;
+			}
+			.form-group>label{
+			    text-align: right;
+			}
+		</style>

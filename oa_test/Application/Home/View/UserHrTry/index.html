@@ -1,0 +1,76 @@
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<style>
+.search_main .mg-right-15{float:left}
+</style>
+<!--E-头部 -->
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">试用期信息</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main form-inline">
+		<form action="{{:U('UserHrTry/index')}}" method="get">
+			
+			<div style="float:right;">
+				<div class="form-group">
+				    <div class="input-group">
+				      <input type="text" class="form-control" placeholder="名称" name="name" value="{{$Think.get.name}}">
+				      <span class="input-group-btn">
+				        <button class="btn btn-primary" type="submit" id="search">查询</button>
+				        <button class="btn btn-primary" type="button" style="margin-left:10px" onclick="window.location.href='{{:U('UserHrTry/add')}}'">新增试用期</button>
+				      </span>
+				    </div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- S-表格部分 -->
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<thead>
+					<tr id="table_head">
+						<th>序号</th>
+						<th>姓名</th>
+						<th>部门</th>
+						<th>岗位</th>
+						<th>主管通过状态</th>
+						<th>HR通过状态</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+					<volist name="list" id="vo" key="key">
+                    <tr class="table_bd active">
+						<td>
+							{{$key}}
+						</td>
+						<td>
+							{{$vo.real_name}}
+						</td>
+						<td>
+							{{$vo.depart_name}}							
+						</td>
+						<td>
+							{{$vo.job}}							
+						</td>
+						<td>
+							<if condition="$vo.l_status eq '1'">通过<elseif condition="$vo.l_status eq '2'"/>未通过<else/>待审批</if>
+						</td>
+						<td>
+							<if condition="$vo.h_status eq '1'">通过<elseif condition="$vo.h_status eq '2'"/>未通过<else/>待审批</if>
+						</td>
+						<td class="operate">
+							<!-- <a href="javascript:void(0)" value="{{$vo.id}}" url="{{:U('UserHr/del')}}" class="deleat">删除</a> -->
+							<a href="{{:U('UserHrTry/add',array('id'=>$vo['id']))}}" class="edit">查看</a>
+						</td>
+					</tr> 
+					</volist> 
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+</div>
+<!-- E-页面主要部分 -->

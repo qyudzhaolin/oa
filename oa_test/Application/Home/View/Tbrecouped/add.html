@@ -1,0 +1,417 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script type="text/javascript" src="__JS__/pfrecouped.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">TB报销单</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<!-- S-部门项目等 -->
+			<table class="table-striped table-bordered" style="overflow: auto;">
+				<tr>
+					<td class="col-md-2 active">部门</td>
+					<td class="col-md-4">
+						<input class="form-control input-sm" type="text" readonly="readonly" value="{{$depart.depart_name}}">
+					</td>
+					<td class="col-md-2 active">姓名</td>
+					<td class="col-md-4">
+						<input class="form-control input-sm" type="text" readonly="readonly" value="{{$app_real_name}}">
+					</td>
+				</tr>
+				<tr>
+					<td rowspan="2" class="active">
+						支付<br>
+						方式
+					</td>
+					<td rowspan="2" id="click_money_type"><br>
+				    	<label class="radio-inline">
+						  <input type="radio" name="borrow_way" id="cash" value="1" <if condition="$recouped.borrow_way eq '1' or $recouped.borrow_way eq ''">checked="checked"</if>> 现金
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="borrow_way" id="transfer" value="2" <if condition="$recouped.borrow_way eq 2">checked="checked"</if>> 转账
+						</label>
+				    	<label class="radio-inline">
+						  <input type="radio" name="borrow_way" value="3" <if condition="$recouped.borrow_way eq 3">checked="checked"</if>> 其它
+						</label><br><br>
+						<span class="col-xs-12" id="else" <if condition="$recouped.borrow_way eq 3">style="display:block"</if>>
+				    		<input type="text" class="form-control" id="other" placeholder="其它" value="{{$recouped.other}}">
+				    	</span>
+					</td>
+					<td class="active">银行</td>
+					<td>
+						<input class="form-control input-sm" type="text" id="bnk_branch" val="{{$recouped.bnk_branch}}" value="{{$recouped.bnk_branch}}" <if condition="$recouped.borrow_way neq '2' or $recouped.bnk_branch eq ''">disabled="disabled"</if>>
+					</td>
+				</tr>
+				<tr>
+					<td class="active">银行账号</td>
+					<td>
+						<input class="form-control input-sm" type="text" id="bnk_acct" val="{{$recouped.bnk_acct}}" value="{{$recouped.bnk_acct}}" <if condition="$recouped.borrow_way neq '2' or $recouped.bnk_acct eq ''">disabled="disabled"</if>>
+					</td>
+				</tr>
+				<tr id="no_border">
+					<td colspan="4">.</td>
+				</tr>
+			</table>
+			<!-- E-部门项目等 -->
+		
+			<!-- S-填写款项金额等 -->
+			<table class="table-striped table-bordered">
+				<tr id="th">
+					<td class="col-md-1 active">报销金额</td>
+					<td class="col-md-6 active">备注说明（符号 <span style="color:red">; ^ &</span>不能使用）</td>
+					<td class="col-md-2 active">上传文件</td>
+				</tr>
+				<tr class="fund">
+					<td class="col-md-1">
+						<input class="form-control input-sm money" type="text" readonly="readonly" maxlength="20" onkeyUp="addMoney(this)" onblur="toFixed(this)" value="{{$tb.money}}">
+					</td>
+					<td class="col-md-6">
+						<input class="form-control input-sm comm" type="text" maxlength="100" value="{{$tb.desc}}" readonly="readonly">
+					</td>
+					<td class="col-md-2">
+						<div class="file_input">
+							<form action="" method="post" enctype="multipart/form-data">
+							    <input class="form-control input-sm" type="text" placeholder="点击上传文件" value="{{$money_list.0.file_name}}">
+								<input type="file" class="file_click" name="file">
+								<input type="hidden" class="file_id" value="{{$$money_list.0.file_id}}" name="file_id"/>
+							</form>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="1" class="active">金额总计（小写）</td>
+					<td colspan="4">
+						<div class="col-xs-5">
+							<input class="form-control input-sm" type="text" id="tot_amt" readonly="readonly" value="{{$tb.money}}">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="1" class="active">金额总计（大写）</td>
+					<td colspan="4">
+						<div class="col-xs-5">
+							<input class="form-control input-sm" type="text" id="tot_amt_d" readonly="readonly" value="{{$tb.tot_amt_d}}">
+						</div>
+					</td>
+				</tr>
+			</table>
+			<!-- E-填写款项金额等 -->
+		
+			<!-- S-申请完操作 -->
+			<notempty name="recouped">
+			<table class="table-striped table-bordered">
+				<tr>
+					<td class="active">申请人</td>
+					<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+					<td class="active">{{$vo}}</td>
+					</foreach>
+				</tr>
+				<tr>
+					<td>{{$app_real_name}}</td>
+					<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+					<td>
+						<empty name="approve_arr.approve_user_arr.$k">
+						--
+						<else/>
+						<eq name="approve_arr.approve_user_arr.$k.result" value="1">
+							同意（{{$approve_arr.approve_user_arr.$k.user_real_name}}）
+							<p>{{$approve_arr.approve_user_arr.$k.time|date='Y-m-d H:i:s',###}}</p>
+						<else/>
+							<eq name="approve_arr.approve_user_arr.$k.result" value="-1">
+							不同意（{{$approve_arr.approve_user_arr.$k.user_real_name}}）<notempty name="approve_arr.approve_user_arr.$k.opinion"><br/>理由：{{$approve_arr.approve_user_arr.$k.opinion}}</notempty>
+							<p>{{$approve_arr.approve_user_arr.$k.time|date='Y-m-d H:i:s',###}}</p>
+							<else/>
+								<eq name="user_id" value="$approve_arr.approve_user_arr.$k.user_id">
+									<button type="button" class="btn btn-success btn-sm btn-operate" value="1" val="{{$k+1}}">同意</button>
+									<button type="button" class="btn btn-danger btn-sm btn-operate" value="-1" val="{{$k+1}}">不同意</button>
+								<else/>
+								等待审批（{{$approve_arr.approve_user_arr.$k.user_real_name}}）
+								</eq>
+							</eq>
+						</eq>
+						</empty>
+					</td>
+					</foreach>
+				</tr>
+			</table>
+			</notempty>
+			<!-- E-申请完操作 -->
+		
+			<!-- S-提交部分 -->
+			<if condition="$is_show_app eq 1">
+			<div class="edit text-center">
+				<select name="" id="cur_approver_id">
+					<option value="0">请选择审批人</option>
+					<foreach name="approve_users" item="vo">
+						<option value="{{$vo.user_id}}" <eq name="recouped.cur_approver_id" value="$vo.user_id">selected="selected"</eq>>{{$vo.real_name}}</option>
+					</foreach>
+				</select>&nbsp;
+				<button type="button" class="btn btn-primary" id="Submit">提交</button>
+			</div>
+			</if>
+			
+			<if condition="$is_restart eq 1">
+			<div class="edit text-center">
+				<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+			</div>
+			</if>
+		<!-- E-提交部分 -->
+	</div>
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$recouped.tb_id}}" id="tb_id" />
+	<input type="hidden" value="{{$Think.get.t_id}}" id="t_id" />
+	<!-- S-输入理由的弹出框 -->
+	<include file="./Application/Home/View/noagree.html" />
+	<!-- E-输入理由的弹出框 -->
+	
+	<if condition="$Think.get.id neq ''">
+	<div style="text-align: center;margin-top:20px">
+		<a class="btn btn-primary" href="{{:U('Print/Tbrecouped')}}?id={{$Think.get.id}}" target="_blank">&nbsp;&nbsp;去打印&nbsp;&nbsp;</a>
+	</div>
+	</if>
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	
+	var click=true;
+	$("#Submit").click(function(event) {
+		var a=/^[0-9]*(\.[0-9]{1,2})?$/;
+		var tb_id = $("#tb_id").val();
+		var t_id = $("#t_id").val(); 
+		var borrow_way = $("input[name='borrow_way']:checked").val();
+		var bnk_branch = $("#bnk_branch").val();
+		var bnk_acct = $("#bnk_acct").val();
+		var other = $("#other").val();
+		var cur_approver_id = $("#cur_approver_id").val();
+		var borrow_tot_amt = $("#borrow_tot_amt").text();
+		
+		if (borrow_way=="2") {
+			if(bnk_branch.length == 0){
+				alert("请填写银行！");
+				return false;
+			}
+			if(bnk_acct.length == 0){
+				alert("请填写银行账号！");
+				return false;
+			}
+		}else if(borrow_way=="3"){
+			if(other.length == 0){
+				alert("请填写支付方式！");
+				return false;
+			}
+		}
+		if (cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		
+		var fund_str = "";
+		for(var i=0;i<$(".fund").length;i++){
+			var money = $(".fund").eq(i).find(".money").val();
+			var comm = $(".fund").eq(i).find(".comm").val();
+			var file_id = $(".fund").eq(i).find(".file_id").val();
+			if(money.length>0 || comm.length>0 || file_id>0){
+				if(money.length == 0){
+					alert("请填写金额！");
+					return false;
+				}
+				if(!a.test(money)){
+					alert("金额格式不正确");
+					return false;
+				}
+				if(parseFloat(money)<=0){
+					alert("款项金额必须大于零！");
+					return false;
+				}
+			}
+			fund_str += money+"^"+comm+"^"+file_id+";"		
+		}
+		
+		var tot_amt = $("#tot_amt").val();
+		if(tot_amt.length == 0){
+			alert("请至少填写一条款项信息！");
+			return false;
+		}
+		
+		var is_tb = $("input[name='is_tb']:checked").val(); 
+		var tot_amt_d = $("#tot_amt_d").val();
+		if(click){
+			click = false;
+			$("#loading").show();
+			$.ajax({
+				url:"{{:U('Tbrecouped/add')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'tb_id':tb_id,'t_id':t_id,"borrow_way":borrow_way,"bnk_branch":bnk_branch,"bnk_acct":bnk_acct,
+					"cur_approver_id":cur_approver_id,"fund_str":fund_str,"tot_amt":tot_amt,"tot_amt_d":tot_amt_d,'other':other},
+				success:function(data){
+					$("#loading").hide();
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Tbrecouped/index')}}");
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	$("input[name='borrow_way']").change(function(){
+		var borrow_way = $(this).val();
+		var get_type = $("input[name='get_type']:checked").val();
+		if(borrow_way == '1'){
+			$("#bnk_branch").val("");
+			$("#bnk_acct").val("");
+			$("#bnk_branch").attr("disabled", true);
+			$("#bnk_acct").attr("disabled", true);
+			$("#else").hide();
+		}else if(borrow_way == '2'){
+			$("#bnk_branch").attr("disabled", false);
+			$("#bnk_acct").attr("disabled", false);
+			if(get_type == '2'){
+				$("#bnk_acct").val('');
+				$("#bnk_branch").val('');
+			}else{
+				$("#bnk_acct").val($("#bnk_acct").attr("val"));
+				$("#bnk_branch").val($("#bnk_branch").attr("val"));
+			}
+			
+			$("#else").hide();
+		}else if(borrow_way == '3'){
+			$("#else").fadeIn();
+			$("#bnk_branch").val("");
+			$("#bnk_acct").val("");
+			$("#bnk_branch").attr("disabled", true);
+			$("#bnk_acct").attr("disabled", true);
+			if(get_type == '2'){
+				$("#other").val('');
+			}else{
+				$("#other").val($("#other").attr("val"));
+			}
+		}
+	});
+	
+	
+	var click2 = true;
+	$("#Restart").click(function(){
+		if(click2){
+			click2 = false;
+			if(confirm('确定要重新发启？')){
+				var tb_id = $("#tb_id").val();
+				$.ajax({
+					url:"{{:U('Tbrecouped/restart')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'tb_id':tb_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Pfrecouped/index')}}");
+						}else{
+							alert(data.msg);
+							click2 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click2 = true;
+			}
+		}
+	})
+	
+	var click4=true; 
+	$(".btn-operate").click(function(){
+		var val = $(this).attr("value");
+		var tb_id = $("#tb_id").val();
+		var num = $(this).attr("val");
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".account").modal('show');
+		}else{
+			if(click4){
+				click4 = false;
+				if(confirm('确定要执行同意操作吗？')){
+					$.ajax({
+						url:"{{:U('Tbrecouped/operate')}}",
+						type:"post",
+						dataType:'json', 
+						data:{'tb_id':tb_id,'num':num,'result':val},
+						success:function(data){
+							if(data.status == 1){
+								alert("操作成功！","{{:U('Tbrecouped/index')}}");
+							}else{
+								alert(data.msg);
+								click4 = true;
+								return false;
+							}
+						}
+					});
+				}else{
+					click4 = true;	
+				}
+			}
+		}
+	});
+	
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var tb_id = $("#tb_id").val();
+		if(click3){
+			click3 = false;
+			if(confirm('确定要执行不同意操作吗？')){
+				$.ajax({
+					url:"{{:U('Tbrecouped/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'tb_id':tb_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Tbrecouped/index')}}");
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+	
+	$("input[name='is_tb']").change(function(){
+		var is_tb = $("input[name='is_tb']:checked").val(); 
+		$.ajax({
+			url:"{{:U('Tbrecouped/getapprovers')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'is_tb':is_tb},
+			success:function(data){
+				if(data.status == 1){
+					var approve_users = eval(data.approve_users);
+					if(approve_users.length > 0){
+						var str = '<option value="0">请选择审批人</option>';
+						for(var i=0;i<approve_users.length;i++){
+							str += '<option value="'+approve_users[i]['user_id']+'">'+approve_users[i]['real_name']+'</option>';
+						}
+						$("#cur_approver_id").html(str);
+					}
+				}
+			}
+		});
+	})
+});
+
+</script>

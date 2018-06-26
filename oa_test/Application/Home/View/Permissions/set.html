@@ -1,0 +1,111 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_add.css">
+<script type="text/javascript" src="__JS__/budget_add.js"></script>
+<!-- S-页面主要部分 -->
+	<div class="mainContent">
+		<ol class="breadcrumb">
+		  <li><a href="{{:U('User/index')}}">用户管理</a></li>
+		  <li class="active">权限设置</li>
+		</ol>
+
+		<!-- S-填写部分 -->
+		<table class="table table-condensed">
+			<colgroup>
+				<col width="20%">
+				<col width="80%">
+			</colgroup>
+			
+			<tr id="group_people">
+				<td class="left">{{$user.real_name}}的权限列表&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+						<div class="group_people">
+<!-- 							<foreach name="permissions" item="vo" key="k">
+							<if condition="$vo.pid eq 0">
+							<if condition="$k gt 0"></div></if>
+							<div class="gr_num">
+								<label style="margin-right: 10px;">
+						         	<input class="check_p" type="checkbox" value="{{$k}}" pid="{{$vo.pid}}" <if condition="$vo.is_check eq '1'">checked="checked"</if>>
+									<strong>{{$vo.per_name}}：</strong>
+						       	</label>
+						    <else/>
+						    	<label style="margin-right: 10px;">
+						         	<input class="check_p" type="checkbox" value="{{$k}}" pid="{{$vo.pid}}" <if condition="$vo.is_check eq '1'">checked="checked"</if>>
+									{{$vo.per_name}}
+						       	</label>
+						    </if>
+							</foreach>	
+ -->							
+							<foreach name="permissions" item="vo" key="k">
+							<div class="gr_num">
+								<foreach name="vo.children" item="vo1" key="k1">
+									<label style="margin-right: 10px;">
+							         	<input class="check_p" type="checkbox" value="{{$vo1.per_id}}" pid="{{$vo1.pid}}" <if condition="$vo1.is_check eq '1'">checked="checked"</if>>
+										<if condition="$vo1.pid eq 0"><strong>{{$vo1.per_name}}：</strong><else />{{$vo1.per_name}}</if>
+							       	</label>
+							    </foreach>
+						    </div>
+							</foreach>	
+						</div>
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left"></td>
+				<td class="right">
+					<div class="Submit_btn">
+				      <button type="button" class="btn btn-success" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+				      <button type="reset" class="btn btn-default" id="reset" onclick="history.go(-1)">返回</button>					    	
+				    </div>
+				</td>
+			</tr>
+
+		</table>
+		<!-- E-填写部分 -->		
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$(".check_p").click(function(){
+		var pid = $(this).attr("pid");
+		if(pid==0){
+			var val = $(this).val();
+			if($(this).is(':checked')){
+				$(".gr_num").find("[pid='"+val+"']").prop('checked',true);
+			}else{
+				$(".gr_num").find("[pid='"+val+"']").prop('checked',false);
+			}
+		}
+	})
+	
+	
+	
+	$("#Submit").click(function(event) {
+		//部门名称
+		var user_id = {{$Think.get.user_id}};
+		var per_ids = '';
+		$(".check_p:checked").each(function(){
+			per_ids += $(this).val()+",";
+		});
+		
+		if(per_ids.length == 0){
+			alert("请选择相应权限选项！");
+			return false;
+		}
+		
+		$.ajax({
+			url:"{{:U('Permissions/addu')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'user_id':user_id,'per_ids':per_ids},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+});
+</script>

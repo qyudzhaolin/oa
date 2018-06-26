@@ -1,0 +1,188 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/borrow_money.css">
+<script type="text/javascript" src="__JS__/borrow_money.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">借款单</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<!-- S-部门项目等 -->
+		<table class="table table-striped table-bordered">
+			<tr>
+				<td class="col-md-2 active">部门</td>
+				<td class="col-md-4">{{$depart.depart_name}}</td>
+				<td class="col-md-2 active">姓名</td>
+				<td class="col-md-4">{{$apply_user.real_name}}</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">项目</td>
+				<td class="col-md-4">
+					<foreach name="projs" item="vo" key="k">
+ 	  					<eq name="refund.proj_id" value="$vo.proj_id">{{$vo.proj_name}}</eq>
+ 	  				</foreach>
+				</td>
+				<td class="col-md-2 active">项目编号</td>
+				<td class="col-md-4">{{$refund.proj_no}}</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">借款单</td>
+				<td class="col-md-4">
+					<foreach name="borrows" item="vo" key="k">
+						<eq name="refund.borrow_id" value="$vo.borrow_id">{{$vo.borrow_no}}</eq>
+ 	  				</foreach>
+				</td>
+			</tr>
+			<tr id="no_border">
+				<td colspan="4">.</td>
+			</tr>
+		</table>
+		<!-- E-部门项目等 -->
+		<!-- S-填写款项金额等 -->
+		<table class="table table-striped table-bordered">
+			<tr id="th">
+				<td class="col-md-1 active">款项</td>
+				<td class="col-md-1 active">可用余额</td>
+				<td class="col-md-1 active">还款金额</td>
+				<td class="col-md-9 active">备注说明</td>
+			</tr>
+			<foreach name="money_list" item="vo" key="k">
+			<tr class="fund">
+				<td class="col-md-1">{{$vo.money_name}}</td>
+				<td class="col-md-1">{{$vo.usable_money}}</td>
+				<td class="col-md-1">{{$vo.money}}</td>
+				<td class="col-md-9">{{$vo.comm}}</td>
+			</tr>
+			</foreach>
+			<tr>
+				<td colspan="1" class="active">金额总计（小写）</td>
+				<td colspan="3">
+					<div class="col-xs-5">{{$refund.tot_amt}}</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="1" class="active">金额总计（大写）</td>
+				<td colspan="3">
+					<div class="col-xs-5">{{$refund.tot_amt_d}}</div>
+				</td>
+			</tr>
+		</table>
+		<!-- E-填写款项金额等 -->
+		<!-- S-申请完操作 -->
+		<table class="table table-striped table-bordered">
+			<tr>
+				<td class="active">申请人</td>
+				<td class="active">财务</td>
+			</tr>
+			<tr>
+				<td>{{$apply_user.real_name}}</td>
+				<td>
+					<if condition="$schedule.aprv_result1 eq '1'">
+					已处理（{{$schedule.user_real_name1}}）
+					<p>{{$schedule.aprv_time1|date='Y-m-d H:i:s',###}}</p>
+					<elseif condition="$schedule.aprv_result1 eq '-1'"/>
+					不同意（{{$schedule.user_real_name1}}）<notempty name="schedule.aprv_opinion1"><br/>理由：{{$schedule.aprv_opinion1}}</notempty>
+					<p>{{$schedule.aprv_time1|date='Y-m-d H:i:s',###}}</p>
+					<else/>
+					<eq name="user_id" value="$schedule.aprv_user_id1">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="1">确认处理</button>
+					<else/>
+						<if condition="$schedule.aprv_user_id1 neq '0'">
+						待处理（{{$schedule.user_real_name1}}）
+						<else/>
+						--
+						</if>
+					</eq>
+					</if>
+				</td>
+			</tr>
+		</table>
+		<!-- E-申请完操作 -->
+		
+		
+	  	<!-- S-输入理由的弹出框 -->
+		<include file="./Application/Home/View/noagree.html" />
+		<!-- E-输入理由的弹出框 -->
+		
+		<div style="text-align: center;margin-top:20px">
+			<a class="btn btn-primary" href="{{:U('Print/refund')}}?id={{$Think.get.id}}" target="_blank">&nbsp;&nbsp;去打印&nbsp;&nbsp;</a>
+		</div>
+		
+	</div>
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$refund.ref_id}}" id="ref_id" />
+	<input type="hidden" value="" id="no_agree_num" />
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	
+	var click1=true; 
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var num = $(this).attr("val");
+		var ref_id = $("#ref_id").val();
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".account").modal('show');
+		}else{
+			if(click1){
+				if(confirm('确定要执行同意操作吗？')){
+					click1 = false;
+					$("#loading").show();
+					$.ajax({
+						url:"{{:U('Refund/operate')}}",
+						type:"post",
+						dataType:'json', 
+						data:{'ref_id':ref_id,'num':num,'result':val},
+						success:function(data){
+							$("#loading").hide();
+							if(data.status == 1){
+								alert("操作成功！","{{:U('Refund/info')}}?id="+ref_id);
+							}else{
+								alert(data.msg);
+								click1 = true;
+								return false;
+							}
+						}
+					});
+				}else{
+					click1 = true;	
+				}
+			}
+		}
+	});
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var ref_id = $("#ref_id").val();
+		if(click3){
+			if(confirm('确定要执行不同意操作吗？')){
+				click3 = false;
+				$(".account").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Refund/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'ref_id':ref_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Refund/info')}}?id="+ref_id);
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+});
+</script>

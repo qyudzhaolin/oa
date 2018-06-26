@@ -1,0 +1,62 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">通讯录</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main form-inline">
+		<div style="float:right;">	
+			<div class="form-group">		
+				<div class="input-group">
+			      <input type="text" class="form-control" id="keyword" value="{{$Think.get.keyword}}" placeholder="请输入姓名">
+			      <span class="input-group-btn">
+			        <button class="btn btn-success" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+			</div>
+		</div>
+	</div>
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->
+	<div class="table">		
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<thead>
+					<tr id="table_head">
+						<th>姓名</th>
+						<th>所在部门</th>
+						<if condition="$phone_watch">
+						<th>手机</th>
+						</if>
+					    <th>邮箱</th>
+					</tr>
+				</thead>
+				<tbody>  
+	                <foreach name="list" item="vo" key="k">   
+	                <tr class="table_bd active">
+						<td>{{$vo.real_name}}</td>
+						<td>{{$vo.company_name}}--{{$vo.depart_name}}</td>
+						<if condition="$phone_watch">
+						<td>{{$vo.phone}}</td>
+						</if>
+						<td>{{$vo.email}}</td>
+					</tr> 
+					</foreach>    
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#search").click(function(){
+		window.location.href="{{:U('Book/index')}}?keyword="+$("#keyword").val();
+	})
+});
+</script>

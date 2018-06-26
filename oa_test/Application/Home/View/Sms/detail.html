@@ -1,0 +1,413 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('UserHr/index')}}">招聘管理</a></li>
+	  <li class="active">招聘详情</li>
+	</ol>
+	<!-- S-表格部分 -->
+	<div class="table">
+		<!-- S-部门项目等 -->
+		
+				<div class="list_main">
+					<div class="pd10 bg-primary">
+					 基本信息
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">姓名</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+							{{$info.name}}
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-1 name">电话</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+							{{$info.phone}}
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">邮箱</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3">  
+								{{$info.email}}
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">性别</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3">				    	
+		  					  {{$info.sex}}
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">面试岗位</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.job}}
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-1 name">期望薪资</div>
+					  <div class="col-xs-10 input_text">
+					  		<!-- S-手写部分 -->
+						  	<div class="col-xs-3">
+	  					    	{{$info.salary|default=0}}
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">备注</div>
+					  <div class="col-xs-10 input_text">
+					  		<!-- S-手写部分 -->
+						  	<div class="col-xs-3">
+	  					    	{{$info.remark}}
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">简历</div>
+					  <div class="col-xs-10 input_text">
+					  		<!-- S-手写部分 -->
+						  	<div class="col-xs-3">
+	  					    	<a href="{{$info.file_url}}" target="_black">{{$info.file_name}}</a>
+	  					    </div>
+					  </div>
+					</div>
+					
+					<div class="pd10 bg-primary mg-top-10">
+					 面试信息
+					</div>
+					<div id="contentDiv">
+					<volist name="list" id="vo" key="key">
+						<php>
+							if($key%2==0){
+								$color = '#eaf0fb';
+							}else{
+								$color = '#EEE';
+							}
+						</php>
+						<div class="mg-bottom-10 pd10" style="background-color:{{$color}}">
+							<p>
+							{{$vo.department}} - {{$vo.itv_uid|get_user_name=###}}已「
+							<eq name="vo.status" value="1">通过</eq>
+							<eq name="vo.status" value="2">暂定</eq>
+							<eq name="vo.status" value="3">完成面试</eq>
+							<eq name="vo.status" value="-1">不通过</eq>」
+							<p>
+							<p>{{$vo.result}}<p>
+							<p style="color:#908f8f">{{$vo.crt_time|date='Y-m-d H:i:s',###}}<p>
+						</div>
+					</volist>
+					</div>
+					<notempty name="auditAccess">
+					<div id="interview" class="panel panel-default">
+					<div class="pd10 bg-primary mg-bottom-10">
+					 面试意见
+					</div>
+					<form action="{{:U('UserHr/saveInterview')}}" method="post" name="forms" id="forms" class="form-horizontal">
+						<notempty name="lastitvinfo.next_date"><div class="text-danger pd10">请务必在 <strong>{{$lastitvinfo.next_date}}</strong> 之前完成本轮面试！</div></notempty>
+						    <eq name="info.status" value="3">
+							<div id="salaryCompare" class="panel-body">
+								<ul id="cur_salary" class="nav nav-tabs col-xs-6">
+									<li class="active">
+										<a href="javascript:;" class=" bg-warning" data-toggle="tab">
+											当前薪资
+										</a>
+									</li>
+								</ul>
+								<ul id="ours_salary" class="nav nav-tabs col-xs-6">
+									<li class="active">
+										<a href="javascript:;" class=" bg-warning" data-toggle="tab">
+											建议薪资
+										</a>
+									</li>
+								</ul>
+								<div class="bg-info" style="overflow: auto;border: 1px solid #CCC;border-top: none;">
+								<div class="col-xs-6  pd-top-20 " id="cur_salary">
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">基本薪资</label>
+										<div class="col-xs-3">
+											<input type="text" class="form-control" name="pre_salary"  value="{{$info.pre_salary}}"  id="pre_salary" placeholder="基本薪资">
+										</div>
+									  </div>
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">薪资结构</label>
+										<div class="col-xs-2">
+											<input type="text" class="form-control" name="pre_salary_num"  value="{{$info.pre_salary_num}}"  id="pre_salary_num" placeholder="多少">
+											薪
+										</div>
+									  </div>
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">津贴</label>
+										<div class="col-xs-3">
+											<input type="text" class="form-control" name="pre_subsidy"  value="{{$info.pre_subsidy}}"  id="pre_subsidy" placeholder="津贴">
+										</div>
+									  </div>
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">年终奖</label>
+										<div class="col-xs-3">
+											<input type="text" class="form-control" name="pre_year_bonus"  value="{{$info.pre_year_bonus}}"  id="pre_year_bonus" placeholder="年终奖">
+										</div>
+									  </div>
+								</div>
+								
+								<div class="col-xs-6  pd-top-10" id="ours_salary" style="border-left:1px solid #ccc;">
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">基本薪资</label>
+										<div class="col-xs-3">
+											<input type="text" class="form-control" name="salary"  value="{{$info.salary}}"  id="salary" placeholder="基本薪资">
+										</div>
+									  </div>
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">薪资结构</label>
+										<div class="col-xs-2">
+											<input type="text" class="form-control" name="salary_num"  value="{{$info.salary_num}}"  id="salary_num" placeholder="多少">薪
+										</div>
+									  </div>
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">津贴</label>
+										<div class="col-xs-3">
+											<input type="text" class="form-control" name="subsidy"  value="{{$info.subsidy}}"  id="subsidy" placeholder="津贴">
+										</div>
+									  </div>
+									  <div class="form-group">
+										<label for="lastname" class="col-xs-2 control-label">其他</label>
+										<div class="col-xs-3">
+											<textarea name="remark" id="remark"  class="form-control" style="resize:none">{{$info.remark}}</textarea>
+										</div>
+									  </div>
+								</div>
+								</div>
+							</div>
+							</eq>
+							  <div class="form-group">
+								<label for="lastname" class="col-xs-2 control-label">优点</label>
+								<div class="col-xs-3">
+									<textarea name="advantage" id="advantage"  class="form-control" style="resize:none">{{$itvinfo.advantage}}</textarea>
+								</div>
+							  </div>
+							  <div class="form-group">
+								<label for="disadvantage" class="col-xs-2 control-label">缺点</label>
+								<div class="col-xs-3">
+									<textarea name="disadvantage" id="disadvantage"  class="form-control" style="resize:none">{{$itvinfo.disadvantage}}</textarea>
+								</div>
+							  </div>
+							  <div class="form-group">
+								<label for="lastname" class="col-xs-2 control-label">面试意见</label>
+								<div class="col-xs-3">
+									<textarea name="result" id="result"  class="form-control" style="resize:none">{{$itvinfo.result}}</textarea>
+								</div>
+							  </div>
+							  <div class="form-group ">
+								<label for="lastname" class="col-xs-2 control-label">面试结果</label>
+								<div class="col-xs-3">
+									  <label class="checkbox-inline result_status">
+										<input type="radio" name="result_status" id="optionsRadios3" value="1"  <eq name="itvinfo.status" value="1">checked</eq>>通过
+									  </label>
+									  <label class="checkbox-inline result_status">
+										<input type="radio" name="result_status" id="optionsRadios4" value="-1"  <eq name="itvinfo.status" value="-1">checked</eq>>不通过
+									  </label>
+									  <label class="checkbox-inline result_status">
+										<input type="radio" name="result_status" id="optionsRadios4" value="3"  <eq name="itvinfo.status" value="3">checked</eq>>完成面试
+									  </label>
+								</div>
+							  </div>
+							  <div id="flowdiv" <eq name="itvinfo.status" value="1"><else/>class="hide"</eq>>
+							  <div class="form-group">
+								<label for="lastname" class="col-xs-2 control-label">流转部门</label>
+								<div class="col-xs-3">
+									<select class="form-control" name="depart_id" id="depart_id">
+										<option name="">请选择流转部门</option>
+										<volist name="departments" id="vo">   
+										<option value="{{$vo.depart_id}}" <eq name="vo.depart_id" value="$flowinfo.flow_depart_id">selected="selected"</eq>>{{$vo.html}}{{$vo.depart_name}}</option>
+										</volist>
+									</select>
+								</div>
+							  </div>
+							  <div class="form-group">
+								<label for="lastname" class="col-xs-2 control-label">流转人员</label>
+								<div class="col-xs-5">
+									<div  id="flowuser">
+									请先选择部门
+									</div>
+									<input type="hidden" name="user_ids" id="user_ids" value="{{$flowinfo.flow_uids}}" />
+									<input type="hidden" name="id" id="id" value="{{$info.id}}" />
+									<input type="hidden" name="pre_user_ids" id="pre_user_ids" value="{{$flowinfo.flow_uids}}" />
+								</div>
+							  </div>
+							  <div class="form-group">
+								<label for="lastname" class="col-xs-2 control-label">下轮面试时间</label>
+								<div class="col-xs-3">
+									<input type="text" class="form-control" placeholder="面试时间" id="next_date" onclick="WdatePicker()" value="{{$itvinfo.next_date}}">
+								</div>
+							  </div>
+							 </div>
+							 <div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<div class="Submit_btn">
+										  <input type="hidden" name="hr_id" id="hr_id" value="{{$info.id}}" />
+										  <button type="button" class="btn btn-primary" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+										  <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+									</div>
+								</div>
+							  </div>
+
+					</form>
+					</div>
+					</notempty>
+		
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+</div>
+<!-- E-页面主要部分 -->
+
+<script>
+$('.result_status').click(function(){
+		var result_status = $(this).find('input[name="result_status"]').val();
+		if(result_status==1){
+			$('#flowdiv').removeClass('hide');
+			$('#flowdiv').show();
+		}else{
+			$('#flowdiv').hide();
+		}
+	})
+	var pre_flow_uids = $('#pre_user_ids').val();
+	if(pre_flow_uids){
+		loadUserList();
+	}
+	//------modal start后期写成扩展 可以直接调用 根据部门读取该部门下的人员
+	$('#depart_id').on('change',function(){
+		//重置user_ids
+		loadUserList();
+	})
+	
+	function loadUserList(){
+		var depart_id = $('#depart_id').val();
+		$('#user_ids').val('');
+		$.ajax({
+			url:'/index.php/Home/Depart/ajaxGetUsers',
+			type:'post',
+			data:{
+				depart_id:depart_id,
+				flow_uids : $('#pre_user_ids').val()
+			},
+			dataType:'json',
+			success:function(res){
+				if(res.status==1){
+					$('#flowuser').html(res.html);
+				}else{
+					$('#flowuser').html('暂无该级别人员');
+				}
+			}
+		});
+	}
+	
+	//用户选择用户后，拼接用户user_ids
+	$('#flowuser').on('click','.flowUserTab',function(){
+		var user_ids = $('#user_ids').val();
+		var user_id = $(this).find("input[type='checkbox']").val();
+		if(user_ids && user_ids!=user_id){
+			user_ids = user_ids + ','+ user_id; 
+		}else{
+			user_ids = user_id;
+		}
+		$('#user_ids').val(user_ids);
+	})
+	$("#Submit").click(function(event) {
+		var depart_id = '';
+		var user_ids = '';
+		var next_date = '';
+		var disadvantage=$("#disadvantage").val();
+		var advantage=$("#advantage").val();
+		var result=$("#result").val();
+		var result_status=$("input[name='result_status']:checked").val();
+		if (result=="") {
+			alert("请填写面试意见");
+			return
+		};
+		if (result_status=="") {
+			alert("请选择面试结果");
+			return
+		};
+		
+		if(result_status==1){
+			depart_id = $('#depart_id').val();
+			user_ids = $('#user_ids').val();
+			next_date = $('#next_date').val();
+			if(user_ids==''){
+				alert('请选择流转人员！');
+				return false;
+			}
+		}else{
+			user_ids = '';
+			next_date = '';
+			depart_id = '';
+		}
+		<eq name="info.status" value='3'>
+			var data={
+				pre_salary:$('#pre_salary').val(),
+				pre_salary_num:$('#pre_salary_num').val(),
+				pre_subsidy:$('#pre_subsidy').val(),
+				pre_year_bonus:$('#pre_year_bonus').val(),
+				salary:$('#salary').val(),
+				salary_num:$('#salary_num').val(),
+				subsidy:$('#subsidy').val(),
+				remark:$('#remark').val(),
+				advantage:advantage,
+				disadvantage:disadvantage,
+				result:result,
+				result_status:result_status,
+				depart_id:depart_id,
+				user_ids:user_ids,
+				next_date:next_date,
+				hr_id : $('#hr_id').val()
+			}
+		<else/>
+			var data={
+				advantage:advantage,
+				disadvantage:disadvantage,
+				result:result,
+				result_status:result_status,
+				depart_id:depart_id,
+				user_ids:user_ids,
+				next_date:next_date,
+				hr_id : $('#hr_id').val()
+			}
+		</eq>
+		//表单提交
+		//$('#forms').submit();
+		var url = $('#forms').attr('action');
+		$.ajax({
+			url:url,
+			type:'post',
+			data:{
+				advantage:advantage,
+				disadvantage:disadvantage,
+				result:result,
+				result_status:result_status,
+				depart_id:depart_id,
+				user_ids:user_ids,
+				next_date:next_date,
+				hr_id : $('#hr_id').val()
+			},
+			dataType:'json',
+			success:function(res){
+				alert(res.msg);
+				if(res.code==1){
+					window.location.reload();
+				}
+			}
+		});
+	})
+</script>

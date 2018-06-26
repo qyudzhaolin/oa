@@ -1,0 +1,191 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script type="text/javascript" src="__JS__/jquery.form.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('Mjsupplier/mssm')}}?type={{$Think.get.type}}">供应商库</a></li>
+			  <li class="active">新增/修改供应商</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form action="{{:U('Mjsupplier/mssmsave')}}" method="post" name="forms" id="forms">
+				<input type="hidden" value="{{$info.sup_id}}" name="sup_id" id="sup_id" >
+				<input type="hidden" value="{{$Think.get.type}}" name="type" id="type" >
+				<div class="list_main">		
+					<div class="row list">
+					  <div class="col-xs-2 name">平台</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="platform" value="{{$info.platform}}"  id="platform" placeholder="平台">
+					    </div>
+					  </div>
+					</div>
+				
+					<div class="row list">
+					  <div class="col-xs-2 name">姓名</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="sup_full_name" value="{{$info.sup_full_name}}" id="sup_full_name" placeholder="姓名">
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="row list">
+					  <div class="col-xs-2 name">性别</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3" id="select">  					    	
+		  					   <select name="sex" class="form-control">
+			  					   	<option <eq name="info.sex" value="男">selected checked</eq> value="男">男</option>
+			  					   	<option <eq name="info.sex" value="女">selected checked</eq> value="女">女</option>
+		  					   </select>
+	  					    </div>
+							
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name">粉丝数(万)</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="fans_num"  value="{{$info.fans_num}}"  id="fans_num" placeholder="粉丝数">
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="row list">
+					  <div class="col-xs-2 name">直播ID</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="live_id" value="{{$info.live_id}}" id="live_id" placeholder="直播ID">
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="row list">
+					  <div class="col-xs-2 name">报价(一小时)</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="money" value="{{$info.money}}" id="money" placeholder="报价(一小时)">
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="row list">
+					  <div class="col-xs-2 name">备注</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="mark"  value="{{$info.mark}}"  id="mark" placeholder="备注">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">联系方式</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="contact_way"  value="{{$info.contact_way}}"  id="contact_way" placeholder="联系方式">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">收款人</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="payee"  value="{{$info.payee}}"  id="collect_money" placeholder="收款人">
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name">收款方式</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3" id="select">  					    	
+		  					   <select name="pay_method" id="way" class="form-control">
+		  					   		<option value="0">请选择收款方式</option>
+									<volist name="methods" id="mv" key="mk">
+			  					   	<option <eq name="info.pay_method" value="$mk">selected checked</eq> value="{{$mk}}">{{$mv}}</option>
+									</volist>
+		  					   </select>
+	  					    </div>
+							
+					  </div>
+					</div>
+					
+					<div class="row list bank" <if condition="$info.pay_method eq '1'"><else/>style="display:none"</if>>
+					  <div class="col-xs-2 name">所属银行</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" value="{{$info.bnk_branch}}"  name="bnk_branch" id="branch_info" placeholder="所属银行">
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list bank" <if condition="$info.pay_method eq '1'"><else/>style="display:none"</if>>
+					  <div class="col-xs-2 name">银行账号</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" value="{{$info.bnk_acct}}"  name="bnk_acct" id="bank_num" placeholder="银行账号">
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="row list other" <if condition="$info.pay_method eq '3'"><else/>style="display:none"</if>>
+					  <div class="col-xs-2 name">其他</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" value="{{$info.other}}"  name="other" id="other" placeholder="其他">
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <button type="button" class="btn btn-default" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#way").change(function(){
+		var borrow_way = $(this).val();
+		if(borrow_way == '1'){
+			$(".bank").show();
+			$(".other").hide();
+		}else if(borrow_way == '2'){
+			$(".bank").hide();
+			$(".other").hide();
+		}else{
+			$(".bank").hide();
+			$(".other").show();
+		}
+	})
+	
+	$("#Submit").click(function(event) {
+		if ($("#sup_full_name").val()=="") {
+			alert("请填写姓名");
+			return
+		}
+		
+		$("#forms").ajaxSubmit({
+	          url: $('#forms').attr('action'),
+	          type:'post',
+	          dataType: 'json',
+	          success:function(data){
+		          if(data.status == 1){
+		        	  alert(data.msg,"{{:U('Mjsupplier/mssm')}}?type={{$Think.get.type}}");
+		          }            
+	          },error:function(){
+	              alert("上传失败");
+	          }
+	        })
+	});
+});
+</script>
+

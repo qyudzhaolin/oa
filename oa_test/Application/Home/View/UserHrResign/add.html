@@ -1,0 +1,118 @@
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<style>
+	.breadcrumb{padding: 8px 0;}
+	.over-hidden{overflow: hidden;}
+	.bg{background-color: #e2e5ea;text-align: right;}
+	.content_main ul li{list-style: none; line-height: 40px;margin-bottom: 1px;overflow: hidden;background: #f3f3f8;}
+	.content_main ul li div{text-indent: 1em;}
+	.content_main ul{overflow:hidden;padding: 0;}
+	label{margin-bottom:0;display:block;}
+	label input{margin-top: 15px!important;}
+</style>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent col-xs-12">
+			<ol class="breadcrumb">
+				<li><a href="#">离职信息填写</a></li>
+				<li class="active">离职申请</li>
+			</ol>
+			<div class="content_main">
+				<form action="" method="post" enctype="multipart/form-data" id="form1">
+				<ul class="box">
+					<li>
+						<div class="bg col-xs-12 col-sm-2">姓名：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">{{$user.real_name}}</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">入职日期：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">{{$user_hr.entry_date}}</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">职位：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">{{$user_hr.job}}</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">主管：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">{{$leader.real_name}}</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">部门：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">{{$depart.depart_name}}</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">期望离职日期：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">
+							<div class="col-sm-10 col-md-4" style="margin-top: 3px;">
+						    	<input type="text" class="form-control" value="{{$info.apply_date}}" name="apply_date" onclick="WdatePicker()" placeholder="离职申请日期">
+						    </div>
+						</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2" style="line-height:787px;">离职原因：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">
+							<div class="col-xs-12 cause">							
+							<!-- S-公司原因 -->
+							<h4><strong>公司原因(Company reason)</strong></h4>
+							<div class="checkbox col-xs-12">
+							<foreach name="company_reson" item="vo" key="k">   
+							  <label>
+							    <input type="checkbox" value="{{$k+1}}" <in name="k+1" value="$info.campay_reson">checked="checked"</in> name="campay_reson[]" />
+							   {{$vo}}
+							  </label>
+							</foreach>
+							</div>
+							<!-- E-公司原因 -->
+							<!-- S-个人原因 -->
+							<div class="checkbox col-xs-12">
+							  <h4><strong>个人原因(Personal reason)</strong></h4>
+							  <foreach name="person_reson" item="vo" key="k">   
+							  <label>
+							    <input type="checkbox" value="{{$k+1}}" <in name="k+1" value="$info.person_reson">checked="checked"</in> name="person_reson[]" />
+							   {{$vo}}
+							  </label>
+							</foreach>
+							</div>
+							<!-- E-个人原因 -->
+						</div>
+					</li>
+					<if condition="!$resign_leader and !$resign_hr">
+					<li>
+						<div class="bg col-xs-12 col-sm-2" style="height:40px;"></div>
+						<div class="col-xs-12  col-sm-10 info_bg">
+							<div class="Submit_btn">
+						      <button type="button" class="btn btn-success" id="Submit">保存</button>		    	
+						    </div>
+						</div>
+					</li>
+					</if>
+				</ul>
+				<input type="hidden" name="user_id" value="{{$user.user_id}}" />
+				</form>
+			</div>
+			
+		</div>
+		<!-- E-页面主要部分 -->
+		<script type="text/javascript">
+			//提交
+			$("#Submit").click(function(event) {
+				$("#form1").ajaxSubmit({
+			          url: "{{:U('UserHrResign/save')}}",
+			          type:'post',
+			          dataType: 'json',
+			          contentType: "application/json; charset=utf-8",
+			          success:function(data){
+			            if(data.status == 1){
+			                alert("保存成功",window.location.href);
+			            }else{
+			                alert(data.msg);
+			            }            
+			          },error:function(){
+			            alert("保存失败");
+			          }
+			    })
+			});
+			
+		</script>
+

@@ -1,0 +1,114 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client_add.css">
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('User/index')}}">用户库</a></li>
+	  <li><a href="{{:U('Depart/index')}}">部门管理</a></li>
+	  <li class="active">新增部门</li>
+	</ol>
+	<!-- S-填写部分 -->
+	<form action="">				
+		<div class="list_main">		
+		
+			<div class="list">
+			  <div class="col-xs-2 name">部门名称</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="text" class="form-control" id="depart_name" placeholder="请输入部门名称" value="{{$depart.depart_name}}"  maxlength="20">
+			    </div>
+			  </div>
+			</div>
+
+			<div class="list">
+			  <div class="col-xs-2 name">上级部门</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<select name="" id="depart_par_id" class="form-control">
+  	  					<option value="0">请选择上级部门</option>
+  	  					<foreach name="fdeparts" item="vo" key="k">
+  	  						<option value="{{$vo.depart_id}}" <eq name="depart.depart_par_id" value="$vo.depart_id">selected="selected"</eq>>{{$vo.depart_name}}</option>
+  	  					</foreach>
+ 					</select>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class="list">
+			  <div class="col-xs-2 name">所属公司</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<select name="" id="company_id" class="form-control">
+  	  					<option value="0">请选择所属公司</option>
+  	  					<foreach name="company" item="vo" key="k">
+  	  						<option value="{{$k}}" <eq name="depart.company_id" value="$k">selected="selected"</eq>>{{$vo}}</option>
+  	  					</foreach>
+ 					</select>
+			    </div>
+			  </div>
+			</div>
+			<if condition="$company_id eq 1">
+			<div class="list">
+			  <div class="col-xs-2 name">对应HRG</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<select name="" id="hrg_uid" class="form-control">
+  	  					<option value="0">请选择对应HRG</option>
+  	  					<foreach name="hr_list" item="vo" key="k">
+  	  						<option value="{{$vo.user_id}}" <eq name="depart.hrg_uid" value="$vo.user_id">selected="selected"</eq>>{{$vo.real_name}}</option>
+  	  					</foreach>
+ 					</select>
+			    </div>
+			  </div>
+			</div>
+			<else/>
+			<input type="hidden" id="hrg_uid" value="0" />
+			</if>
+			<div class="list">
+			  <div class="col-xs-2 name"></div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="Submit_btn">
+			      <button type="button" class="btn btn-success" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset" onclick="history.go(-1)">返回</button>					    	
+			    </div>
+			  </div>
+			</div>
+			<input type="hidden" value="{{$depart.depart_id}}" id="depart_id" />
+		</div>
+	</form>
+	<!-- E-填写部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#Submit").click(function(event) {
+		//部门名称
+		var depart_name = $("#depart_name").val();
+		var depart_par_id = $("#depart_par_id").val();  
+		var depart_id = $("#depart_id").val();
+		var company_id = $("#company_id").val(); 
+		var hrg_uid = $("#hrg_uid").val(); 
+		if (depart_name=="") {
+			alert("请填写部门名称！");
+			return
+		}
+		if (company_id==0) {
+			alert("请选择所属公司！");
+			return
+		}
+		$.ajax({
+			url:"{{:U('Depart/add')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'depart_name':depart_name,"depart_par_id":depart_par_id, "depart_id":depart_id, 'company_id':company_id, 'hrg_uid':hrg_uid},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！","{{:U('Depart/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+});
+</script>

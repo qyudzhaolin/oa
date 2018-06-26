@@ -1,0 +1,122 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">还款单</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main form-inline">
+		<!-- 左 -->	
+		<div style="float:left;">
+			<a id="add_btn" class="btn btn-primary" href="{{:U('Refund/add')}}">&nbsp;&nbsp;新增还款单&nbsp;&nbsp;</a>
+		</div>
+		<!-- 左 -->	
+		<!-- 右 -->	
+		<div style="float:right;">
+			<div class="form-group">
+			    <div class="input-group">
+			      <input type="text" class="form-control" id="keyword" value="{{$Think.get.keyword}}" placeholder="请输入项目名称">
+			      <span class="input-group-btn">
+			        <button class="btn btn-success" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+		  </div>
+		</div>
+		<!-- 右 -->	
+	</div>
+
+
+
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->
+	<div class="table">
+		<div class="min-width1000">		
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="15%">
+					<col width="15%">
+					<col width="14%">
+					<col width="8%">
+					<col width="10%">
+					<col width="10%">
+					<col width="10%">
+					<col width="8%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>还款单号</th>
+						<th>借款单号</th>
+						<th>项目名称</th>
+						<th>申请人</th>
+					    <th>还款金额总计</th>
+					    <th>状态</th>
+					    <th>创建时间</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+	                <foreach name="list" item="vo" key="k">   
+	                <tr class="table_bd active">
+	                	<td>{{$vo.ref_no}}</td>
+	                	<td>{{$vo.borrow_no}}</td>
+						<td>{{$vo.proj_name}}</td>
+						<td>{{$vo.depart_name}}--{{$vo.real_name}}</td>
+						<td>{{$vo.tot_amt}}</td>
+						<td>{{$vo.result_info}}</td>
+						<td>{{$vo.crt_time}}</td>
+						<td class="operate" id="{{$vo.ref_id}}">
+						    <if condition="$lvl_id eq '1'">
+							    <a href="{{:U('Refund/add')}}?id={{$vo.ref_id}}" class="edit">修改</a>
+								<a href="javascript:;" class="deleat">删除</a>
+						    <else/>	
+							    <eq name="user_id" value="$vo.crt_user_id">					
+									<a href="{{:U('Refund/add')}}?id={{$vo.ref_id}}" class="edit">修改</a>
+									<a href="javascript:;" class="deleat">删除</a>
+								<else/>
+									<a href="{{:U('Refund/info')}}?id={{$vo.ref_id}}" class="edit">详情</a>
+								</eq>
+							</if>
+						</td>
+					</tr> 
+					</foreach>    
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var ref_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Refund/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'ref_id':ref_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Refund/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#search").click(function(){
+		window.location.href="{{:U('Refund/index')}}?keyword="+$("#keyword").val();
+	})
+});
+</script>

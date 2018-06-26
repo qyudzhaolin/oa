@@ -1,0 +1,40 @@
+/*
+* @Author: win
+* @Date:   2016-04-14 12:22:53
+* @Last Modified by:   win
+* @Last Modified time: 2016-04-15 15:44:04
+*/
+.list_main {
+    width: 100%;
+    overflow: hidden;
+    padding-right: 10px;
+}
+.list_main .name{
+	background:#e2e5ea;
+	text-align: right;
+	height:43px;
+	line-height:43px;
+}
+.list_main .input_text{
+	background: #f3f3f8;
+	height:43px;
+	line-height:43px;
+	margin-bottom: 1px;
+	position: relative;
+}
+.list_main .input_text input,.list_main .input_text select{
+	margin-top:5px;
+}
+.Submit_btn{
+	margin-top: 5px;
+	margin-left: 15px;
+}
+#select{
+	float: left;
+}
+#way{
+	float: left;
+}
+#write{
+	display: none;
+}

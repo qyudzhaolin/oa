@@ -1,0 +1,249 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/client_add.css">
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<style>
+.file_click {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0;
+    cursor: pointer;
+}
+</style>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a <eq name="edit_type" value="1">href="{{:U('Contract/list')}}"<else/>href="{{:U('Contract/index')}}?proj_id={{$Think.get.proj_id}}"</eq>>合同管理</a></li>
+			  <li class="active">新增/修改合同</li>
+			</ol>
+			<!-- S-填写部分 -->
+				<div class="list_main">		
+					<div class="row list">
+					  <div class="col-xs-2 name">项目名称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" value="{{$project.proj_name}}" disabled="disabled">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">供应商</div>
+					  <div class="col-xs-10 input_text">
+						<div class="col-xs-3">
+						<input id="sup_id" class="form-control input-sm" type="text" value="{{$info.sup_name}}" sup_id="{{$info.sup_id}}" style="display:<if condition="$user_id eq $info.crt_user_id or $admin neq '' OR $user_id eq 33"><else/>disabled</if>" placeholder="请输入供应商名称">
+						</div>
+						
+						<ul class="list-group" id="bank_name_list" style="z-index:200;width:400px">
+						
+						</ul>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name">合同编号</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" value="{{$info.ct_no}}" placeholder="请填写合同编号" id="ct_no">
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="row list">
+					  <div class="col-xs-2 name">合同期限</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control ct_limit_date" placeholder="请选择期限" <eq name="admin_edit" value="2">disabled="disabled"</eq> id="ct_limit_date" onclick="WdatePicker()" value="{{$info.ct_limit_date}}">
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name">合同金额</div>
+					  <div class="col-xs-10 input_text">
+						  	<div class="col-xs-3" id="write">
+	  					    	<input type="text" class="form-control" value="{{$info.ct_money}}" id="ct_money" placeholder="请填写合同金额" <eq name="admin_edit" value="2">disabled="disabled"</eq>  onblur="toFixed(this)" maxlength="10">
+	  					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name">合同附件</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+						  	<div class="file_input">
+							<eq name="admin_edit" value="2">
+								<input class="form-control input-sm" type="text" placeholder="点击上传pdf文件" value="{{$info.file_name}}"  disabled="disabled">
+								<input type="hidden" class="file_id" value="{{$info.file_id}}" id="file_id"/>
+							<else/>
+								<form id="formfile" action="" method="post" enctype="multipart/form-data">
+									<input class="form-control input-sm" type="text" placeholder="点击上传pdf文件" value="{{$info.file_name}}"  >
+									<input type="file" class="file_click" name="file">
+									<input type="hidden" name="type" value="pdf">
+								    <input type="hidden" class="file_id" value="{{$info.file_id}}" id="file_id"/>
+								</form>
+							</eq>
+							</div>
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <a href="javascript:;" class="btn btn-default" id="Submit">保存</a>&nbsp;&nbsp;&nbsp;
+					      <input type="hidden" name="type" value="{{$Think.get.proj_id}}" id="proj_id">
+					      <input type="hidden" name="type" value="{{$Think.get.id}}" id="id">		
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			<!-- E-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	//上传框改变
+	$("body").on('change', '.file_click', function(event) {
+		event.preventDefault();
+		var obj = $(this);
+		obj.siblings('.input-sm').attr("placeholder","上传中请稍后....");
+		var prospectus=obj.val();
+		if(prospectus.length>0){
+			$("#formfile").ajaxSubmit({
+	          url: "{{:U('Uploadfy/fundfile')}}",
+	          type:'post',
+	          dataType: 'json',
+	          contentType: "application/json; charset=utf-8",
+	          success:function(data){
+	            if(data.status == 1){
+	            	obj.siblings('.input-sm').val(data.file_name);
+	            	obj.siblings('.file_id').val(data.file_id);
+	                alert("上传文件成功");
+	            }else{
+	              alert(data.msg);
+	              obj.siblings('.input-sm').attr("placeholder","点击上传文件");
+	            }            
+	          },error:function(){
+	            alert("上传文件失败");
+	            obj.siblings('.input-sm').attr("placeholder","点击上传文件");
+	          }
+	        })
+		}else{
+			obj.next(".file_id").val(0);
+		}
+	});
+	var edit_type = {{$edit_type|default=0}};
+	var click=true;
+	$("#Submit").click(function(event) {
+		var a=/^[0-9]*(\.[0-9]{1,2})?$/;
+		var ct_no = $("#ct_no").val();
+		var file_id = $("#file_id").val();
+		var ct_limit_date = $("#ct_limit_date").val();
+		var ct_money = $("#ct_money").val();
+		var proj_id = $("#proj_id").val();
+		var id = $("#id").val();
+		var sup_id = $('#sup_id').attr('sup_id');
+		if(ct_no.length == 0){
+			alert("请填写合同编号！");
+			return false;
+		}
+		/*if(sup_id == 0){
+			alert("请选择对应的供应商！");
+			return false;
+		}*/
+		if(ct_limit_date.length == 0){
+			alert("请选择期限！");
+			return false;
+		}
+		if(ct_money.length == 0){
+			alert("请填写金额！");
+			return false;
+		}
+		if(!a.test(ct_money)){
+			alert("金额格式不正确！");
+			return false;
+		}
+		if(parseFloat(ct_money)<=0){
+			alert("金额必须大于零！");
+			return false;
+		}
+		
+		if(file_id.length == 0){
+			alert("请上传合同文件！");
+			return false;
+		}
+		if(click){
+			click = false;
+			$.ajax({
+				url:"{{:U('Contract/save')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'ct_no':ct_no,'file_id':file_id,"ct_limit_date":ct_limit_date, "ct_money":ct_money, "proj_id":proj_id,"id":id,"sup_id":sup_id},
+				success:function(data){
+					if(data.status == 1){
+						if(edit_type==1){
+							alert("操作成功！","{{:U('Contract/list')}}");
+						}else{
+							alert("操作成功！","{{:U('Contract/index')}}?proj_id={{$Think.get.proj_id}}");
+						}
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+})
+
+$("#sup_id").keyup(function() { 
+	var keyword = $(this).val();
+	var get_type = 1;
+	$(this).attr("sup_id",0);
+	$.ajax({
+		url:"{{:U('Recouped/getsuplist')}}",
+		type:"post",
+		dataType:'json', 
+		data:{'keyword':keyword,'get_type':get_type},
+		success:function(data){
+			var strHTML = '<li class="list-group-item" sup_id="0" bnk_branch="" bnk_acct="" other="" pay_method="">未匹配到相关供应商</li>';
+			if(data.status == 1){
+				var list = eval(data.list);
+				strHTML = '';
+				for(var i=0;i<list.length;i++){
+					strHTML += '<li class="list-group-item" sup_id="'+list[i]['sup_id']+'" bnk_branch="'+list[i]['bnk_branch']+'" bnk_acct="'+list[i]['bnk_acct']+'" other="'+list[i]['other']+'" pay_method="'+list[i]['pay_method']+'">'+list[i]['sup_full_name']+'</li>'; 
+				}
+			}
+			$("#bank_name_list").html(strHTML);
+		}
+	});
+	$('#bank_name_list').show();
+});
+//点击模糊列表
+$("body").on("click","#bank_name_list li",function(event) {
+	var sup_id = $(this).attr("sup_id");
+	var sup_name = $(this).text();
+	if(sup_id!=0){
+		$('#sup_id').val(sup_name);
+		$('#sup_id').attr("sup_id",sup_id);
+	}
+	$(this).parent("ul").hide();
+});
+
+$(document).click(function(event) {
+	if(!$(event.target).is("#bank_name_list")){	
+		$('#bank_name_list').hide();
+	}
+});
+
+function toFixed(obj){
+	$(obj).val(Number($(obj).val()).toFixed(2));
+}
+</script>

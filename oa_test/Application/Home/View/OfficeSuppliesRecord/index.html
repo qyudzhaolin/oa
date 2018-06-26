@@ -1,0 +1,165 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script type="text/javascript" src="__JS__/supplier.js"></script>
+<style>
+.error_index{border:1px solid red}
+.table-bordered>tbody>tr>#count_td{border-right:none}
+</style>	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			
+			<!-- S-表格部分 -->
+			<a class="btn btn-default" href="{{:U('OfficeSuppliesMain/index')}}">申请记录</a>
+			<div class="table">
+				<form class="form-inline">
+				<table class="table table-striped table-bordered table-hover ">
+					<thead>
+						<tr id="table_head">
+							<th width="10%">申请单编号</th>
+							<th width="10%">物品</th>
+							<th width="10%">数量</th>
+							<th width="15%">申请时间</th>
+						</tr>
+					</thead>
+					<tbody>  
+						<php>
+						$rows = count($list);
+						</php>
+						<volist name="list" id="vo" key="key">
+						<notempty name="mid">
+	                    <tr class="table_bd active" >
+							<eq name="key" value="1">
+							<td rowspan="{{$rows}}">
+								<!--div class="checkbox-nice">
+								<label style="width:100%;height:100%" for="m-checkbox-{{$vo.id}}"><input id="m-checkbox-{{$vo.id}}" name="checkmenu[]" value="{{$vo.id}}" type="checkbox">
+								{{$key}}</label>
+								</div-->
+								{{$vo.main_no}}
+							</td>
+							</eq>
+							<td class="">
+								{{$vo.goods_name}}
+							</td>
+							<td>
+								{{$vo.num|default=0}}			
+							</td>
+							<td>
+								{{$vo.crt_time|date='Y-m-d H:i',###}}
+							</td>
+							
+							
+						</tr>
+						<else/>
+						<tr class="table_bd active" >
+							<td>
+								<a href="{{:U('OfficeSuppliesRecord/index',array('mid'=>$vo['mid']))}}">{{$vo.main_no}}</a>
+							</td>
+							<td>
+								{{$vo.real_name}}
+							</td>
+							<td>
+								{{$vo.depart_name}}							
+							</td>
+							<td class="">
+								{{$vo.goods_name}}
+							</td>
+							<td>
+								{{$vo.num|default=0}}			
+							</td>
+							<td>
+								{{$vo.crt_time|date='Y-m-d H:i',###}}
+							</td>
+						</tr>
+						</notempty>
+						</volist> 
+						<tr>
+							<td colspan="4">
+							<div class="row list">
+							<div class="col-xs-2">
+							<if condition="$is_admin OR $user_id eq 172 OR $user_id eq 173  OR $depart_id eq 42">
+								<eq name="maininfo.get_status" value="1">
+									已完成
+								<else/>
+									<a href="javascript:;" class="btn btn-primary" id="changestatus" data-id="{{$maininfo.id}}">更新为已完成</a>
+								</eq>
+							<else/>
+								<eq name="maininfo.get_status" value="1">已完成<else/>已提交</eq>
+							</if>
+							</div>
+							<div class="col-xs-2 float-rt text-right">
+							<strong>总价：{{$maininfo.all_price|default=0}} 元</strong>
+							</div>
+							</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				</form>
+				
+			</div>
+			<!-- E-表格部分 -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="myModalLabel">办公用品申领审核</h4>
+						</div>
+						<div class="modal-body">
+						<form class="form-horizontal" role="form" action="{{:U('UserHr/save')}}" method="post" name="forms" id="forms">
+							<div class="form-group ">
+								<label for="lastname" class="col-xs-2 control-label">面试结果</label>
+								<div class="col-xs-3">
+									 <label class="checkbox-inline status">
+										<input type="radio" name="status" id="optionsRadios3" value="1"  <eq name="itvinfo.status" value="1">checked</eq>>通过
+									  </label>
+									  <label class="checkbox-inline result_status">
+										<input type="radio" name="status" id="optionsRadios4" value="-1"  <eq name="itvinfo.status" value="-1">checked</eq>>不通过
+									  </label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-xs-2 control-label">备注</label>
+								<div class="col-xs-3">
+									<textarea name="remark" id="remark"  class="form-control" style="resize:none">{{$itvinfo.remark}}</textarea>
+								</div>
+							</div>
+						</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+							<button type="button" class="btn btn-primary">提交更改</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal -->
+			</div>
+		</div>
+		<!-- E-页面主要部分 -->
+		<script>
+		$("#changestatus").click(function() {
+		var id = $(this).data('id');
+			$.ajax({
+				url: "{{:U('OfficeSuppliesMain/changestatus')}}",
+				data:{id:id},
+				type:'post',
+				cache:false,
+				dataType:'json',
+				success:function(data) {
+				  if(data.code==1)
+				  {
+					 alert("设置成功！");
+					//刷新当前页面
+					window.location.reload();
+				  }else{
+					alert(data.msg);
+				  }
+				}
+			});
+		});
+		
+		</script>
+	

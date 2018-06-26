@@ -1,0 +1,441 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<style>
+.file_click {width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: 1;opacity: 0;cursor: pointer;}
+.modal-body {padding: 5px 15px;}
+.panel {margin-bottom: 5px}
+</style>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">请假记录</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<form action="" method="get">
+	<div class="search_main form-inline">
+		<div class="form-group">
+	        <label for="exampleInputName2">起止时间：</label>
+	        <input type="text" class="form-control" placeholder="开始日期" name="start_date" id="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}">
+	    </div>
+		<div class="form-group">
+	        <label for="exampleInputName2">至</label>
+	        <input type="text" class="form-control" placeholder="结束日期" name="end_date" id="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+	    </div>
+		<div class="form-group">
+	        <label for="exampleInputName2">员工姓名：</label>
+	        <input type="text" class="form-control" placeholder="员工姓名" name="keyword" value="{{$Think.get.keyword}}">
+	    </div>
+		<div class="form-group">
+	       <select class="form-control" name="v_type">
+				<option value="0">请假类型</option>
+		    	<foreach name="s_type_arr" item="vo1" key="k1">   
+		    	<option value="{{$k1}}" <eq name="k1" value="$Think.get.v_type">selected="selected"</eq>>{{$vo1}}</option>
+		    	</foreach>
+	    	</select>
+			<button class="btn btn-primary" type="submit" id="search">查询</button>
+	    </div>
+	    <div class="form-group">
+	    	<if condition="$user_lvl_id gt 2">
+				<a class="btn btn-primary add_att" href="#">新增</a>
+			</if>
+			<if condition="$is_approver or $is_vo_power">
+				<a class="btn btn-primary" href="{{:U('Attendance/approve')}}">审批任务</a>
+			</if>
+			<if condition="$is_vo_power">
+				<a class="btn btn-primary" href="{{:U('Attendance/upload_date')}}">更新考勤</a>
+			</if>
+			<php>if(check_permission_left('Attendance', 'reporting')){</php>
+			<a class="btn btn-primary" href="{{:U('Attendance/reporting')}}">月度报表</a>
+			<php>}</php>
+			<a class="btn btn-primary" href="{{:U('Attendance/index')}}">考勤记录</a>
+	    </div>
+
+	</div>
+	</form>
+	<!-- E-搜索框部分 -->
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="5%">
+					<if condition="$is_vo_power">
+					<col width="5%">
+					</if>
+					<col width="8%">
+					<col width="15%">
+					<col width="12%">
+					<col width="8%">
+					<col width="10%">
+					<col width="8%">
+					<col width="8%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>编号</th>
+						<if condition="$is_vo_power">
+						<th>姓名</th>
+						</if>
+						<th>请假类型</th>
+					    <th>假期时间</th>
+					    <th>备注(原因)</th>
+					    <th>附件</th>
+					    <th>状态</th>
+					    <th>申请时间</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+					<foreach name="list" item="vo" key="k">   
+	                   <tr class="table_bd active">
+						<td>{{$k+1}}</td>
+						<if condition="$is_vo_power">
+						<td>{{$vo.real_name}}</td>
+						</if>
+						<td>{{$vo.type_name}}</td>
+						<td>{{$vo.start_date}}--{{$vo.end_date}}</td>
+						<td>{{$vo.reason}}</td>
+						<td><a href="{{$vo.file_url}}" target="_blank">{{$vo.file_name}}</a></td>
+						<td>{{$vo.status_name}}
+						<notempty name="vo.no_agree_reason">
+						<br/><font style="color:red">{{$vo.no_agree_reason}}</font>
+						</notempty>
+						</td>
+						<td>{{$vo.crt_time}}</td>
+						<td class="operate" id="{{$vo.v_id}}">
+						    <php>
+						    if(($user_id == $vo['crt_user_id'] && $vo['status'] == 1 ) || $user_lvl_id == 1){
+						    </php>
+						    <a href="javascript:;" class="edit" onclick="edit_v({{$vo.v_id}},{{$vo.att_id}})">修改</a>
+							<a href="javascript:;" class="deleat">删除</a>
+							<php>
+						    }	
+						    </php>
+						</td>
+					</tr>    
+				  </foreach> 
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->	
+
+	<!-- 请假弹框 -->
+	<div class="modal fade" id="leave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h3 class="modal-title" id="myModalLabel">请假选择</h3>
+	      </div>
+	      <!-- 起止时间 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">起止时间</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row">
+			      		<div class="col-md-2 col-sm-2 col-md-2 text-center" style="line-height: 30px;">从</div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input type="text" class="form-control" placeholder="开始日期" id="start_date_1" onclick="WdatePicker()" value="">
+					    </div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input type="text" class="form-control" placeholder="时间" id="start_time" onclick="WdatePicker({dateFmt:'HH:mm'})" value="">
+					    </div>
+			      	</div>
+			      	<div class="row no_border">
+			      		<div class="col-md-2 col-sm-2 col-md-2 text-center" style="line-height: 30px;">到</div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input type="text" class="form-control" placeholder="开始日期" id="end_date_1" onclick="WdatePicker()" value="" >
+					    </div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input class="form-control" type="text" placeholder="时间" id="end_time" onclick="WdatePicker({dateFmt:'HH:mm'})" value="">
+					    </div>
+			      	</div>
+		      </div>
+		    </div>
+	      </div>
+	      <!-- 起止时间 -->
+	      <!-- 请假类型 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">选择请假的类型</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+						    <select class="form-control" id="v_type">
+							    <option value="1">调休</option>
+							    <option value="2">出差</option>
+							    <option value="3">外出</option>
+							    <option value="4">忘签到</option>
+						    	<option value="5">病假</option>
+								<option value="6">事假</option>
+								<option value="7">年假</option>
+								<!-- <option value="8">郁闷假</option> -->
+								<option value="9">亲子假</option>
+								<option value="10">其他假</option>
+					    	</select>
+					    </div>
+			      	</div>
+			      	<div style="color:red" id="v_type_msg"><!-- 提示：截止上月底，剩余调休时间<if condition="$report_data.user_id eq 62">--<else/>{{$report_data.differ_time}}小时</if> --></div>					   
+		      </div>
+		    </div>
+	      </div>
+	      <!-- 请假类型 -->
+	      <!-- 理由 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">原因</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+					    	<textarea class="form-control" style="resize:none;" id="reason"></textarea>
+					    </div>
+			      	</div>					   
+		      </div>
+		    </div>
+	      </div>
+	      
+	      <div class="modal-body" id="div_upload_file">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">上传附件</h3>
+		      </div>
+		      <div class="panel-body">
+			      <form action="" method="post" enctype="multipart/form-data">
+					<input class="form-control input-sm" type="text" placeholder="点击上传文件">
+					<input type="file" class="file_click" name="file">
+				    <input type="hidden" class="file_id" value="" name="file_id"/>
+				</form>			   
+		      </div>
+		    </div>
+	      </div>
+	      
+	      <div class="modal-body">
+	      	<select class="form-control" id="cur_approver_id" style="width:40%;margin-left: 30%">
+	      		<option value="0">请选择审批人</option>
+		    	<foreach name="approve_users" item="vo2" key="k2">   
+		    	<option value="{{$vo2.user_id}}" >{{$vo2.real_name}}</option>
+		    	</foreach>
+	    	</select>
+	      </div>
+	      
+	      <!-- 理由 -->
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="confirm_btn">确定</button>
+	        <input type="hidden" value="" id="att_type" />
+	        <input type="hidden" value="" id="att_id" />
+	        <input type="hidden" value="" id="v_id" />
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 请假弹框 -->
+
+</div>
+<!-- E-页面主要部分 -->
+
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var v_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Attendance/va_delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'v_id':v_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Attendance/vacation')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$(".add_att").on("click",function(){
+		//$("#v_type").html('<option value="1">调休</option><option value="2">病假</option><option value="3">外出</option><option value="5">病假</option><option value="6">事假</option><option value="7">年假</option><option value="8">郁闷假</option><option value="9">亲子假</option><option value="10">其他假</option>');
+		
+		$("#start_date_1").val('');
+		$("#start_time").val('');
+		$("#end_date_1").val('');
+		$("#end_time").val('');
+		$("#reason").val('');
+		$("#cur_approver_id").find("option[value='0']").attr("selected",true);
+		$("#att_type").val('');
+		$("#att_id").val('')
+		$(".file_id").val('');
+		$("#v_id").val('');
+		$('#leave').modal('show');
+	});
+	
+	$('#confirm_btn').on("click",function(){
+		var start_date = $("#start_date_1").val();
+		var start_time = $("#start_time").val();
+		var end_date = $("#end_date_1").val();
+		var end_time = $("#end_time").val();
+		var v_type = $("#v_type").val();
+		var reason = $("#reason").val();
+		var cur_approver_id = $("#cur_approver_id").val();
+		var att_type = $("#att_type").val();
+		var att_id = $("#att_id").val();
+		var file_id = $(".file_id").val();
+		var v_id = $("#v_id").val();
+		if(start_date==""  || end_date=="" ){
+			alert("起止时间请填写完整！");
+			return false;
+		}
+		if(reason.length==0 ){
+			alert("请填写原因！");
+			return false;
+		}
+		if(cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		var click= true;
+		if(click){
+			click = false;
+			$("#loading").show();
+			$.ajax({
+				url:"{{:U('Attendance/va_add')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'start_date':start_date,"start_time":start_time, "end_date":end_date, "end_time":end_time,"v_type":v_type,"reason":reason,"cur_approver_id":cur_approver_id,"att_type":att_type,"att_id":att_id,"file_id":file_id,"v_id":v_id},
+				success:function(data){
+					$("#loading").hide();
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Attendance/vacation')}}");
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	$("#v_type").change(function(){
+		if($(this).val() == '7'){
+			$("#v_type_msg").html("提示：年假须提前15天请，剩余年假{{$user.nx_vacation}}天。请假以半天为最小计算单位，超过5小时按照1天计算。");
+			$("#v_type_msg").show();
+		}else if($(this).val() == '1'){
+			$("#v_type_msg").hide();
+			/* $("#v_type_msg").html("提示：截止上月底，剩余调休时间{{$report_data.differ_time}}小时");
+			$("#v_type_msg").show(); */
+		}else if($(this).val() == '5' || $(this).val() == '6'){
+			$("#v_type_msg").html("提示：请假以半天为最小计算单位，超过5小时按照1天计算。");
+			$("#v_type_msg").show();
+		}else{
+			$("#v_type_msg").hide();
+		}
+	})
+	
+	$("body").on('change', '.file_click', function(event) {
+		event.preventDefault();
+		var obj = $(this);
+		obj.siblings('.input-sm').attr("placeholder","上传中请稍后....");
+		var prospectus=obj.val();
+		if(prospectus.length>0){
+			obj.parent("form").ajaxSubmit({
+	          url: "/index.php/Home/Uploadfy/fundfile",
+	          type:'post',
+	          dataType: 'json',
+	          contentType: "application/json; charset=utf-8",
+	          success:function(data){
+	            if(data.status == 1){
+	            	obj.siblings('.input-sm').val(data.file_name);
+	            	obj.siblings('.file_id').val(data.file_id);
+	                alert("上传成功");
+	            }else{
+	              alert(data.msg);
+	              obj.siblings('.input-sm').attr("placeholder","点击上传文件");
+	            }            
+	          },error:function(){
+	            alert("上传失败");
+	            obj.siblings('.input-sm').attr("placeholder","点击上传文件");
+	          }
+	        })
+		}else{
+			obj.next(".file_id").val(0);
+		}
+	});
+});
+
+function edit_v(v_id,att_id){
+	if(att_id!=0){
+		$("#div_upload_file").hide();
+		//$("#v_type").html('<option value="1">调休</option><option value="2">出差</option><option value="3">外出</option><option value="4">忘签到</option><option value="5">病假</option><option value="6">事假</option><option value="7">年假</option><option value="8">郁闷假</option><option value="9">亲子假</option>');
+	}
+	
+	$("#v_id").val(v_id);
+	$("#att_id").val(att_id);
+	if(att_id>0){
+		$("#div_upload_file").hide();
+	}else{
+		$("#div_upload_file").show();
+	}
+	
+	$.ajax({
+		url:"{{:U('Attendance/getva')}}",
+		type:"post",
+		dataType:'json', 
+		data:{'v_id':v_id},
+		success:function(data){
+			if(data.status == 1){
+				var vacation=data.vacation;
+				$("#start_date").val(vacation.start_date_d);
+				$("#start_time").val(vacation.start_date_t);
+				$("#end_date").val(vacation.end_date_d);
+				$("#end_time").val(vacation.end_date_t);
+				
+				$('#v_type option').each(function(){
+					if($(this).val() == vacation.v_type){
+						$(this).attr("selected","selected");
+					}
+				});
+				
+				if(vacation.v_type == '7'){
+					$("#v_type_msg").html("提示：年假须提前15天请，剩余年假{{$user.nx_vacation}}天");
+					$("#v_type_msg").show();
+				}else if(vacation.v_type == '1'){
+					/* $("#v_type_msg").html("提示：截止上月底，剩余调休时间{{$report_data.differ_time}}小时");
+					$("#v_type_msg").show(); */
+					$("#v_type_msg").hide();
+				}else{
+					$("#v_type_msg").hide();
+				}
+				
+				$("#reason").val(vacation.reason);
+				$("#att_type").val(vacation.att_type);
+				$('#cur_approver_id option').each(function(){
+					if($(this).val() == vacation.cur_approver_id){
+						$(this).attr("selected","selected");
+					}
+				});
+			}
+		}
+	});
+	
+	$('#leave').modal('show');
+}
+</script>

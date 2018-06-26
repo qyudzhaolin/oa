@@ -1,0 +1,144 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<style>
+.search_main .mg-right-15{float:left}
+</style>
+<script type="text/javascript" src="__JS__/supplier.js"></script>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li class="active">供应商库</li>
+			</ol>
+			<!-- S-搜索框部分 -->
+			<div class="search_main">
+				<form action="{{:U('Supplier/index')}}" method="post">
+					
+					<div id="select" class="col-xs-1">
+						<input type="text" class="form-control" placeholder="供应商名称" name="sup_full_name" value="{{$search.sup_full_name}}">
+					</div>
+					<div id="select" class="col-xs-1">
+						<input type="text" class="form-control" placeholder="区域" name="area" value="{{$search.area}}">
+					</div>
+					<div id="select" class="col-xs-1">
+						<select class="form-control" name="level1_cid" id="level1_cid">
+							<option value="0">一级分类</option>
+							<volist name="category" id="vo" key="mk">
+								<option <eq name="search.level1_cid" value="$vo.id">selected checked</eq> value="{{$vo.id}}">{{$vo.name}}</option>
+							</volist>
+						</select>
+					</div>
+					<div id="select" class="col-xs-1">
+						<select class="form-control" name="level2_cid" id="level2_cid">
+							<option value="0">二级分类</option>
+							<gt name="search.level1_cid" value="0">
+								<volist name="level2_list" id="vo" key="mk">
+									<option <eq name="search.level2_cid" value="$vo.id">selected checked</eq> value="{{$vo.id}}">{{$vo.name}}</option>
+								</volist>
+							</gt>
+						</select>
+					</div>
+					<div id="select" class="mg-right-15">
+						<button class="btn btn-primary" type="submit" id="search">查询</button>
+					</div>
+					<if condition="$is_admin OR $is_supplier_creat eq 1">
+						<div id="select" class="mg-right-15">
+						<a id="" class="btn btn-primary" href="{{:U('Supplier/add')}}">&nbsp;&nbsp;新增供应商&nbsp;&nbsp;</a>
+						</div>
+						<div id="select" class="mg-right-15">
+						<a id="" class="btn btn-primary" href="{{:U('SupplierCategory/index')}}">&nbsp;&nbsp;分类管理&nbsp;&nbsp;</a>
+						</div>
+					</if>
+				</form>
+			</div>
+			<!-- S-表格部分 -->
+			<div class="table">
+				
+				<table class="table table-striped table-bordered table-hover ">
+					<thead>
+						<tr id="table_head">
+							<th width="5%">序号</th>
+							<th width="15%">供应商名称</th>
+							<th width="15%">简称</th>
+							<th width="10%">一级分类</th>
+							<th width="10%">二级分类</th>
+							<th width="10%">区域</th>
+							<th width="10%">联系人</th>
+							<th width="10%">联系方式</th>
+							<if condition="$is_admin OR $is_supplier_creat eq 1">
+						    <th>操作</th>
+						    </if>
+						</tr>
+					</thead>
+					<tbody>  
+						<volist name="list" id="vo" key="key">
+	                    <tr class="table_bd active">
+							<td>
+								{{$key}}
+							</td>
+							<td>
+								{{$vo.sup_full_name}}
+							</td>
+							<td>
+								{{$vo.sup_short_name}}							
+							</td>
+							<td>
+								{{$vo.level1_catname}}							
+							</td>
+							<td>
+								{{$vo.level2_catname}}							
+							</td>
+							<td>
+								{{$vo.area}}							
+							</td>
+							<td>
+								{{$vo.contact}}
+							</td>
+							<td>
+								{{$vo.contact_tel}}
+							</td>
+							<if condition="$is_admin OR $is_supplier_creat eq 1">
+							<td class="operate">							
+								<a href="{{:U('Supplier/add',array('id'=>$vo['sup_id']))}}" class="edit">修改</a>
+								<a href="javascript:void(0)" value="{{$vo.sup_id}}" url="{{:U('Supplier/del')}}" class="deleat">删除</a>
+							</td>
+							</if>
+						</tr> 
+						</volist> 
+					</tbody>
+				</table>
+				
+			</div>
+			<div class="Pagination">{{$page}}</div>
+			
+			<!-- E-表格部分 -->
+
+
+
+
+
+		</div>
+		<!-- E-页面主要部分 -->
+<script>
+$("#level1_cid").change(function(){
+	var cid = $(this).val();
+	if(cid>0){
+		$.ajax({
+			url:"{{:U('SupplierCategory/ajaxGetcate')}}",
+			type:'post',
+			data:{
+				cid:cid
+			},
+			dataType:'json',
+			success:function(data){
+				if(data.code==1){
+					$('#level2_cid').html(data.list);
+				}
+			}
+		});
+	}else{
+		$('#level2_cid').html('<option value="0">二级分类</option>');
+	}
+})
+</script>

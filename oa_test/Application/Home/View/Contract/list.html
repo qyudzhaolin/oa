@@ -1,0 +1,101 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">合同管理</li>
+	</ol>
+	
+	<div class="search_main">
+		<form action="{{:U('Contract/list')}}" method="post">
+			<div id="select" class="col-xs-2 mg-right-15">
+				<input type="text" class="form-control" placeholder="合同编号" name="ct_no" value="{{$search.ct_no}}">
+			</div>
+			<div id="select" class="col-xs-2 mg-right-15">
+				<input type="text" class="form-control" placeholder="所属项目" name="proj_name" value="{{$search.proj_name}}">
+			</div>
+			<div id="select" class="col-xs-2 mg-right-15">
+				<input type="text" class="form-control" placeholder="供应商" name="sup_name" value="{{$search.sup_name}}">
+			</div>
+			
+			<div id="select" class="mg-right-15">
+				<button class="btn btn-primary" type="submit" id="search">查询</button>
+			</div>
+		</form>
+	</div>
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->
+	<div class="table">
+		<table class="table table-striped table-bordered table-hover ">
+			<thead>
+				<tr id="table_head">
+					
+					<th width="15%">合同编号</th>
+					<th width="10%">合同期限</th>
+				    <th width="10%">合同金额</th>
+				    <th width="10%">合同pdf</th>
+					<th width="15%">所属项目</th>
+					<th width="15%">供应商</th>
+				    <th width="10%">操作</th>
+				</tr>
+			</thead>
+			<tbody>  
+                <foreach name="list" item="vo" key="k">   
+                <tr class="table_bd active">
+					<td>{{$vo.ct_no}}</td>
+					<td>{{$vo.ct_limit_date}}</td>
+					<td>{{$vo.ct_money}}</td>
+					<td><a href="{{$vo.file_url}}" target="_blank">{{$vo.file_name}}</a></td>
+					<td>{{$vo.project_name}}</td>
+					<td>{{$vo.sup_name}}</td>
+					<td class="operate" id="{{$vo.ct_id}}">		
+					    <if condition="$user_id eq $vo.crt_user_id OR $user_id eq 33 OR $is_admin neq ''">			
+							<a href="{{:U('Contract/add')}}?proj_id={{$vo.proj_id}}&id={{$vo.ct_id}}&edit_type=1" class="edit">修改</a>
+							<eq name="user_id" value="$vo.crt_user_id">
+							<a href="javascript:;" class="deleat">删除</a>
+							</eq>
+						<else/>
+						--
+						</if>
+					</td>
+				</tr> 
+				</foreach>    
+			</tbody>
+		</table>
+		<div class="Pagination">{{$page}}</div>
+	</div>
+	<!-- E-表格部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#search").click(function(){
+		window.location.href="{{:U('Contract/list')}}?proj_id={{$Think.get.proj_id}}&keyword="+$("#keyword").val();
+	});
+	
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var ct_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Contract/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'ct_id':ct_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Contract/index')}}?proj_id={{$Think.get.proj_id}}&keyword="+$("#keyword").val());
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+})
+</script>

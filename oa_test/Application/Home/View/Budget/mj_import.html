@@ -1,0 +1,136 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/borrow_money.css">
+<script type="text/javascript" src="__JS__/borrow_money.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<style>
+.file_click {width: 100%;height: 100%;opacity: 0;cursor: pointer;}
+.modal-body {padding: 5px 15px;}
+.panel {margin-bottom: 5px}
+</style>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active"><a href="{{:U('Budget/index')}}">项目预算单</a></li>
+	</ol>
+	<br/>
+	<div class="search_main" >
+	    <form action="{{:U('Budget/mj_import')}}" method="post" enctype="multipart/form-data" id="form1" >
+			<input type="file"  name="file" style="float:left;margin-top: 5px;">
+			<input type="hidden" name="proj_id" value="{{$proj_id}}" />
+			<button class="btn btn-primary" type="button" id="upload">上传</button>
+			<span style="color:red" id="msg"></span>
+		</form>
+	</div>
+	<div class="search_main form-inline">
+		<!-- 右 -->	
+		<div style="float:left;">			
+			<div class="form-group">
+		        <label for="exampleInputName2">起止时间：</label>
+		        <input type="text" class="form-control" placeholder="开始日期" name="start_date" id="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}">
+		    </div>
+			<div class="form-group">
+		        <label for="exampleInputName2">至</label>
+		        <input type="text" class="form-control" placeholder="结束日期" name="end_date" id="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+		    </div>
+		    <a id="export" class="btn btn-primary" style="float:right;margin-top: 8px;">&nbsp;&nbsp;导出&nbsp;&nbsp;</a>
+		    <a id="search" class="btn btn-primary" style="float:right;margin-top: 8px;margin-right: 10px">&nbsp;&nbsp;搜索&nbsp;&nbsp;</a>
+		</div>
+	</div>
+	<div class="table">
+		<div class="min-width1000">
+		<table class="table-striped table-bordered table-hover " style="width:100%;">
+			<thead>
+				<tr id="table_head">
+					<th class="theme-bg">合作平台</th>
+					<th class="theme-bg">媒介分类</th>
+					<th class="theme-bg">媒介名称</th>
+					<th class="theme-bg">简介</th>
+					<th class="theme-bg">来源</th>
+					<th class="theme-bg">合作内容</th>
+					<th class="theme-bg">执行时间</th>
+				    <th class="theme-bg">付款时间</th>
+				    <th class="theme-bg">付款阶段</th>
+				    <th class="theme-bg">付款金额</th>
+				    <th class="theme-bg">签约方式</th>
+				    <th class="theme-bg">税票</th>
+				    <th class="theme-bg">OA进度</th>
+				    <th class="theme-bg">操作</th>
+				</tr>
+			</thead>
+			<tbody>  
+                <foreach name="list" item="vo" key="k">   
+                <tr class="table_bd active">
+					<td>{{$vo.platform}}</td>
+					<td>{{$vo.mj_type}}</td>
+					<td>{{$vo.mj_name}}</td>
+					<td>{{$vo.intro}}</td>
+					<td>{{$vo.trench}}</td>
+					<td>{{$vo.cooperation}}</td>
+					<td>{{$vo.execute_time}}</td>
+					<td>{{$vo.payment_time}}</td>
+					<td>{{$vo.payment_stage}}</td>
+					<td>{{$vo.payment}}</td>
+					<td>{{$vo.contract_type}}</td>
+					<td>{{$vo.invoice}}</td>
+					<td>{{$vo.result_info}}</td>
+					<td class="operate" id="{{$vo.id}}"><a href="javascript:;" class="delete">删除</a></td>
+				</tr> 
+				</foreach>    
+			</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+<script>
+$("body").on('click', '#upload', function(event) {
+	event.preventDefault();
+	var obj = $(this);
+	$('#msg').text("上传中请稍后....");
+	$("#form1").ajaxSubmit({
+         url: "{{:U('Budget/mj_import')}}",
+         type:'post',
+         dataType: 'json',
+         contentType: "application/json; charset=utf-8",
+         success:function(data){
+           if(data.status == 1){
+               $('#msg').text("上传成功");
+           }else{
+               $('#msg').text(data.msg);
+           }            
+         },error:function(){
+              $('#msg').text("上传失败");
+         }
+    })
+});
+
+//删除
+$("body").on("click",".table_bd .operate .delete",function(){
+	//当点击确定时 返回 true 
+	if(!window.confirm("确定要删除吗?")){
+		return false;
+	}
+	var id = $(this).parent().attr('id');
+	
+	$.ajax({
+		url:"{{:U('Budget/mj_delete')}}",
+		type:"post",
+		dataType:'json', 
+		data:{'id':id},
+		success:function(data){
+			if(data.status == 1){
+				alert("操作成功！", window.location.href);
+			}else{
+				alert(data.msg);
+				return false;
+			}
+		}
+	});
+});
+
+$("#search").click(function(){
+	window.location.href="{{:U('Budget/mj_import')}}?proj_id={{$Think.get.proj_id}}&start_date="+$("#start_date").val()+"&end_date="+$("#end_date").val();
+})
+$("#export").click(function(){
+	window.location.href="{{:U('Budget/mj_export')}}?proj_id={{$Think.get.proj_id}}&start_date="+$("#start_date").val()+"&end_date="+$("#end_date").val();
+})
+</script>

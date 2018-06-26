@@ -1,0 +1,106 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_add.css">
+<script type="text/javascript" src="__JS__/budget_add.js"></script>
+<!-- S-页面主要部分 -->
+	<div class="mainContent">
+		<ol class="breadcrumb">
+		  <li><a href="{{:U('Project/index')}}">项目管理</a></li>
+		  <li class="active">新增项目</li>
+		</ol>
+
+		<!-- S-填写部分 -->
+		<table class="table table-condensed">
+			<colgroup>
+				<col width="20%">
+				<col width="80%">
+			</colgroup>
+			<tr>
+				<td class="left">客户&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-12 col-md-3 col-sm-10">
+				    	<select name="" id="cust_id" class="form-control" disabled="disabled">
+  	  					<option value="0">请选择客户</option>
+  	  					<foreach name="customers" item="vo" key="k">
+							<option value="{{$vo.cust_id}}" <eq name="project.cust_id" value="$vo.cust_id">selected="selected"</eq>>{{$vo.cust_short_name}}</option>
+						</foreach>
+						</select>
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">项目编号&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-12 col-md-3 col-sm-10">
+				    	<input type="text" class="form-control" id="proj_no"  maxlength="30" id="proj_no" placeholder="请填写项目编号" value="{{$project.proj_no}}" disabled="disabled">
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">项目名称&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-12 col-md-3 col-sm-10">
+				    	<input type="text" class="form-control" id="proj_name"  maxlength="20" id="proj_name" placeholder="请填写项目名称" value="{{$project.proj_name}}" disabled="disabled">
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">合同金额&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-12 col-md-3 col-sm-10">
+				    	<input type="text" class="form-control" id="cntr_val"  maxlength="20" id="proj_name" placeholder="请填写合同金额" value="{{$project.cntr_val}}" disabled="disabled">
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">项目经理&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-12 col-md-3 col-sm-10">
+				    	<select name="" id="proj_mgr" class="form-control" disabled="disabled">
+  	  					<option value="0">请选择项目经理</option>
+  	  					<foreach name="mgr_users" item="vo" key="k">
+  	  						<option value="{{$vo.user_id}}" <eq name="project.proj_mgr" value="$vo.user_id">selected="selected"</eq>>{{$vo.depart_name}}--{{$vo.real_name}}</option>
+  	  					</foreach>
+ 					</select>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">项目组&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="checkbox col-xs-11 group">
+					   <foreach name="departs" item="vo" key="k">
+				       <label style="margin-right: 10px;">
+				         <input type="checkbox" value="{{$k}}" name="{{$vo.depart_name}}" <if condition="$vo.is_check eq '1'">checked="checked"</if> disabled="disabled">{{$vo.depart_name}}
+				       </label>
+				       </foreach>
+				    </div>
+				</td>
+			</tr>
+			<tr id="group_people">
+				<td class="left">项目人员&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+						<div class="group_people">
+							<foreach name="departs" item="vo" key="k">
+							<if condition="$vo.is_check eq '1'">
+							<div class="gr_num">									
+								<strong id="{{$k}}">{{$vo.depart_name}}：</strong>
+								<foreach name="vo.users" item="vos" key="ks">
+						       	<label style="margin-right: 10px;">
+						         	<input type="checkbox" value="{{$ks}}" <if condition="$vos.is_check eq '1'">checked="checked"</if> disabled="disabled">{{$vos.real_name}}
+						       	</label>
+						       	</foreach>
+							</div>	
+							</if>
+							</foreach>							
+						</div>
+
+				    </div>
+				</td>
+			</tr>
+		</table>
+		<!-- E-填写部分 -->		
+		<input type="hidden" value="{{$project.proj_id}}" id="proj_id" />
+		<input type="hidden" value="{{:U('Project/getusers')}}" id="departs" />
+</div>
+<!-- E-页面主要部分 -->

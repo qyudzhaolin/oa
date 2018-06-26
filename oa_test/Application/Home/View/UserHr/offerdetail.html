@@ -1,0 +1,375 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script src="__JS__/userhr.js"></script>
+<!-- S-页面主要部分 -->
+<style>
+#interview .col-xs-6{padding-left:0;padding-right:0}
+.active {
+    background: #e2e5ea!important;
+    text-align: center;
+}
+.margin-auto{
+	margin: 0 auto;
+	overflow: hidden;
+	text-align: center;
+}
+.boder{
+	border: 1px solid #ccc;
+}
+.bg{
+	background-color: #3498db;
+    color: #fff;
+}
+.info-bg{
+	background: #f0ad4e!important;
+}
+.pricing-package .pricing-package-inner{
+	color: #000;
+}
+.pricing-package .package-content{
+	    border: 1px solid #ccc;
+}
+.info-bg{background-color:#DDD!important}
+.info-bg h3{font-size:16px!important;color:#344644!important;}
+</style>
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('UserHr/index')}}">招聘管理</a></li>
+	  <li class="active">offer审批</li>
+	</ol>
+	<!-- S-表格部分 -->
+	<div class="table">
+		<!-- S-部门项目等 -->
+	<div class="list_main">
+		<!-- 个人信息 -->	
+		<div class="pd10 bg-primary" style="clear:both">
+		 基本信息
+		</div>
+		<table class="table-striped table-bordered">
+			<tbody>
+				<tr>
+					<td class="col-md-2 active">姓名</td>
+					<td class="col-md-4">{{$info.name}}</td>
+					<td class="col-md-2 active">电话</td>
+					<td class="col-md-4">{{$info.phone}}</td>
+				</tr>
+				<tr>
+					<td class="active">
+						邮箱
+					</td>
+					<td id="get_type">
+						{{$info.email}}
+					</td>
+					<td class="active">性别</td>
+					<td>{{$info.sex}}</td>
+				</tr>
+				<tr>
+					<td class="active">
+						期望薪资
+					</td>
+					<td>
+						{{$info.pre_salary|default=0}}
+					</td>
+					<td class="active">面试岗位</td>
+					<td>{{$info.job}}</td>
+				</tr>
+				<tr>
+					<td class="active">备注</td>
+					<td>{{$info.remark}}</td>
+					<td class="active">简历</td>
+					<td>
+						<a href="{{$info.file_url}}" target="_black">查看附件</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- 审批意见 -->	
+		<notempty name="list">
+		<div class="pd10 bg-primary" style="clear:both">
+		 审批意见
+		</div>
+		<table class="table-striped table-bordered">
+			<tbody>
+				<tr>
+					<volist name="list" id="vo" key="key">
+						<td class="text-center" width="20%">							
+							<p>
+							{{$vo.department}} - {{$vo.itv_uid|get_user_name=###}}已「
+							<eq name="vo.status" value="1">通过</eq>
+							<eq name="vo.status" value="2">暂缓</eq>
+							<eq name="vo.status" value="-1">不通过</eq>
+							<eq name="vo.status" value="6">完成</eq>
+							」
+							<p>
+							<p>{{$vo.result}}<p>
+							<p style="color:#908f8f">{{$vo.crt_time|date='Y-m-d H:i:s',###}}<p>
+						</td>
+					</volist>
+					<php>$tdcount = count($list);</php>
+					<lt name="tdcount " value="3">
+					<td>&nbsp;</td>
+					</lt>
+				</tr>
+			</tbody>
+		</table>
+		</notempty>
+		<!-- 薪资结构 -->
+		<form action="{{:U('UserHr/saveOfferInterview')}}" method="post" name="forms" id="forms" class="form-horizontal">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="main-box clearfix">
+					<div class="clearfix boder">
+						<div class="pd10 bg-primary">薪资对比</div>				
+						<div class="main-box-body clearfix">
+							<!-- 当前薪资 -->
+							<div class="col-md-6 col-sm-6 col-xs-12 pricing-package">
+								<div class="pricing-package-inner">
+									<div class="package-header info-bg">
+										<span class="stars center-block"></span>
+										<h3>当前薪资</h3>
+									</div>
+									<div class="package-content pd-5-0">
+										 <div class="form-group pd-5-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">基本薪资</label>
+											<div class="col-xs-5">
+												<input type="text" class="form-control" name="pre_salary"  value="{{$info.pre_salary}}"  id="pre_salary" placeholder="基本薪资">
+											</div>
+										  </div>
+										 <div class="form-group pd-15-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">薪资结构</label>
+											<div class="col-xs-5">
+												<div class="input-group">
+											      <input type="text" class="form-control" id="pre_salary_num" value="{{$info.pre_salary_num}}">
+											      <span class="input-group-btn">
+											        <button class="btn" type="button">薪</button>
+											      </span>
+											    </div>
+											</div>
+										  </div>
+										 <div class="form-group pd-5-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">津贴</label>
+											<div class="col-xs-5">
+												<input type="text" class="form-control" name="pre_subsidy"  value="{{$info.pre_subsidy}}"  id="pre_subsidy">
+											</div>
+										  </div>
+										 <div class="form-group pd-5-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">年终奖</label>
+											<div class="col-xs-5">
+												<input type="text" class="form-control" name="pre_year_bonus"  value="{{$info.pre_year_bonus}}"  id="pre_year_bonus">
+											</div>
+										  </div>
+									</div>
+								</div>
+							</div>
+							<!-- 当前薪资 -->
+							<!-- 建议薪资 -->
+							<div class="col-md-6 col-sm-6 col-xs-12 pricing-package">
+								<div class="pricing-package-inner">
+									<div class="package-header info-bg">
+										<span class="stars center-block"></span>
+										<h3>建议薪资</h3>
+									</div>
+									<div class="package-content pd-5-0">
+										 <div class="form-group pd-5-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">基本薪资</label>
+											<div class="col-xs-5">
+												<input type="text" class="form-control" name="salary"  value="{{$info.salary}}"  id="salary" placeholder="基本薪资">
+											</div>
+										  </div>
+										 <div class="form-group pd-15-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">薪资结构</label>
+											<div class="col-xs-5">
+												<div class="input-group">
+											      <input type="text" class="form-control" id="salary_num" value="{{$info.salary_num}}">
+											      <span class="input-group-btn">
+											        <button class="btn" type="button">薪</button>
+											      </span>
+											    </div>
+											</div>
+										  </div>
+										 <div class="form-group pd-5-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">津贴</label>
+											<div class="col-xs-5">
+												<input type="text" class="form-control" name="subsidy"  value="{{$info.subsidy}}"  id="subsidy">
+											</div>
+										  </div>
+										 <div class="form-group pd-5-0 margin-auto">
+											<label for="lastname" class="col-xs-3 control-label" style="margin-top:10px;">其它</label>
+											<div class="col-xs-5">
+												<input type="text" class="form-control" name="other_benefits" id="other_benefits" value="{{$info.other_benefits}}">
+											</div>
+										  </div>
+									</div>
+								</div>
+							</div>
+							<!-- 建议薪资 -->
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+			<if condition="$auditAccess neq '' and $info.flow_type eq 2">
+			<notempty name="lastitvinfo.next_date"><div class="text-danger pd10">请务必在 <strong>{{$lastitvinfo.next_date}}</strong> 之前完成本轮审批！</div></notempty>
+				<div class="pd10 bg-primary">
+				 Offer 审批
+				</div>
+				<div class="pd-top-10">
+				  <div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">审批意见</label>
+					<div class="col-xs-3">
+						<textarea name="result" id="result"  class="form-control" style="resize:none">{{$itvinfo.result}}</textarea>
+					</div>
+				  </div>
+				  <div class="form-group ">
+					<label for="lastname" class="col-xs-2 control-label">审批结果</label>
+					<div class="col-xs-3">
+						 <label class="checkbox-inline result_status">
+							<input type="radio" name="result_status" id="optionsRadios3" value="1"  <eq name="itvinfo.status" value="1">checked</eq>>通过
+						  </label>
+						 
+						  <label class="checkbox-inline result_status">
+							<input type="radio" name="result_status" id="optionsRadios4" value="-1"  <eq name="itvinfo.status" value="-1">checked</eq>>不通过
+						  </label>
+						  
+						  <if condition="$depart_id eq 12">
+						  <label class="checkbox-inline result_status">
+							<input type="radio" name="result_status" id="optionsRadios4" value="6"  <eq name="itvinfo.status" value="6">checked</eq>>完成审批
+						  </label>
+						  </if>
+					</div>
+				  </div>
+				  <div id="flowdiv" <eq name="itvinfo.status" value="1"><else/>class="hide"</eq>>
+				  <div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">审批部门</label>
+					<div class="col-xs-3">
+						<select class="form-control" name="depart_id" id="depart_id">
+							<option name="">请选择审批部门</option>
+							<volist name="departments" id="vo">   
+							<option value="{{$vo.depart_id}}" <eq name="vo.depart_id" value="$flowinfo.flow_depart_id">selected="selected"</eq>>{{$vo.html}}{{$vo.depart_name}}</option>
+							</volist>
+						</select>
+					</div>
+				  </div>
+				  <div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">审批人员</label>
+					<div class="col-xs-5">
+						<div  id="flowuser">
+						请先审批部门
+						</div>
+						<input type="hidden" name="user_ids" id="user_ids" value="{{$flowinfo.flow_uids}}" />
+						<input type="hidden" name="id" id="id" value="{{$info.id}}" />
+						<input type="hidden" name="pre_user_ids" id="pre_user_ids" value="{{$flowinfo.flow_uids}}" />
+					</div>
+				  </div>
+				  <!--div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">下轮面试时间</label>
+					<div class="col-xs-3">
+						<input type="text" class="form-control" placeholder="面试时间" id="next_date" onclick="WdatePicker()" value="{{$itvinfo.next_date}}">
+					</div>
+				  </div-->
+				 </div>
+				 <div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="Submit_btn">
+							  <input type="hidden" name="hr_id" id="hr_id" value="{{$info.id}}" />
+							  <button type="button" class="btn btn-primary" id="SubmitBtn">保存</button>&nbsp;&nbsp;&nbsp;    	
+						</div>
+					</div>
+				  </div>
+			</div>
+			</div>
+
+		</form>
+		</notempty>
+		</if>
+		
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+</div>
+<script>
+$("#SubmitBtn").click(function(event) {
+		//供应商名称
+		var depart_id = '';
+		var user_ids = '';
+		var next_date = '';
+		
+		var pre_salary=$("#pre_salary").val();
+		var salary=$("#salary").val();
+		var subsidy=$("#subsidy").val();
+		/*var base_tax=$("#base_tax").val();
+		var is_pre_tax=$("input[name='is_pre_tax']:checked").val();
+		var is_13salary=$("input[name='is_13salary']:checked").val();*/
+		var other_benefits=$("#other_benefits").val();
+		var disadvantage=$("#disadvantage").val();
+		var advantage=$("#advantage").val();
+		var result=$("#result").val();
+		var result_status=$("input[name='result_status']:checked").val();
+		
+		var id=$("#id").val();
+		
+		if (pre_salary=="") {
+			alert("请填写【当前薪资】-基本薪资");
+			return false;
+		};
+		if (salary=="") {
+			alert("请填写【建议薪资】-基本薪资");
+			return false;
+		};
+		if(result_status==1){
+			depart_id = $('#depart_id').val();
+			user_ids = $('#user_ids').val();
+			//next_date = $('#next_date').val();
+			if(user_ids==''){
+				var pre_user_ids = $('#pre_user_ids').val();
+				if(pre_user_ids==''){
+					alert('请选择流转人员！');
+					return false;
+				}else{
+					user_ids = pre_user_ids;
+				}
+			}
+		}else{
+			user_ids = '';
+			//next_date = '';
+			depart_id = '';
+		}
+		var data={
+				pre_salary:$('#pre_salary').val(),
+				pre_salary_num:$('#pre_salary_num').val(),
+				pre_subsidy:$('#pre_subsidy').val(),
+				pre_year_bonus:$('#pre_year_bonus').val(),
+				salary:$('#salary').val(),
+				salary_num:$('#salary_num').val(),
+				subsidy:$('#subsidy').val(),
+				result:result,
+				result_status:result_status,
+				depart_id:depart_id,
+				user_ids:user_ids,
+				other_benefits:other_benefits,
+				//next_date:next_date,
+				type:2,
+				hr_id : $('#hr_id').val()
+			}
+		//表单提交
+		//$('#forms').submit();
+		var url = $('#forms').attr('action');
+		$.ajax({
+			url:url,
+			type:'post',
+			data:data,
+			dataType:'json',
+			success:function(res){
+				alert(res.msg);
+				if(res.code==1){
+					$('#closeAlert1').click(function(){
+						window.location.href='/index.php/Home/UserHr/offer';
+					})
+				}
+			}
+		});
+	});
+</script>
+
+

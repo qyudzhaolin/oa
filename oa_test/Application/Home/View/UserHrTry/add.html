@@ -1,0 +1,206 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('UserHrTry/index')}}">试用期信息</a></li>
+	  <li class="active">新增/修改试用期信息</li>
+	</ol>
+	<!-- S-填写部分 -->
+    <div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+	 试用期小结
+    </div>
+	<div class="form-group ">
+		<label for="firstname" class="col-xs-2 control-label">小结</label>
+		<div class="bg"> 
+			<div class="col-xs-6">
+				<textarea name="experience" id="experience"  class="form-control" style="resize:none;height:200px" >{{$info.experience}}</textarea>
+			</div>
+		</div>
+	 </div>
+	 <php>if($is_experience && (!$info || ($info['user_id'] == $user_id && $info['l_status']==0))){</php>
+	 <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="Submit_btn">
+			      <button type="button" class="btn btn-primary" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+			</div>
+		</div>
+	  </div>
+	 <php>}</php>
+	 
+	 
+	 <php>if($info && ($info['leader_opinion'] || $leader['user_id'] == $user_id)){</php>
+	 <div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+		 主管转正意见
+	 </div>
+	 <div class="form-group ">
+		<label for="firstname" class="col-xs-2 control-label">意见</label>
+		<div class="bg"> 
+			<div class="col-xs-6">
+				<textarea name="leader_opinion" id="leader_opinion"  class="form-control" style="resize:none;height:200px" >{{$info.leader_opinion}}</textarea>
+			</div>
+		</div>
+	 </div>
+	 
+	 <div class="form-group ">
+		<label for="lastname" class="col-xs-2 control-label">转正结果</label>
+		<div class="col-xs-3">
+			 <label class="checkbox-inline result_status">
+				<input type="radio" name="l_status"  value="1"  <eq name="info.l_status" value="1">checked</eq>>通过
+			  </label>
+			  <label class="checkbox-inline result_status">
+				<input type="radio" name="l_status"  value="2"  <eq name="info.l_status" value="2">checked</eq>>不通过
+			  </label>
+		</div>
+	  </div>
+	 
+	 <php>if($info && $leader['user_id'] == $user_id && !$info['hrg_opinion']){</php>
+	 <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="Submit_btn">
+			      <button type="button" class="btn btn-primary" id="L_Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+			</div>
+		</div>
+	  </div>
+	 <php>}</php>
+	 <php>}</php>
+	 
+	 <php>if($info && ($info['hrg_opinion'] || $hrg['user_id'] == $user_id)){</php>
+	 <div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+		HR转正意见
+	 </div>
+	 <div class="form-group ">
+		<label for="firstname" class="col-xs-2 control-label">意见</label>
+		<div class="bg"> 
+			<div class="col-xs-6">
+				<textarea name="hrg_opinion" id="hrg_opinion"  class="form-control" style="resize:none;height:200px">{{$info.hrg_opinion}}</textarea>
+			</div>
+		</div>
+	 </div>
+	 
+	 <div class="form-group ">
+		<label for="lastname" class="col-xs-2 control-label">转正结果</label>
+		<div class="col-xs-3">
+			 <label class="checkbox-inline result_status">
+				<input type="radio" name="h_status"  value="1"  <eq name="info.h_status" value="1">checked</eq>>通过
+			  </label>
+			  <label class="checkbox-inline result_status">
+				<input type="radio" name="h_status"  value="2"  <eq name="info.h_status" value="2">checked</eq>>不通过
+			  </label>
+		</div>
+	  </div>
+	 
+	 <php>if($info && $hrg['user_id'] == $user_id){</php>
+	 <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="Submit_btn">
+			      <button type="button" class="btn btn-primary" id="H_Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+			</div>
+		</div>
+	  </div>
+	 <php>}</php>
+	 <php>}</php>
+	 
+	 
+	<input type="hidden" value="{{$info.id}}" id="id"/>	 
+	<!-- E-填写部分 -->
+	<!--S modal-填写部分 -->
+	
+	<!--E modal-填写部分 -->
+</div>
+<!-- E-页面主要部分 -->
+
+<style>
+	.form-group{
+		overflow:hidden;
+	}
+	.form-group>label{
+	    text-align: right;
+	}
+</style>
+<script>
+jQuery(document).ready(function($) {
+	$("#Submit").click(function(event) {
+		//部门名称
+		var experience = $("#experience").val();
+		if(experience.length==0){
+			alert("请填写试用期小结！");
+			return false;
+		}
+		
+		$.ajax({
+			url:"{{:U('UserHrTry/save')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'experience':experience,'action':'add'},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#L_Submit").click(function(event) {
+		//部门名称
+		var leader_opinion = $("#leader_opinion").val();
+		var l_status = $("input[name='l_status']:checked").val();
+		if(leader_opinion.length==0){
+			alert("请填写转正意见！");
+			return false;
+		}
+		if(l_status==undefined){
+			alert("请选择转正结果！");
+			return false;
+		}
+		$.ajax({
+			url:"{{:U('UserHrTry/save')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'leader_opinion':leader_opinion,'action':'save','l_status':l_status,'id':$("#id").val()},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#H_Submit").click(function(event) {
+		var hrg_opinion = $("#hrg_opinion").val();
+		var h_status = $("input[name='h_status']:checked").val();
+		if(leader_opinion.length==0){
+			alert("请填写转正意见！");
+			return false;
+		}
+		if(h_status==undefined){
+			alert("请选择转正结果！");
+			return false;
+		}
+		$.ajax({
+			url:"{{:U('UserHrTry/save')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'hrg_opinion':hrg_opinion,'action':'save','h_status':h_status,'id':$("#id").val()},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+});
+</script>

@@ -1,0 +1,161 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script type="text/javascript" src="__JS__/pfrecouped.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">个人报销单</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<!-- S-部门项目等 -->
+			<table class="table-striped table-bordered" style="overflow: auto;">
+				<tr>
+					<td class="col-md-2 active">部门</td>
+					<td class="col-md-4">
+						<input class="form-control input-sm" type="text" readonly="readonly" value="{{$depart.depart_name}}">
+					</td>
+					<td class="col-md-2 active">姓名</td>
+					<td class="col-md-4">
+						<input class="form-control input-sm" type="text" readonly="readonly" value="{{$app_real_name}}">
+					</td>
+				</tr>
+				<tr>
+					<td class="active">
+						申请金额
+					</td>
+					<td>
+						<input class="form-control input-sm" type="text" id="money" value="{{$tb.money}}">
+					</td>
+					<td class="active">TB日期</td>
+					<td>
+						<input style="width:40%;float:left" type="text" class="form-control" placeholder="开始月份" id="start_tb_date" name="start_tb_date" onclick="WdatePicker({dateFmt:'yyyy-MM'})" value="{{$tb.start_tb_date}}">
+						<span style="float:left;padding:5px 10px 0px">至</span><input style="width:40%;float:left" type="text" class="form-control" placeholder="结束月份" id="end_tb_date" name="end_tb_date" onclick="WdatePicker({dateFmt:'yyyy-MM'})" value="{{$tb.end_tb_date}}">
+					</td>
+				</tr>
+				<tr>
+					<td class="active">
+						申请人数
+					</td>
+					<td>
+						<input class="form-control input-sm" type="text" id="num" value="{{$tb.num}}">
+					</td>
+					<td class="active">申请名单<span class="red">(姓名逗号分隔)</span></td>
+					<td>
+						<textarea class="form-control"  rows="" cols="" id="list" style="height:100px">{{$tb.list}}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="active">备注说明</td>
+					<td colspan="4">
+						<textarea class="form-control"  rows="" cols="" id="desc">{{$tb.desc}}</textarea>
+					</td>
+				</tr>
+				<tr id="no_border">
+					<td colspan="4">.</td>
+				</tr>
+			</table>
+			<!-- E-部门项目等 -->
+		
+		
+		
+		<!-- S-提交部分 -->
+		<if condition="$is_show_app eq 1">
+		<div class="edit text-center">
+			<select name="" id="cur_approver_id">
+				<option value="0">请选择审批人</option>
+				<foreach name="approve_users" item="vo">
+					<option value="{{$vo.user_id}}" <eq name="tb.cur_approver_id" value="$vo.user_id">selected="selected"</eq>>{{$vo.real_name}}</option>
+				</foreach>
+			</select>&nbsp;
+			<button type="button" class="btn btn-primary" id="Submit">提交</button>
+		</div>
+		</if>
+		<if condition="$is_restart eq 1">
+		<div class="edit text-center">
+			<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+		</div>
+		</if>
+		<!-- E-提交部分 -->
+	</div>
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$tb.t_id}}" id="t_id" />
+	
+	<!-- S-输入理由的弹出框 -->
+	<include file="./Application/Home/View/noagree.html" />
+	<!-- E-输入理由的弹出框 -->
+	
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	
+	var click=true;
+	$("#Submit").click(function(event) {
+		var a=/^[0-9]*(\.[0-9]{1,2})?$/;
+		var t_id = $("#t_id").val();
+		var money = $("#money").val();
+		var start_tb_date = $("#start_tb_date").val();
+		var end_tb_date = $("#end_tb_date").val();
+		var desc = $("#desc").val();
+		var num = $("#num").val();
+		var list = $("#list").val();
+		var cur_approver_id = $("#cur_approver_id").val();
+		
+		if(money.length == 0){
+			alert("请填写申请金额！");
+			return false;
+		}
+		if(start_tb_date.length == 0){
+			alert("请填写TB开始月份！");
+			return false;
+		}
+		if(num.length == 0){
+			alert("请填写申请人数！");
+			return false;
+		}
+		if(list.length == 0){
+			alert("请填写申请名单！");
+			return false;
+		}
+		if(desc.length == 0){
+			alert("请填写备注说明！");
+			return false;
+		}
+		
+		<if condition="!$tb">
+		if (cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		</if>
+		
+		if(click){
+			click = false;
+			$("#loading").show();
+			$.ajax({
+				url:"{{:U('Teambuild/add')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'t_id':t_id,"money":money,"start_tb_date":start_tb_date,"end_tb_date":end_tb_date,"desc":desc,"num":num,"list":list,"cur_approver_id":cur_approver_id},
+				success:function(data){
+					$("#loading").hide();
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Teambuild/index')}}");
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+});
+
+</script>

@@ -1,0 +1,80 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/client.js"></script>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li class="active">客户库</li>
+			</ol>
+			<!-- S-搜索框部分 -->
+			<div class="search_main form-inline">
+				<div style="float:left;">
+					<a id="add_btn" class="btn btn-primary" href="{{:U('Customer/add')}}">&nbsp;&nbsp;新增&nbsp;&nbsp;</a>
+				</div>
+				<div style="float:right;">
+					<form name="searchform" action="{{:U('Customer/index')}}" method="post">
+						<div class="form-group">
+						    <div class="input-group">
+						      <input type="text" placeholder="客户名称" value="{{$search.cust_full_name}}" name="cust_full_name" class="form-control">
+						      <span class="input-group-btn">
+						        <button class="btn btn-success"  type="submit">搜索</button>
+						      </span>
+						    </div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- E-搜索框部分 -->
+			<!-- S-表格部分 -->
+			<div class="table">
+				<div class="min-width1000">
+					<table class="table-striped table-bordered table-hover ">
+						<colgroup>
+							<col width="20%">
+							<col width="15%">
+							<col width="20%">
+							<col width="20%">
+						</colgroup>
+						</colgroup>
+						<thead>
+							<tr id="table_head">
+								<th>品牌名称</th>
+								<th>客户简称</th>
+							    <th>客户全称</th>
+							    <th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<volist name="list" id="vo">					
+		                    <tr class="table_bd active">
+								<td>
+									{{$vo.brand_name}}
+								</td>
+								<td>
+									{{$vo.cust_short_name}}								
+								</td>
+								<td>
+									{{$vo.cust_full_name}}
+								</td>
+								<td class="operate">							
+									<a href="{{:U('Customer/add',array('id'=>$vo['cust_id']))}}" class="edit">修改</a>
+									<a href="javascript:void(0)" value="{{$vo.cust_id}}" url="{{:U('Customer/del')}}" class="deleat">删除</a>
+								</td>
+							</tr>
+							</volist>   
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="Pagination">{{$page}}</div>
+			
+			<!-- E-表格部分 -->
+
+
+
+
+
+		</div>
+		<!-- E-页面主要部分 -->

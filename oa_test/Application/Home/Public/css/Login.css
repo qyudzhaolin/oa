@@ -1,0 +1,44 @@
+/*
+* @Author: win
+* @Date:   2016-04-14 10:40:29
+* @Last Modified by:   win
+* @Last Modified time: 2016-04-14 11:52:00
+*/
+
+body{
+	background: url(../images/Login.png) repeat;
+}
+#main{
+	width: 500px;
+	border: 1px solid #ccc;
+	padding: 0 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -250px;
+	background: #e3e1e0;
+	border-radius:8px;
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-s-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+
+}
+#main h3{
+	width: 100;
+	height: 30px;
+	background: url(../images/logo.png) center center no-repeat;
+	margin-bottom:30px;
+}
+#submit{
+	display: block;
+	padding:0 65px;
+	background: #9cc92d;
+	color: #fff;
+	margin:0 auto;
+	line-height:35px;
+	margin-top:15px;
+}

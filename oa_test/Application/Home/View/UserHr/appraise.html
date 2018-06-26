@@ -1,0 +1,72 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<div class="pd10 bg-primary mg-bottom-10">
+	 供应商详情
+	</div>
+	<!-- S-表格部分 -->	
+	<ul class="nav nav-tabs">
+	  <li <eq name="_action" value="detail">class="active"</eq>><a href="{{:U('Supplier/detail',array('id'=>$info['sup_id']))}}">详情</a></li>
+	   <notempty name="recoupedRecord">
+		<li <eq name="_action" value="recoupedrecord">class="active"</eq>><a href="{{:U('Supplier/recoupedrecord',array('id'=>$info['sup_id']))}}">合作记录</a></li>
+	  </notempty>
+	  <li <eq name="_action" value="appraise">class="active"</eq>><a href="{{:U('Supplier/appraise',array('id'=>$info['sup_id']))}}">评价</a></li>
+	</ul>
+	<div class="table pd10">
+		<div id="contentDiv">
+		<volist name="list" id="vo" key="key">
+			<php>
+				if($key%2==0){
+					$color = '#eaf0fb';
+				}else{
+					$color = '#EEE';
+				}
+			</php>
+			<div class="mg-bottom-10 pd10" style="background-color:{{$color}}">
+				<p>{{$vo.content}}<p>
+				<p style="color:#908f8f">{{$vo.crt_user_name}} - {{$vo.crt_time|date='Y-m-d H:i:s',###}}<p>
+			</div>
+		</volist>
+		</div>
+		<div class="Pagination" style="border-bottom: 1px solid #dedede;border-top:none">{{$page}}</div>
+	<notempty name="appraise">
+	<form class="mg-top-20" action="{{:U('Supplier/saveAppraise')}}" method="post">
+		<div class="form-group" >
+			<label for="name">评价</label>
+			<textarea class="form-control" rows="5" style="width:40%" name="content" id="content"></textarea>
+		</div>
+		<input type="hidden" name="sup_id" value="{{$info.sup_id}}" id="sup_id" />
+		<a type="button"  href="javascript:;" class="btn btn-primary" id="submit">提交评价</a>
+	</form>
+	</notempty>
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	
+	var click2 = true;
+	$("#submit").click(function(){
+		if(click2){
+			click2 = false;
+			var sup_id = $("#sup_id").val();
+			var content = $("#content").val();
+			$.ajax({
+				url:"{{:U('Supplier/saveAppraise')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'sup_id':sup_id,content:content},
+				success:function(data){
+					if(data.status == 1){
+						window.location.reload();
+					}else{
+						alert(data.msg);
+						click2 = true;
+					}
+				}
+			});
+		}
+	});
+});
+</script>

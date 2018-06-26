@@ -1,0 +1,217 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script src="__JS__/userhr.js"></script>
+<!-- S-页面主要部分 -->
+<style>
+#interview .col-xs-6{padding-left:0;padding-right:0}
+.active {
+    background: #e2e5ea!important;
+    text-align: center;
+}
+.margin-auto{
+	margin: 0 auto;
+	overflow: hidden;
+	text-align: center;
+}
+.boder{
+	border: 1px solid #ccc;
+}
+.bg{
+	background-color: #3498db;
+    color: #fff;
+}
+.info-bg{
+	background: #f0ad4e!important;
+}
+.pricing-package .pricing-package-inner{
+	color: #000;
+}
+.pricing-package .package-content{
+	    border: 1px solid #ccc;
+}
+</style>
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('UserHr/index')}}">招聘管理</a></li>
+	  <li class="active">招聘详情</li>
+	</ol>
+	<!-- S-表格部分 -->
+	<div class="table">
+		<!-- S-部门项目等 -->
+		<div class="list_main">
+			<div class="pd10 bg-primary" > 基本信息</div>
+			<table class="table-striped table-bordered">
+				<tbody>
+					<tr>
+						<td class="col-md-2 active">姓名</td>
+						<td class="col-md-4">{{$info.name}}</td>
+						<td class="col-md-2 active">电话</td>
+						<td class="col-md-4">{{$info.phone}}</td>
+					</tr>
+					<tr>
+						<td class="active">
+							邮箱
+						</td>
+						<td id="get_type">
+							{{$info.email}}
+						</td>
+						<td class="active">性别</td>
+						<td>{{$info.sex}}</td>
+					</tr>
+					<tr>
+						<td class="active">
+							期望薪资
+						</td>
+						<td>
+							{{$info.pre_salary|default=0}}
+						</td>
+						<td class="active">面试岗位</td>
+						<td>{{$info.job}}</td>
+					</tr>
+					<tr>
+						<td class="active">备注</td>
+						<td>{{$info.remark}}</td>
+						<td class="active">简历</td>
+						<td>
+							<a href="{{$info.file_url}}" target="_black">查看附件</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		<notempty name="list">
+		<div class="pd10 bg-primary" style="clear:both">
+		 面试意见
+		</div>
+		<table class="table-striped table-bordered">
+			<tbody>
+				<tr>
+					<volist name="list" id="vo" key="key">
+						<td class="text-center" width="20%">							
+							<p>
+							{{$vo.department}} - {{$vo.itv_uid|get_user_name=###}}已「
+							<eq name="vo.status" value="1">通过</eq>
+							<eq name="vo.status" value="2">暂缓</eq>
+							<eq name="vo.status" value="-1">不通过</eq>
+							<eq name="vo.status" value="6">完成</eq>
+							」
+							<p>
+							<p>{{$vo.result}}<p>
+							<p style="color:#908f8f">{{$vo.crt_time|date='Y-m-d H:i:s',###}}<p>
+						</td>
+					</volist>
+					<php>$tdcount = count($list);</php>
+					<lt name="tdcount " value="3">
+					<td>&nbsp;</td>
+					</lt>
+				</tr>
+			</tbody>
+		</table>
+		</notempty>
+		<notempty name="auditAccess">
+		<div class="pd10 bg-primary mg-bottom-10">
+		 面试结果
+		</div>
+		<form action="{{:U('UserHr/saveInterview')}}" method="post" name="forms" id="forms" class="form-horizontal ">
+			<notempty name="lastitvinfo.next_date"><div class="text-danger pd10">请务必在 <strong>{{$lastitvinfo.next_date}}</strong> 之前完成本轮面试！</div></notempty>
+			<div id="interview">
+				<div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">优点</label>
+					<div class="col-xs-3">
+						<textarea name="advantage" id="advantage"  class="form-control" style="resize:none">{{$itvinfo.advantage}}</textarea>
+					</div>
+				  </div>
+				  <div class="form-group">
+					<label for="disadvantage" class="col-xs-2 control-label">缺点</label>
+					<div class="col-xs-3">
+						<textarea name="disadvantage" id="disadvantage"  class="form-control" style="resize:none">{{$itvinfo.disadvantage}}</textarea>
+					</div>
+				  </div>
+				  <div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">面试意见</label>
+					<div class="col-xs-3">
+						<textarea name="result" id="result"  class="form-control" style="resize:none">{{$itvinfo.result}}</textarea>
+					</div>
+				  </div>
+				  <div class="form-group ">
+					<label for="lastname" class="col-xs-2 control-label">面试结果</label>
+					<div class="col-xs-3">
+					 <if condition="($departments.is_only_one eq false) OR ($departments.is_only_one eq 1 and $departments.user_id neq '')">
+						 <label class="checkbox-inline result_status">
+							<input type="radio" name="result_status" id="optionsRadios3" value="1"  <eq name="itvinfo.status" value="1">checked</eq>>通过
+						  </label>
+					</if>	 
+						  <label class="checkbox-inline result_status">
+							<input type="radio" name="result_status" id="optionsRadios4" value="-1"  <eq name="itvinfo.status" value="-1">checked</eq>>不通过
+						  </label>
+						  <if condition="$user_id eq $info['crt_user_id']"></if>
+						  <label class="checkbox-inline result_status">
+							<input type="radio" name="result_status" id="optionsRadios4" value="6"  <eq name="itvinfo.status" value="6">checked</eq>>完成面试
+						  </label>
+						  
+					</div>
+				  </div>
+				  <div id="flowdiv" <eq name="itvinfo.status" value="1"><else/>class="hide"</eq>>
+				  <if condition="$departments neq '' and $departments.is_only_one eq 1">
+					<if condition="$departments.user_id gt 0">
+					<div class="form-group">
+						<label for="lastname" class="col-xs-2 control-label">下轮面试者</label>
+						<div class="col-xs-1">
+							<input type="text" class="form-control" id="depart_name" value="{{$departments.depart_name}}" disabled>
+							<input type="hidden" class="form-control" id="depart_id" value="{{$departments.depart_id}}" disabled>
+						</div>
+						<div class="col-xs-1">
+							<input type="text" class="form-control" id="user_name" value="{{$departments.real_name}}" disabled>
+							<input type="hidden" class="form-control" id="user_ids" value="{{$departments.user_id}}" disabled>
+						</div>
+					  </div>
+					</if>
+				  <else/>
+				  <div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">面试部门</label>
+					<div class="col-xs-3">
+						<select class="form-control" name="depart_id" id="depart_id">
+							<option name="">请选择面试部门</option>
+							<volist name="departments" id="vo">   
+							<option value="{{$vo.depart_id}}" <eq name="vo.depart_id" value="$flowinfo.flow_depart_id">selected="selected"</eq>>{{$vo.html}}{{$vo.depart_name}}</option>
+							</volist>
+						</select>
+					</div>
+				  </div>
+				  <div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">流转人员</label>
+					<div class="col-xs-5">
+						<div  id="flowuser">
+						请先选择部门
+						</div>
+						<input type="hidden" name="user_ids" id="user_ids" value="{{$flowinfo.flow_uids}}" />
+						<input type="hidden" name="pre_user_ids" id="pre_user_ids" value="{{$flowinfo.flow_uids}}" />
+					</div>
+				  </div>
+				  </if>
+				  <div class="form-group">
+					<label for="lastname" class="col-xs-2 control-label">下轮面试时间</label>
+					<div class="col-xs-3">
+						<input type="text" class="form-control" placeholder="面试时间" id="next_date" onclick="WdatePicker()" value="{{$itvinfo.next_date}}">
+					</div>
+				  </div>
+				 </div>
+				 <div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="Submit_btn">
+							  <input type="hidden" name="hr_id" id="hr_id" value="{{$info.id}}" />
+							  <button type="button" class="btn btn-primary" id="Submit">保存</button>		    	
+						</div>
+					</div>
+				  </div>
+			</div>
+
+		</form>
+		</notempty>
+		
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+</div>
+<!-- E-页面主要部分 -->
+
+

@@ -1,0 +1,117 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script type="text/javascript" src="__JS__/supplier_add.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('OfficeSupplies/index')}}">办公用品</a></li>
+			  <li class="active">新增/修改办公用品</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form action="{{:U('OfficeSupplies/save')}}" method="post" name="forms" id="forms">
+				<input type="hidden" value="{{$info.id}}" name="id" id="id" >
+				<input type="hidden" value="{{:U('OfficeSupplies/index')}}" name="back_url" id="back_url" >
+				<div class="list_main">		
+				
+					<div class="row list">
+					  <div class="col-xs-2 name">名称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="name" value="{{$info.name}}" id="name" placeholder="请输入名称">
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name">库存</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="inventory" value="{{$info.inventory}}"  id="inventory" placeholder="请输入库存">
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name">所属分类</div>
+					  <div class="col-xs-10 input_text">
+					  		<!-- S-手写部分 -->
+						  	<!--div class="col-xs-3" id="write">
+	  					    	<input type="text" class="form-control" value="{{$info.pay_method}}"  placeholder="请填写收款方式" id="way" value="银行转账">
+	  					    </div-->
+	  					    <!-- E-手写部分 -->
+	  					    <div class="col-xs-3">  					    	
+		  					   <select name="cid" id="cid" class="form-control">
+									<volist name="category" id="vo" key="mk">
+			  					   	<option <eq name="info.cid" value="$vo.name">selected checked</eq> value="{{$vo.id}}">{{$vo.name}}</option>
+									</volist>
+		  					   </select>
+	  					    </div>
+							<div class="col-xs-2"><a href="javascript:;" class="btn btn-primary" id="addcategory" data-toggle="modal" data-target="#exampleModal">新增分类</a></div>
+							
+					  </div>
+					</div>
+					
+					
+					<div class="row list">
+					  <div class="col-xs-2 name" style="height:53px">备注</div>
+					  <div class="col-xs-10 " style="height:54px">
+					  	<div class="col-xs-3">
+					    	<textarea name="remark" id="remark"  class="form-control"></textarea>
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <button type="button" class="btn btn-default" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="exampleModalLabel">新增分类</h4>
+				  </div>
+				  <div class="modal-body">
+					<form>
+					  <div class="form-group">
+						<label for="cat_name" class="control-label">分类名称:</label>
+						<input type="text" class="form-control" id="cat_name">
+					  </div>
+					</form>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="saveCategory">保存</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div>
+		<!-- E-页面主要部分 -->
+		<script>
+		$('#saveCategory').click(function(){
+			var cat_name = $('#cat_name').val();
+			$.ajax({
+				url:"{{U('OfficeSupplies/saveCategory')}}",
+				type:'post',
+				data:{name:cat_name},
+				dataType:'json',
+				success:function(data){
+					if(data.status==1){
+						$('#cid').append("<option value='"+data.id+"'>"+cat_name+"</option>");
+					}else{
+						alert(data.msg);
+					}
+				}
+			})
+		})
+		</script>

@@ -1,0 +1,172 @@
+
+<style>
+	.breadcrumb{padding: 8px 0;}
+	.over-hidden{overflow: hidden;}
+	.bg{background-color: #e2e5ea;text-align: right;}
+	.content_main ul li{list-style: none; line-height: 40px;margin-bottom: 1px;overflow: hidden;background: #f3f3f8;}
+	.content_main ul li div{text-indent: 1em;}
+	.content_main ul{overflow:hidden;padding: 0;}
+	label{margin-bottom:0;display:block;}
+	label input{margin-top: 15px!important;}
+</style>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent col-xs-12">
+			<ol class="breadcrumb">
+				<li><a href="#">离职信息填写</a></li>
+				<li class="active">离职申请</li>
+			</ol>
+			<div class="content_main">
+				<ul class="box">
+					<li>
+						<div class="bg col-xs-12 col-sm-2">姓名：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">王麻子</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">入职日期：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">2017-07-24</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">职位：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">保洁大爷</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">主管：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">张三</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">部门：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">清洁部</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2">离职申请日期：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">
+							<div class="col-sm-10 col-md-4" style="margin-top: 3px;">
+						    	<input type="text" class="form-control" value="" id="timer" placeholder="离职申请日期">
+						    </div>
+						</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2" style="line-height:787px;">主动离职原因：</div>
+						<div class="col-xs-12  col-sm-10 info_bg">
+							<div class="col-xs-12 cause">							
+							<!-- S-公司原因 -->
+							<h4><strong>公司原因(Company reason)</strong></h4>
+							<div class="checkbox col-xs-12">
+							  <label>
+							    <input type="checkbox" value="">
+							    对工资或 福利不满意(Compensation & Benefits）
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	工作环境(Working Environment) 
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	不满意公司的政策和措施(Company Policy & Regulations)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	没有事业发展机会(Limited Career development)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	工作太枯燥, 缺少热情(Lack of Job Challenge)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	缺少学习和知识(Lack of Training)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	工作压力太大，个人不能承受(Workload & OT)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	同事关系不融洽(Relationship with Colleagues)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	与上司关系不融洽(Relationship with Line Manager)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	公司内部产品没有创新，产品使用极不便捷(Product Innovation Problem)
+							  </label>
+							</div>
+							<!-- E-公司原因 -->
+							<!-- S-个人原因 -->
+							<div class="checkbox col-xs-12">
+							  <h4><strong>个人原因(Personal reason)</strong></h4>
+							  <label>
+							    <input type="checkbox" value="">
+							    找到更好的工作(Better Offer)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	自己经营生意(Start Own Business)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	移民(Emigration)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	回校深造(Further Education)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	健康原因(Health issue)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	家庭原因(Family reason)
+							  </label>
+							  <label>
+							    <input type="checkbox" value="">
+							   	对这个行业没太多热情，想转去其他行业(Changing profession)
+							  </label>
+							</div>
+							<!-- E-个人原因 -->
+						</div>
+					</li>
+					<li>
+						<div class="bg col-xs-12 col-sm-2" style="height:40px;"></div>
+						<div class="col-xs-12  col-sm-10 info_bg">
+							<div class="Submit_btn">
+						      <button type="button" class="btn btn-success" id="Submit">保存</button>		    	
+						    </div>
+						</div>
+					</li>
+				</ul>
+
+			</div>
+
+			
+		</div>
+		<!-- E-页面主要部分 -->
+		<script type="text/javascript">
+			//提交
+			$("#Submit").click(function(event) {
+				var timer = $("#timer").val();
+				var val = $("textarea").val();
+				var type = $("#type input[type='radio']:checked").length;
+				if (timer == "") {
+					alert("请选择离职申请日期");
+					return false;
+				}
+				if (val== "") {
+					alert("请填写主动离职原因");
+					return false;
+				}
+				if (type == 0) {
+					alert("请选择离职类别");
+					return false;
+				}
+				//提交数据
+				
+			});
+			
+		</script>
+

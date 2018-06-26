@@ -1,0 +1,153 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script type="text/javascript" src="__JS__/pfrecouped.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('UserHr/index')}}">招聘管理</a></li>
+			  <li class="active">新增/修改招聘</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form action="{{:U('UserHr/save')}}" method="post" name="forms" id="forms">
+				<input type="hidden" value="{{$info.sup_id}}" name="sup_id" id="sup_id" >
+				<input type="hidden" value="{{:U('UserHr/index')}}" name="back_url" id="back_url" >
+				<div class="list_main">		
+				
+					<div class="row list">
+					  <div class="col-xs-2 name">姓名</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="name" value="{{$info.name}}" id="name" placeholder="姓名">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">电话</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="phone" value="{{$info.phone}}" id="phone" placeholder="电话">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">邮箱</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="email" value="{{$info.email}}" id="email" placeholder="邮箱">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">性别</div>
+					  <div class="col-xs-10 input_text">
+					  	 <label class="checkbox-inline">
+							<input type="radio" name="sex" id="optionsRadios3" value="女" checked>女
+						  </label>
+						  <label class="checkbox-inline">
+							<input type="radio" name="sex" id="optionsRadios4" value="男">男
+						  </label>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">面试岗位</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3">  					    	
+		  					   <input type="text" class="form-control" name="job"  value="{{$info.job}}"  id="job" placeholder="面试岗位">
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">简历</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<div class="file_input">
+								<form action="" method="post" enctype="multipart/form-data">
+									<input class="form-control input-sm" type="text" name="file_name"  placeholder="点击上传文件">
+									<input type="file" class="file_click" name="file">
+									<input type="hidden" class="file_id" value="" name="file_id"/>
+								</form>
+							</div>
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">期望薪资</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="pre_salary"  value="{{$info.pre_salary}}"  id="pre_salary" placeholder="期望薪资">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">基本薪资</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="salary"  value="{{$info.salary}}"  id="salary" placeholder="基本薪资">
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="row list">
+					  <div class="col-xs-2 name">津贴</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="subsidy"  value="{{$info.subsidy}}"  id="subsidy" placeholder="津贴">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">社保缴纳基数</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="base_tax"  value="{{$info.base_tax}}"  id="base_tax" placeholder="社保缴纳基数">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">税前OR税后</div>
+					  <div class="col-xs-10 input_text">
+					    	 <label class="checkbox-inline">
+								<input type="radio" name="is_pre_tax" id="optionsRadios3" value="1" checked>税前
+							  </label>
+							  <label class="checkbox-inline">
+								<input type="radio" name="is_pre_tax" id="optionsRadios4" value="2">税后
+							  </label>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">是否13薪</div>
+					  <div class="col-xs-10 input_text">
+					  	 <label class="checkbox-inline">
+							<input type="radio" name="is_13salary" id="optionsRadios3" value="1" checked>是
+						  </label>
+						  <label class="checkbox-inline">
+							<input type="radio" name="is_13salary" id="optionsRadios4" value="0">否
+						  </label>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name" style="height:54px">备注</div>
+					  <div class="col-xs-10  input_text" style="height:54px">
+					  	<div class="col-xs-3">
+					    	<textarea name="remark" id="remark"  class="form-control" style="resize:none">{{$info.remark}}</textarea>
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <button type="button" class="btn btn-default" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->
+
+

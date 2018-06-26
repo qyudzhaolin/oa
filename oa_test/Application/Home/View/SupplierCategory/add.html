@@ -1,0 +1,52 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<script type="text/javascript" src="__JS__/supplier_add.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('SupplierCategory/index')}}">供应商分类</a></li>
+			  <li class="active">新增/修改供应商分类</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form action="{{:U('SupplierCategory/save')}}" method="post" name="forms" id="forms">
+				<input type="hidden" value="{{$info.id}}" name="id" id="id" >
+				<input type="hidden" value="{{:U('SupplierCategory/index')}}" name="back_url" id="back_url" >
+				<div class="list_main">		
+					
+					<div class="row list">
+					  <div class="col-xs-2 name">分类</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3">  					    	
+		  					   <select name="pid" id="pid" class="form-control">
+									<option value="">顶级分类</option>
+									<volist name="category" id="vo" key="mk">
+			  					   	<option <eq name="info.pid" value="$vo.id">selected checked</eq> value="{{$vo.id}}">{{$vo.name}}</option>
+									</volist>
+		  					   </select>
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name">分类名称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" name="name" value="{{$info.name}}" id="name" placeholder="分类名称">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <button type="button" class="btn btn-default" id="SubmitCategory">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->
+
+

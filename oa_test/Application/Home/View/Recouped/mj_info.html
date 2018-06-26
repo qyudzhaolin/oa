@@ -1,0 +1,356 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">媒介报销单</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">	
+		<!-- S-部门项目等 -->
+		<table class="table-striped table-bordered" style="overflow: auto;">
+			<tr>
+				<td class="col-md-2 active">部门</td>
+				<td class="col-md-4">
+					{{$depart.depart_name}}
+				</td>
+				<td class="col-md-2 active">姓名</td>
+				<td class="col-md-4">
+					{{$app_real_name}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">项目</td>
+				<td class="col-md-4">
+					<foreach name="projs" item="vo" key="k">
+	  					<eq name="recouped.proj_id" value="$vo.proj_id">{{$vo.proj_name}}</eq>
+	  				</foreach>
+				</td>
+				<td class="col-md-2 active">项目编号</td>
+				<td class="col-md-4">
+					{{$recouped.proj_no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">合作平台</td>
+				<td class="col-md-4">
+					<if condition="$mj_expenses.platform eq '微博'">
+					微博
+					<elseif condition="$mj_expenses.platform eq '微信'" />
+					微信
+					<elseif condition="$mj_expenses.platform eq '直播'" />
+					直播
+					<elseif condition="$mj_expenses.platform eq '其他'" />
+					其他
+					</if>
+				</td>
+				<td class="col-md-2 active">媒介名称</td>
+				<td class="col-md-4">
+					{{$mj_expenses.mj_name}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">付款阶段</td>
+				<td class="col-md-4">
+					{{$mj_expenses.payment_stage}}
+				</td>
+				<td class="col-md-2 active">来源</td>
+				<td class="col-md-4">
+					{{$mj_expenses.trench}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">简介</td>
+				<td class="col-md-4">
+					{{$mj_expenses.intro}}
+				</td>
+				<td class="col-md-2 active">执行时间</td>
+				<td class="col-md-4">
+					{{$mj_expenses.execute_time}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">签约方式</td>
+				<td class="col-md-4">
+					{{$mj_expenses.contract_type}}
+				</td>
+				<td class="col-md-2 active">付款时间</td>
+				<td class="col-md-4">
+					{{$mj_expenses.payment_time}}
+			</tr>
+			<tr>
+				<td class="col-md-2 active">税票</td>
+				<td class="col-md-4">
+					{{$mj_expenses.invoice}}
+				</td>
+				<td class="col-md-2 active">付款金额</td>
+				<td class="col-md-4">
+					{{$mj_expenses.payment}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">合作内容</td>
+				<td class="col-md-8" colspan="3" style="text-align: left; padding-left:50px">
+					{{$mj_expenses.cooperation}}
+				</td>
+			</tr>
+			<tr>
+				<td rowspan="2" class="active">
+					支付<br>
+					方式
+				</td>
+				<td rowspan="2" id="click_money_type"><br>
+			    	<label class="radio-inline">
+					  <input disabled="disabled" type="radio" name="borrow_way" id="cash" value="1" <if condition="$recouped.borrow_way eq '1' or $borrow.borrow_way eq ''">checked="checked"</if>> 现金
+					</label>
+					<label class="radio-inline">
+					  <input disabled="disabled" type="radio" name="borrow_way" id="transfer" value="2" <if condition="$recouped.borrow_way eq 2">checked="checked"</if>> 转账
+					</label>
+					<label class="radio-inline">
+					  <input disabled="disabled" type="radio" name="borrow_way" value="3" <if condition="$recouped.borrow_way eq 3">checked="checked"</if>> 其它
+					</label><br><br>
+					<span class="col-xs-12" id="else" <if condition="$recouped.borrow_way eq 3">style="display:block"</if>>
+			    		{{$recouped.other}}
+			    	</span>
+				</td>
+				<td class="col-md-2 active">收款人</td>
+				<td class="col-md-4">
+					<foreach name="mjsupplier" item="vo" key="k">
+						<eq name="recouped.get_id" value="$vo.sup_id">{{$vo.sup_full_name}}</eq>
+ 	  				</foreach>
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">银行</td>
+				<td class="col-md-4">
+					{{$recouped.bnk_branch}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active" rowspan="2" >借款单</td>
+				<td class="col-md-4"  rowspan="2" >
+					<foreach name="borrows" item="vo" key="k">
+						<eq name="recouped.borrow_id" value="$vo.borrow_id">{{$vo.borrow_no}}</eq>
+ 	  				</foreach>
+				</td>
+				<td class="active">银行账号</td>
+				<td>
+					{{$recouped.bnk_acct}}
+				</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">借贷金额</td>
+				<td class="col-md-4" id="borrow_tot_amt">
+					{{$recouped.borrow_tot_amt}}
+				</td>
+			</tr>
+			<tr>
+				<td class="active">上传文件</td>
+				<td class="col-md-2" colspan="3"  style="text-align: left; padding-left:50px">
+					<if condition="$money.file_url neq ''"><a href="{{$money.file_url}}" target="_blank">{{$money.file_name}}</a></if>
+				</td>
+			</tr>
+			<tr>
+				<td class="active">备注说明</td>
+				<td class="col-md-6" colspan="3" style="text-align: left; padding-left:50px">
+					{{$money.comm}}
+				</td>
+			</tr>
+			<tr id="no_border">
+				<td colspan="4">.</td>
+			</tr>
+		</table>
+		<!-- E-部门项目等 -->
+		
+		<!-- S-申请完操作 -->
+		<table class="table-striped table-bordered">
+			<tr>
+				<td class="active">申请人</td>
+				<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+				<td class="active">{{$vo}}</td>
+				</foreach>
+			</tr>
+			<tr>
+				<td>{{$apply_user.real_name}}</td>
+				<include file="./Application/Home/View/approve_banner.html" />
+			</tr>
+		</table>
+		<!-- E-申请完操作 -->
+		
+		<!-- S-提交部分 -->
+		<if condition="$is_restart eq 1">
+		<div class="edit text-center">
+			<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+		</div>
+		</if>
+		<!-- E-提交部分 -->
+	</div>
+	<!-- E-表格部分 -->	
+	
+	<!-- S-输入理由的弹出框 -->
+	<include file="./Application/Home/View/noagree.html" />
+	<!-- E-输入理由的弹出框 -->
+	
+	<!-- S-选择审批人的弹出框 -->
+	<include file="./Application/Home/View/approve.html" />
+	<!-- E-选择审批人的弹出框 -->
+	
+	<div style="text-align: center;margin-top:20px">
+		<a class="btn btn-primary" href="{{:U('Print/mj_recouped')}}?id={{$Think.get.id}}" target="_blank">&nbsp;&nbsp;去打印&nbsp;&nbsp;</a>
+		<if condition="$user_id eq '87'">
+			第{{$recouped.print_num}}次打印
+		</if>
+	</div>
+	
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$recouped.rec_id}}" id="rec_id" />
+</div>
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	var click1=true; 
+	$("#btn-success").click(function(){
+		if(click1){
+			var rec_id = $("#rec_id").val();
+			var num = $("#agree_num").val();
+			var cur_approver_id = $("#cur_approver_id").val();
+			if(confirm('确定要执行同意操作吗？')){
+				click1 = false;
+				$(".approve_users").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Recouped/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'rec_id':rec_id,'num':num,'result':1,'cur_approver_id':cur_approver_id,'option':$("#agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Recouped/mj_info')}}?id="+rec_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click1 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click1 = true;	
+			}
+		}
+	})
+	
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var num = $(this).attr("val");
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".noagree").modal('show');
+		}else{
+			$("#agree_num").val(num);
+			<if condition="$is_show_app eq 1">
+			$(".approve_users").modal('show');
+			<else/>
+			$("#btn-success").click();
+			</if>
+		}
+	});
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var rec_id = $("#rec_id").val();
+		if(click3){
+			if(confirm('确定要执行不同意操作吗？')){
+				click3 = false;
+				$(".account").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Recouped/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'rec_id':rec_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Recouped/mj_info')}}?id="+rec_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+	
+	var click2 = true;
+	$("#Restart").click(function(){
+		if(click2){
+			click2 = false;
+			if(confirm('确定要重新发启？')){
+				var rec_id = $("#rec_id").val();
+				$.ajax({
+					url:"{{:U('Recouped/restart')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'rec_id':rec_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Recouped/index')}}");
+						}else{
+							alert(data.msg);
+							click2 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click2 = true;
+			}
+		}
+	});
+	
+	var click4 = true;
+	$(".btn-warning").click(function(){
+		if(click4){
+			click4 = false;
+			if(confirm('确定要返回操作吗？')){
+				var rec_id = $("#rec_id").val();
+				$.ajax({
+					url:"{{:U('Recouped/back')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'obj_id':rec_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Recouped/mj_info')}}?id="+rec_id);
+						}else{
+							alert(data.msg);
+							click4 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click4 = true;
+			}
+		}
+	})
+});
+</script>

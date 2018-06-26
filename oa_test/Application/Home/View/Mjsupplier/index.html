@@ -1,0 +1,92 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/supplier.js"></script>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li class="active">供应商库</li>
+			</ol>
+			<!-- S-搜索框部分 -->
+			<div class="search_main form-inline">
+				<div style="float:left;">
+					<a id="add_btn" class="btn btn-primary" href="{{:U('Mjsupplier/add')}}">&nbsp;&nbsp;新增&nbsp;&nbsp;</a>
+				</div>
+				<div style="float:right;">
+					<div class="form-group">
+						<form name="searchform" action="{{:U('Mjsupplier/index')}}" method="post">
+						   <div class="input-group">
+						      <input type="text" placeholder="供应商名称/简称" value="{{$search.sup_full_name}}" name="sup_full_name" class="form-control">
+						      <span class="input-group-btn">
+						        <button class="btn btn-success"  type="submit">搜索</button>
+						      </span>
+						    </div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- E-搜索框部分 -->
+			<!-- S-表格部分 -->
+			<div class="table">
+				<div class="min-width1000">	
+					<table class="table-striped table-bordered table-hover ">
+						<colgroup>
+							<col width="15%">
+							<col width="15%">
+							<col width="10%">
+							<col width="15%">
+							<col width="15%">
+							<col width="15%">
+							<col width="10%">
+						</colgroup>
+						<thead>
+							<tr id="table_head">
+								<th>供应商名称</th>
+								<th>简称</th>
+								<th>收款方式</th>
+							    <th>所属银行</th>
+								<th>银行账号</th>
+								<th>其他信息</th>
+							    <th>操作</th>
+							</tr>
+						</thead>
+						<tbody>  
+							<volist name="list" id="vo">
+		                    <tr class="table_bd active">
+								<td>
+									{{$vo.sup_full_name}}
+								</td>
+								<td>
+									{{$vo.sup_short_name}}							
+								</td>
+								<td>
+									{{$vo.pay_method}}							
+								</td>
+								<td>
+									{{$vo.bnk_branch}}
+								</td>
+								<td>
+									{{$vo.bnk_acct}}
+								</td>
+								<td>
+									{{$vo.other}}
+								</td>
+								<td class="operate">
+									<a href="{{:U('Mjsupplier/add',array('id'=>$vo['sup_id']))}}" class="edit">修改</a>
+									<a href="javascript:void(0)" value="{{$vo.sup_id}}" url="{{:U('Mjsupplier/del')}}" class="deleat">删除</a>
+								</td>
+							</tr> 
+							</volist> 
+						</tbody>
+					</table>
+				
+				</div>
+			</div>
+			<div class="Pagination">{{$page}}</div>
+			
+			<!-- E-表格部分 -->
+
+		</div>
+		<!-- E-页面主要部分 -->

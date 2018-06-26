@@ -1,0 +1,110 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">用户库</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<php>if(check_permission_left('User', 'handle')){</php>
+	<div class="search_main form-inline">
+		<div style="float:left;">
+			<a id="add_btn" class="btn btn-primary mg-right-10" href="{{:U('User/add')}}">&nbsp;&nbsp;新增&nbsp;&nbsp;</a>
+			<a id="add_btn" class="btn btn-primary mg-right-10" href="{{:U('Depart/index')}}">&nbsp;&nbsp;部门管理&nbsp;&nbsp;</a>
+			<if condition="$user_lvl_id eq '1'">
+			<a id="add_btn" class="btn btn-primary mg-right-10" href="{{:U('Permissions/index')}}">&nbsp;&nbsp;权限管理&nbsp;&nbsp;</a>
+			</if>
+		</div>
+		<div style="float:right;">
+			<div class="form-group">
+			    <div class="input-group">
+			      <input type="text" class="form-control" id="keyword" value="{{$Think.get.keyword}}" placeholder="请输入用户名/真实姓名">
+			      <span class="input-group-btn">
+			        <button class="btn btn-success" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<php>}</php>
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<thead>
+					<tr id="table_head">
+						<th>用户名</th>
+						<th>真实姓名</th>
+						<th>手机</th>
+					    <th>所在部门</th>
+					    <th>级别</th>
+					    <th>剩余年假</th>
+					    <th>创建时间</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+	                <foreach name="list" item="vo" key="k">   
+	                <tr class="table_bd active">
+						<td>{{$vo.user_name}}</td>
+						<td>{{$vo.real_name}}</td>
+						<td>{{$vo.phone}}</td>
+						<td>{{$vo.depart_name}}</td>
+						<td>{{$vo.lvl_name}}</td>
+						<td>{{$vo.nx_vacation}}</td>
+						<td>{{$vo.crt_time}}</td>
+						<td class="operate" id="{{$vo.user_id}}">
+							<a href="{{:U('User/add')}}?user_id={{$vo.user_id}}" class="edit">修改</a>
+							<php>if(check_permission_left('User', 'handle')){</php>
+								<a href="javascript:;" class="deleat">删除</a>
+							<php>}</php>
+							<if condition="$user_lvl_id eq '1'">
+								<a href="{{:U('Permissions/set')}}?user_id={{$vo.user_id}}" class="edit">权限设置</a>
+							</if>
+						</td>
+					</tr> 
+					</foreach>    
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var user_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('User/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'user_id':user_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('User/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#search").click(function(){
+		window.location.href="{{:U('User/index')}}?keyword="+$("#keyword").val();
+	})
+});
+</script>

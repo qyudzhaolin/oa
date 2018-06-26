@@ -1,0 +1,137 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_add.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_list.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script type="text/javascript" src="__JS__/budget_list.js"></script>
+<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="index.html">项目预算单开票统计</a></li>
+			  <li class="active">开票统计</li>
+			</ol>
+
+			<!-- S-表格部分 -->	
+			<div class="table main">
+				<!-- S-智源体系部分 -->
+				<div class="po_content">
+					<notempty name="po_list">
+					<foreach name="po_list" item="vo" key="k">
+					<table class="table table-bordered setup po_table" style="display: table; width:800px" >
+					<tr>
+						<td class="active2" rowspan="3">
+							PO单号
+						</td>
+						<td colspan="1" rowspan="3">
+							<input class="form-control input-sm po_no" value="{{$vo.po_no}}" type="text" <if condition='$role eq 2'>disabled="disabled"</if>>
+						</td>
+						<td class="active2">PO金额</td>
+						<td><input class="form-control input-sm po_money " value="{{$vo.po_money}}" type="text" onkeyUp="addPOMoney(this)" onblur="addPOMoney(this)" <if condition='$role eq 2'>disabled="disabled"</if>></td>
+						<td class="active2">快递单号</td>
+						<td><input class="form-control input-sm express_no" value="{{$vo.express_no}}" type="text" <if condition='$role eq 2'>disabled="disabled"</if>></td>
+					</tr>
+					<tr>
+						<td class="active2">开票金额</td>
+						<td><input class="form-control input-sm kp_money" value="{{$vo.kp_money}}" type="text" onkeyUp="addKPMoney(this)" onblur="addKPMoney(this)" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+						<td class="active2">开票日期</td>
+						<td><input class="form-control kp_date" placeholder="日期" id="kp_date" name="kp_date" onclick="WdatePicker()" value="{{$vo.kp_date}}" type="text" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+					</tr>
+					<tr>
+  						<td class="active2">回款金额</td><td><input class="form-control input-sm back_money" value="{{$vo.back_money}}" type="text" onkeyUp="addBackMoney(this)" onblur="addBackMoney(this)" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+						<td class="active2">回款日期</td><td><input class="form-control back_date" placeholder="日期" name="back_date" onclick="WdatePicker()" value="{{$vo.back_date}}" type="text" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+					</tr>
+					</table>
+					<br/>
+					</foreach>
+					<else/>
+					<table class="table table-bordered setup po_table" style="display: table; width:800px" >
+					<tr>
+						<td class="active2" rowspan="3">
+							PO单号
+						</td>
+						<td colspan="1" rowspan="3">
+							<input class="form-control input-sm po_no" value="" type="text" <if condition='$role eq 2'>disabled="disabled"</if>>
+						</td>
+						<td class="active2">PO金额</td>
+						<td><input class="form-control input-sm po_money" value="" type="text" onkeyUp="addPOMoney(this)" onblur="addPOMoney(this)" <if condition='$role eq 2'>disabled="disabled"</if>></td>
+						<td class="active2">快递单号</td>
+						<td><input class="form-control input-sm express_no" value="" type="text" <if condition='$role eq 2'>disabled="disabled"</if>></td>
+					</tr>
+					<tr>
+						<td class="active2">开票金额</td>
+						<td><input class="form-control input-sm kp_money" value="" type="text" onkeyUp="addKPMoney(this)" onblur="addKPMoney(this)" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+						<td class="active2">开票日期</td>
+						<td><input class="form-control kp_date" placeholder="日期" id="kp_date" name="kp_date" onclick="WdatePicker()" value="" type="text" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+					</tr>
+					<tr>
+  						<td class="active2">回款金额</td><td><input class="form-control input-sm back_money" value="" type="text" onkeyUp="addBackMoney(this)" onblur="addBackMoney(this)" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+						<td class="active2">回款日期</td><td><input class="form-control back_date" placeholder="日期" name="back_date" onclick="WdatePicker()" value="" type="text" <if condition='$role eq 1'>disabled="disabled"</if>></td>
+					</tr>
+					</table>
+					<br/>			
+					</notempty>
+				</table>
+				</div>
+				<table class="table table-bordered setup" style="display: table; width:800px">
+					<tr>
+						<td colspan="2" class="z_po_total">PO金额总计：{{$budget.po_money}}</td>
+						<td colspan="2" class="z_kp_total">开票金额总计：{{$budget.kp_money}}</td>
+						<td colspan="2" class="z_back_total">回款金额总计：{{$budget.back_money}}</td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<input class="btn btn-primary btn-sm" id="po_addBtn" value="&nbsp;&nbsp;新增&nbsp;&nbsp;" type="button">
+							<input class="btn btn-primary btn-sm" id="Submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" type="button">
+						</td>
+					</tr>
+					
+				</table>
+				<!-- E-智源体系部分 -->
+
+			</div>
+			<!-- E-表格部分 -->	
+			
+			<input type="hidden" value="{{$budget.bud_id}}" id="bud_id" />
+			<input type="hidden" value="{{$role}}" id="role" />
+		</div>
+		<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	var click=true;
+	$("#Submit").click(function(event) {
+		var bud_id = $("#bud_id").val();
+		var d_str = "";
+		$(".po_table").each(function(i) {
+			var po_no = $(this).find(".po_no").val();
+			var po_money = $(this).find(".po_money").val();
+			var express_no = $(this).find(".express_no").val();
+			var kp_money = $(this).find(".kp_money").val();
+			var kp_date = $(this).find(".kp_date").val();
+			var back_money = $(this).find(".back_money").val();
+			var back_date = $(this).find(".back_date").val();
+			if(po_no.length>0 || po_money.length>0 || express_no.length>0 || kp_money.length>0 || kp_date.length>0 || back_money.length>0 || back_date.length>0){
+				d_str += po_no+"^"+po_money+"^"+express_no+"^"+kp_money+"^"+kp_date+"^"+back_money+"^"+back_date+";"
+			}
+		})
+		
+		if(click){
+			click = false;
+			$("#loading").show();
+			$.ajax({
+				url:"{{:U('Budget/add_po')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'bud_id':bud_id,"d_str":d_str},
+				success:function(data){
+					$("#loading").hide();
+					if(data.status == 1){
+						alert("操作成功！",location.href);
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+});
+</script>

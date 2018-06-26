@@ -1,0 +1,147 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/sp_assignment.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">审批任务</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main form-inline">
+		<!-- 右 -->
+		<div style="float:right;">			
+			<div class="form-group">
+				<label for="exampleInputName2">状态：</label>
+		        <select name="" id="way_select" class="form-control">
+					<option value="0">全部</option>
+				   	<option value="1" <if condition="$way eq 1">selected="selected"</if>>已审核</option>
+				   	<option value="2" <if condition="$way eq 2">selected="selected"</if>>未审核</option>
+			   </select>
+		    </div>
+		    <div class="form-group">
+				<label for="exampleInputName2">状态：</label>
+		        <select name="" id="type_select" class="form-control">
+					<option value="0">全部</option>
+				   	<option value="1" <if condition="$Think.get.type eq 1">selected="selected"</if>>预算单</option>
+				   	<option value="2" <if condition="$Think.get.type eq 2">selected="selected"</if>>借款单</option>
+				   	<option value="3" <if condition="$Think.get.type eq 3">selected="selected"</if>>项目报销单</option>
+				   	<option value="4" <if condition="$Think.get.type eq 4">selected="selected"</if>>还款单</option>
+				   	<option value="5" <if condition="$Think.get.type eq 5">selected="selected"</if>>预算变更单</option>
+				   	<option value="6" <if condition="$Think.get.type eq 6">selected="selected"</if>>个人报销单</option>
+				   	<option value="7" <if condition="$Think.get.type eq 7">selected="selected"</if>>TB报销单</option>
+		  		</select>
+		    </div>
+		    <div class="form-group">
+		    	<div class="input-group">
+			      <input type="text" class="form-control" placeholder="单据编号/项目名称" id="keyword" value="">
+			      <span class="input-group-btn">
+			        <button class="btn btn-success" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+		    </div>
+		</div>
+		<!-- 右 -->		
+	</div>
+	<!-- E-搜索框部分 -->
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="8%">
+					<col width="10%">
+					<col width="8%">
+					<col width="15%">
+					<col width="15%">
+					<col width="10%">
+					<col width="10%">
+					<col width="5%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>单据类型</th>
+						<th>单据编号</th>
+						<th>申请人</th>
+						<th>所属项目</th>
+					    <th>项目编号</th>
+					    <th>审核状态</th>
+					    <th>申请时间</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+					<foreach name="list" item="vo" key="k">   
+	                   <tr class="table_bd active">
+						<td>{{$vo.aprv_type_name}}</td>
+						<if condition="$is_mobile eq 1"><td style="word-wrap:break-word;word-break:break-all;"><div style="width:100px">{{$vo.aprv_no}}</div></td><else/><td>{{$vo.aprv_no}}</td></if>
+						<td>{{$vo.real_name}}</td>
+						<td><empty name="vo.proj_name">--<else/>{{$vo.proj_name}}</empty></td>
+						<td><empty name="vo.proj_no">--<else/>{{$vo.proj_no}}</empty></td>
+						<td>{{$vo.result_info}}</td>
+						<td>{{$vo.crt_time}}</td>
+						<td class="operate">
+							<if condition="$vo.aprv_type eq '1'">
+								<a href="{{:U('Budget/info')}}?id={{$vo.obj_id}}" class="edit">详情</a>
+							<elseif condition="$vo.aprv_type eq '2'"/>
+								<a href="{{:U('Borrow/info')}}?id={{$vo.obj_id}}" class="edit">详情</a>
+							<elseif condition="$vo.aprv_type eq '3'"/>
+								<a href="{{:U('Recouped/info')}}?id={{$vo.obj_id}}" class="edit">详情</a>
+							<elseif condition="$vo.aprv_type eq '4'"/>
+								<a href="{{:U('Refund/info')}}?id={{$vo.obj_id}}" class="edit">详情</a>
+							<elseif condition="$vo.aprv_type eq '5'"/>
+								<a href="{{:U('Modifybudget/info')}}?id={{$vo.obj_id}}" class="edit">详情</a>
+							<elseif condition="$vo.aprv_type eq '6'"/>
+								<a href="{{:U('Pfrecouped/info')}}?id={{$vo.obj_id}}" class="edit">详情</a>
+							</if>
+						</td>
+					</tr>    
+				  </foreach> 
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->	
+</div>
+<!-- E-页面主要部分 -->
+
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var borrow_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Borrow/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'borrow_id':borrow_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Borrow/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#search").click(function(){
+		window.location.href="{{:U('Approve/index')}}?keyword="+$("#keyword").val()+"&way="+$("#way_select").val()+"&type="+$("#type_select").val();
+	})
+	
+	$("#way_select").change(function(){
+		window.location.href="{{:U('Approve/index')}}?way="+$(this).val()+"&type="+$("#type_select").val();
+	})
+	
+	$("#type_select").change(function(){
+		window.location.href="{{:U('Approve/index')}}?way="+$("#way_select").val()+"&type="+$(this).val();
+	})
+});
+</script>

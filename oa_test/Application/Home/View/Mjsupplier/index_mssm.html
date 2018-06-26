@@ -1,0 +1,135 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/supplier.js"></script>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent" style="overflow-x: scroll;">
+			<ol class="breadcrumb">
+			  <li class="active"><a  href="{{:U('Mjsupplier/index')}}">媒介供应商库</a></li>
+			</ol>
+			<!-- S-搜索框部分 -->
+			<div class="search_main">
+				<a id="add_btn" class="btn btn-primary" href="{{:U('Mjsupplier/mssmadd')}}?type={{$Think.get.type}}">&nbsp;&nbsp;新增&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=1')}}">&nbsp;&nbsp;美妆&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=2')}}">&nbsp;&nbsp;时尚&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=3')}}">&nbsp;&nbsp;生活方式&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=4')}}">&nbsp;&nbsp;明星&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=weibo')}}">&nbsp;&nbsp;微博草根&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=wechatman')}}">&nbsp;&nbsp;微信达人&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=wechat')}}">&nbsp;&nbsp;微信草根&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=media')}}">&nbsp;&nbsp;媒体&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=app')}}">&nbsp;&nbsp;APP&nbsp;&nbsp;</a>
+				<a id="add_btn" class="btn btn-primary mg-left-10" href="{{:U('Mjsupplier/mssm?type=live')}}">&nbsp;&nbsp;直播达人&nbsp;&nbsp;</a>
+				<form name="searchform" action="{{:U('Mjsupplier/mssm')}}" method="get">
+				<div class="search_input">
+					<div class="col-lg-9">
+					    <div class="input-group">
+					      <input type="hidden" value="{{$Think.get.type}}" name="type" />
+					      <input type="text" placeholder="供应商名称" value="{{$search.sup_full_name}}" name="sup_full_name" class="form-control">
+					      <span class="input-group-btn">
+					        <button class="btn btn-default"  type="submit">搜索</button>
+					      </span>
+					    </div>
+				    </div>
+				</div>
+				</form>
+			</div>
+			<!-- E-搜索框部分 -->
+			<!-- S-表格部分 -->
+			<div class="table" style="width:200%;max-width:200%">
+				
+				<table class="table table-striped table-bordered table-hover ">
+					<colgroup>
+						<col width="5%">
+						<col width="5%">
+						<col width="4%">
+						<col width="5%">
+						<col width="8%">
+						<col width="4%">
+						<col width="4%">
+						<col width="4%">
+						<col width="10%">
+						<col width="10%">
+						<col width="13%">
+						<col width="15%">
+						<col width="6%">
+					</colgroup>
+					<thead>
+						<tr id="table_head">
+							<th>名称</th>
+							<th>领域/职业</th>
+							<th>地区</th>
+						    <th>粉丝(万)</th>
+						    <th>价格备注</th>
+						    <th>转发数</th>
+						    <th>评论数</th>
+						    <th>互动率</th>
+						    <th>联系方式</th>
+						    <th>收货地址</th>
+							<th>收款信息</th>
+							<th>账户信息</th>
+						    <th>操作</th>
+						</tr>
+					</thead>
+					<tbody>  
+						<volist name="list" id="vo">
+	                    <tr class="table_bd active">
+							<td>
+								{{$vo.sup_full_name}}
+							</td>
+							<td>
+								{{$vo.profession}}							
+							</td>
+							<td>
+								{{$vo.area}}							
+							</td>
+							<td>
+								{{$vo.fans_num}}
+							</td>
+							<td>
+								{{$vo.price_mark}}
+							</td>
+							<td>
+								{{$vo.transmit_num}}							
+							</td>
+							<td>
+								{{$vo.discuss_num}}
+							</td>
+							<td>
+								{{$vo.interact}}
+							</td>
+							<td>
+								{{$vo.contact_way}}
+							</td>
+							<td>
+								{{$vo.address}}							
+							</td>
+							<td>
+							    <if condition="$vo.pay_method eq '1'">
+							    收款人：{{$vo.payee}}<br/>
+							    银行：{{$vo.bnk_branch}}<br/>	
+							    账号：{{$vo.bnk_acct}}<br/>		
+							    <elseif condition="$vo.pay_method eq '2'"/>
+							    现金
+							    <elseif condition="$vo.pay_method eq '3'"/>
+							    {{$vo.other}}
+							    </if>
+							</td>
+							<td>
+								{{$vo.account_info}}
+							</td>
+							<td class="operate">							
+								<a href="{{:U('Mjsupplier/mssmadd',array('id'=>$vo['sup_id'],'type'=>$vo['type']))}}" class="edit">修改</a>
+								<a href="javascript:void(0)" value="{{$vo.sup_id}}" url="{{:U('Mjsupplier/mssmdel',array('type'=>$vo['type']))}}" class="deleat">删除</a>
+							</td>
+						</tr> 
+						</volist> 
+					</tbody>
+				</table>
+				
+			</div>
+			<div class="Pagination">{{$page}}</div>
+			<!-- E-表格部分 -->
+		</div>
+		<!-- E-页面主要部分 -->

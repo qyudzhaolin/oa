@@ -1,0 +1,770 @@
+<include file="./Application/Home/View/header.html" />
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<style>
+	.breadcrumb{padding: 8px 0;}
+	.over-hidden{overflow: hidden;}
+	.border_bottom{
+		border-top: none!important;
+		border-left: none!important;
+		border-right: none!important;
+	}
+	.table{
+		margin-bottom: 0;
+	}
+</style>
+	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent col-xs-12">
+			<!-- <ol class="breadcrumb">
+				<li><a href="#">离职信息填写</a></li>
+				<li class="active">离职申请</li>
+			</ol> -->
+			<div class="content_main">
+				<div class="table">
+					<form name="forms" id="forms" action="{{:U('Outweb/updateOffer')}}" method="post">
+					<div style="width:960px;margin:0 auto;">
+						<h1 class="text-center ">员工基本情况登记表</h1>
+						<!-- S-入职时间 -->
+						<div class="timer col-xs-12">
+							<div class=" pull-right">
+							   <form class="form-inline">
+									<div class=" col-xs-6">
+								    正式入职日期：
+									</div>
+									<div class=" col-xs-6">
+								    <input type="text" class="form-control border_bottom" value="{{$info.entry_date}}" disabled>
+									</div>
+								</form>
+							</div>
+						</div>
+						<!-- E-个人信息 -->
+						<table class="table table-bordered table-hover">
+							<colgroup>
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+							</colgroup>
+							<tr>
+								<td colspan="1" class="info text-right">姓名</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" name="base[name]"  id="name" value="{{$info.name}}" class="form-control">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">性别</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<label class="radio-inline">
+											<input type="radio" name="base[sex]" id="optionsRadios3" value="女" <eq name="info.sex" value="女">checked</eq>> 女
+										</label>
+										<label class="radio-inline">
+											<input type="radio" name="base[sex]" id="optionsRadios4"  value="男" <eq name="info.sex" value="男">checked</eq>> 男
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">英文名</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" name="base[en_name]" id="base[en_name]" value="{{$info.en_name}}">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">微信号</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" id="wechat" name="base[wechat]" value="{{$info.wechat}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">出生日期</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" id="birthday" name="base[birthday]" value="{{$info.birthday}}"  onclick="WdatePicker()" value="{{$info.birthday}}">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">学历</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" name="base[education]" id="education" value="{{$info.education}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">籍贯</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" name="base[birthplace]" id="birthplace" value="{{$info.birthplace}}">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">婚姻状况</td>
+								<td colspan="2">
+									<label class="radio-inline">
+										<input type="radio" name="base[is_marriage]" id="optionsRadios3" value="已婚" <eq name="info.is_marriage" value="已婚">checked</eq>> 已婚
+									</label>
+									<label class="radio-inline">
+										<input type="radio" name="base[is_marriage]" id="optionsRadios4"  value="未婚" <eq name="info.is_marriage" value="未婚">checked</eq>> 未婚
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">参加工作时间</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" id="worktime" name="base[worktime]" value="{{$info.worktime}}" onclick="WdatePicker()" >
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">联系电话</td>
+								<td colspan="2">
+									<div class="col-xs-8">				
+										<input type="text" class="form-control" id="phone" name="base[phone]" value="{{$info.phone}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">公积金账号</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" id="fund_account" name="base[fund_account]" value="{{$info.fund_account}}">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">身份证号码</td>
+								<td colspan="2">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" id="idcard" name="base[idcard]" value="{{$info.idcard}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">户籍地址</td>
+								<td colspan="5">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" id="birth_address" name="base[birth_address]" value="{{$info.birth_address}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">现居住地址</td>
+								<td colspan="5">
+									<div class="col-xs-8">										
+										<input type="text" class="form-control" id="now_address" name="base[now_address]" value="{{$info.now_address}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">入职部门</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control"  value="{{$info.depart}}" disabled>
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">入职职位</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" value="{{$info.job}}" disabled>
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">培训导师</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" value="{{$info.ojt_name}}" disabled>
+									</div>
+								</td>
+							</tr>
+						</table>
+						<!-- E-个人信息 -->
+						<!-- E-教育和工作履历： -->
+						<table class="table table-bordered table-hover" id="school-table">
+							<colgroup>
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+							</colgroup>
+							
+							<tr>
+								<td colspan="6" class="warning text-center">学习经历 （ 由最高学历起填 ）</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="info text-center">起止日期</td>
+								<td colspan="2" class="info text-center">毕业学校</td>
+								<td colspan="1" class="info text-center">专业</td>
+								<td colspan="1" class="info text-center">学历</td>
+							</tr>
+							<notempty name="otherinfo.education">
+							<volist name="otherinfo.education" id="vo">
+								<tr>
+									<td colspan="2" class="text-center">
+										<div class="col-xs-6">		
+											<input type="text" class="form-control" name="education[{{$key}}][start_date]" placeholder="起始时间" onclick="WdatePicker()" value="{{$vo.start_date}}">
+										</div>
+										<div class="col-xs-6">		
+											<input type="text" class="form-control" name="education[{{$key}}][end_date]" placeholder="结束时间" onclick="WdatePicker()" value="{{$vo.end_date}}">
+										</div>
+									</td>
+									<td colspan="2" class="text-center">
+										<div class="col-xs-12">										
+											<input type="text" class="form-control" name="education[{{$key}}][name]" value="{{$vo.name}}">
+										</div>
+									</td>
+									<td colspan="1" class="text-center">
+										<div class="col-xs-12">										
+											<input type="text" class="form-control" name="education[{{$key}}][major]" value="{{$vo.major}}">
+										</div>
+									</td>
+									<td colspan="1" class="text-center">
+										<div class="col-xs-12">										
+											<input type="text" class="form-control" name="education[{{$key}}][level]" value="{{$vo.level}}"> 
+										</div>
+									</td>
+								</tr>
+							</volist>
+							<else/>
+							<tr>
+								<td colspan="2" class="text-center">
+									<div class="col-xs-6">		
+										<input type="text" class="form-control" name="education[0][start_date]" placeholder="起始时间" onclick="WdatePicker()">
+									</div>
+									<div class="col-xs-6">		
+										<input type="text" class="form-control" name="education[0][end_date]" placeholder="结束时间" onclick="WdatePicker()">
+									</div>
+								</td>
+								<td colspan="2" class="text-center">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="education[0][name]">
+									</div>
+								</td>
+								<td colspan="1" class="text-center">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="education[0][major]">
+									</div>
+								</td>
+								<td colspan="1" class="text-center">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="education[0][level]">
+									</div>
+								</td>
+							</tr>
+							</notempty>
+							<tr id="school">
+								<td colspan="6" class="text-center">
+									<button type="button" class="btn btn-info">&nbsp;&nbsp;新增&nbsp;&nbsp;</button>
+								</td>
+							</tr>
+							</table>
+							<table class="table table-bordered table-hover">
+							<tr>
+								<td colspan="1" class="info text-right">英文能力</td>
+								<php>$language = $otherinfo['language'];</php>
+								<td colspan="2">
+									<label class="radio-inline">
+									  <input type="radio" name="language[english]" id="inlineRadio1" value="精通" <eq name="language.english" value="精通">checked</eq>> 精通
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="language[english]" id="inlineRadio2" value="一般" <eq name="language.english" value="一般">checked</eq>> 一般
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="language[english]" id="inlineRadio3" value="不懂" <eq name="language.english" value="不懂">checked</eq>> 不懂
+									</label>
+								</td>
+								<td colspan="1" class="info text-center">第二语言: <input type="text" class="form-control" name="language[second][name]" value="{{$language.second.name}}"></td>
+								<td colspan="2">
+									<label class="radio-inline">
+									  <input type="radio" name="language[second][level]" id="inlineRadio1_1" value="精通" <eq name="language.second.level" value="精通">checked</eq>> 精通
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="language[second][level]" id="inlineRadio2_2" value="一般" <eq name="language.second.level" value="一般">checked</eq>> 一般
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="language[second][level]" id="inlineRadio3_3" value="不懂" <eq name="language.second.level" value="不懂">checked</eq>> 不懂
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-right">专业资格证书</td>
+								<td colspan="2">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="professional_cert" value="{{$otherinfo.professional_cert}}">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">驾驶执照</td>
+								<td colspan="2">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="driving_licence" value="{{$otherinfo.driving_licence}}">
+									</div>
+								</td>
+							</tr>
+							</table>
+						<table id="work-table" class="table table-bordered table-hover">
+							<tr>
+								<td colspan="6" class="warning text-center">工作履历：（从最近的工作起填）</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="info text-center">起止日期</td>
+								<td colspan="2" class="info text-center">工作单位</td>
+								<td colspan="2" class="info text-center">部门与职务</td>
+							</tr>
+							<notempty name="otherinfo.work">
+							<volist name="otherinfo.work" id="vo" >
+								<tr>
+									<td colspan="2" class="text-center">
+										<div class="col-xs-6">		
+											<input type="text" class="form-control" placeholder="起始时间" onclick="WdatePicker()" name="work[{{$key}}][start_date]" value="{{$vo.start_date}}">
+										</div>
+										<div class="col-xs-6">		
+											<input type="text" class="form-control" placeholder="结束时间" onclick="WdatePicker()" name="work[{{$key}}][end_date]"  value="{{$vo.end_date}}">
+										</div>
+									</td>
+									<td colspan="2" class="text-center">
+										<div class="col-xs-12">										
+											<input type="text" class="form-control" name="work[{{$key}}][company]" value="{{$vo.company}}" value="{{$vo.company}}">
+										</div>
+									</td>
+									<td colspan="2" class="text-center">
+										<div class="col-xs-12">										
+											<input type="text" class="form-control" name="work[{{$key}}][depart]" value="{{$vo.depart}}">
+										</div>
+									</td>
+								</tr>
+							</volist>
+							<else/>
+							<tr>
+								<td colspan="2" class="text-center">
+									<div class="col-xs-6">		
+										<input type="text" class="form-control" placeholder="起始时间" onclick="WdatePicker()" name="work[0][start_date]">
+									</div>
+									<div class="col-xs-6">		
+										<input type="text" class="form-control" placeholder="结束时间" onclick="WdatePicker()" name="work[0][end_date]">
+									</div>
+								</td>
+								<td colspan="2" class="text-center">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="work[0][company]">
+									</div>
+								</td>
+								<td colspan="2" class="text-center">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="work[0][depart]">
+									</div>
+								</td>
+							</tr>
+							</notempty>
+							<tr id="work">
+								<td colspan="6" class="text-center">
+									<button type="button" class="btn btn-info">&nbsp;&nbsp;新增&nbsp;&nbsp;</button>
+								</td>
+							</tr>
+						</table>
+						<!-- E-教育和工作履历： -->
+						<!-- S-家庭主要成员及社会关系 -->
+						<table class="table table-bordered table-hover" id="family-table">
+							<colgroup>
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+								<col width="16.5%">
+							</colgroup>
+							<tr>
+								<td colspan="6" class="warning text-center">家庭主要成员及社会关系</td>
+							</tr>	
+							<tr>
+								<td colspan="1" class="info text-right">紧急联系人姓名</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="urgency_contact" value="{{$otherinfo.urgency_contact}}">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">关系</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="urgency_relation" value="{{$otherinfo.urgency_relation}}">
+									</div>
+								</td>
+								<td colspan="1" class="info text-right">联系电话</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="urgency_phone" value="{{$otherinfo.urgency_phone}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="info text-center">姓 名</td>
+								<td colspan="1" class="info text-center">关系</td>
+								<td colspan="2" class="info text-center">工作单位</td>
+								<td colspan="1" class="info text-center">职 务</td>
+								<td colspan="1" class="info text-center">联系电话</td>
+							</tr>
+							<notempty name="otherinfo.family">
+							<volist name="otherinfo.family" id="vo">
+							<tr>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[{{$key}}][name]" value="{{$vo.name}}">
+									</div>
+								</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[{{$key}}][relation]" value="{{$vo.relation}}">
+									</div>
+								</td>
+								<td colspan="2">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[{{$key}}][company]" value="{{$vo.company}}">
+									</div>
+								</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[{{$key}}][job]" value="{{$vo.job}}">
+									</div>
+								</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[{{$key}}][phone]" value="{{$vo.phone}}">
+									</div>
+								</td>
+							</tr>
+							</volist>
+							<else/>
+							<tr>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[0][name]">
+									</div>
+								</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[0][relation]">
+									</div>
+								</td>
+								<td colspan="2">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[0][company]">
+									</div>
+								</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[0][job]">
+									</div>
+								</td>
+								<td colspan="1">
+									<div class="col-xs-12">										
+										<input type="text" class="form-control" name="family[0][phone]">
+									</div>
+								</td>
+							</tr>
+							</notempty>
+							<tr id="family">
+								<td colspan="6" class="text-center">
+									<button type="button" class="btn btn-info">&nbsp;&nbsp;新增&nbsp;&nbsp;</button>
+								</td>
+							</tr>
+						</table>
+
+						<table class="table table-bordered table-hover">
+							<colgroup>
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+							</colgroup>
+							<tr>
+								<td rowspan="8" colspan="1" class="info text-center">其<br>他<br>个<br>人<br>资<br>料</td>
+							</tr>
+							<tr class="else">
+							<php>$other = $otherinfo['other'];</php>
+								<td colspan="2">1、在以往工作中是否受过处分？</td>
+								<td colspan="5" class="text-center">
+									<label class="radio-inline">
+									  <input type="radio" name="other[1][checked]" id="inlineRadio1" value="是" <eq name="other.1.checked" value="是">checked</eq>> 是
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="other[1][checked]" id="inlineRadio1" value="否" <eq name="other.1.checked" value="否">checked</eq>> 否
+									</label>
+									<div class="col-xs-12" <empty name="other.1.desc">style="display:none;"</empty>>									
+										<input type="text" name="other[1][desc]" class="form-control" placeholder="请详细说明" value="{{$other.1.desc}}">
+									</div>
+								</td>
+							</tr>
+							<tr class="else">
+								<td colspan="2">2、是否受过行政处罚或有过违法犯罪行为？</td>
+								<td colspan="5" class="text-center">
+									<label class="radio-inline">
+									  <input type="radio" name="other[2][checked]" id="inlineRadio1" value="是" <eq name="other.2.checked" value="是">checked</eq>> 是
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="other[2][checked]" id="inlineRadio1" value="否" <eq name="other.2.checked" value="否">checked</eq>> 否
+									</label>
+									<div class="col-xs-12" <empty name="other.2.desc">style="display:none;"</empty>>										
+										<input type="text" name="other[2][desc]" class="form-control" placeholder="请详细说明" value="{{$other.2.desc}}">
+									</div>
+								</td>
+							</tr>
+							<tr class="else">
+								<td colspan="2">3、是否患有慢性或传染性疾病或女性在三期内？</td>
+								<td colspan="5" class="text-center">
+									<label class="radio-inline">
+									  <input type="radio" name="other[3][checked]" id="inlineRadio1" value="是" <eq name="other.3.checked" value="是">checked</eq>> 是
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="other[3][checked]" id="inlineRadio1" value="否" <eq name="other.3.checked" value="否">checked</eq>> 否
+									</label>
+									<div class="col-xs-12" <empty name="other.3.desc">style="display:none;"</empty>>										
+										<input type="text" name="other[3][desc]" class="form-control" placeholder="已婚未孕/已婚已孕" value="{{$other.3.desc}}">
+									</div>
+								</td>
+							</tr>
+
+							<tr class="else">
+								<td colspan="2">4、是否具有潜在疾病、残疾、职业病、肝病、肺病等？</td>
+								<td colspan="5" class="text-center">
+									<label class="radio-inline">
+									  <input type="radio" name="other[4][checked]" id="inlineRadio1" value="是" <eq name="other.4.checked" value="是">checked</eq>> 是
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="other[4][checked]" id="inlineRadio1" value="否" <eq name="other.4.checked" value="否">checked</eq>> 否
+									</label>
+									<div class="col-xs-12" <empty name="other.4.desc">style="display:none;"</empty>>										
+										<input type="text"  name="other[4][desc]"  class="form-control" placeholder="请详细说明" value="{{$other.4.desc}}">
+									</div>
+								</td>
+							</tr>
+							<tr class="else">
+								<td colspan="2">5、是否与其他单位有未到期的劳动合同</td>
+								<td colspan="5" class="text-center">
+									<label class="radio-inline">
+									  <input type="radio" name="other[5][checked]" id="inlineRadio1" value="是" <eq name="other.5.checked" value="是">checked</eq>> 是
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="other[5][checked]" id="inlineRadio1" value="否" <eq name="other.5.checked" value="否">checked</eq>> 否
+									</label>
+									<div class="col-xs-12" <empty name="other.5.desc">style="display:none;"</empty>>										
+										<input type="text" name="other[5][desc]" class="form-control" placeholder="请详细说明" value="{{$other.5.desc}}">
+									</div>
+								</td>
+							</tr>
+							<tr class="else">
+								<td colspan="2">6、是否有重大疾病史？</td>
+								<td colspan="5" class="text-center">
+									<label class="radio-inline">
+									  <input type="radio" name="other[6][checked]" id="inlineRadio1" value="是" <eq name="other.6.checked" value="是">checked</eq>> 是
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="other[6][checked]" id="inlineRadio1" value="否" <eq name="other.6.checked" value="否">checked</eq>> 否
+									</label>
+									<div class="col-xs-12" <empty name="other.6.desc">style="display:none;"</empty>>										
+										<input type="text" name="other[6][desc]" class="form-control" placeholder="请详细说明" value="{{$other.6.desc}}">
+									</div>
+								</td>
+							</tr>
+							<tr class="else">
+								<td colspan="2">7、是否与其他单位存在竞业限制协议？</td>
+								<td colspan="5" class="text-center">
+									<label class="radio-inline">
+									  <input type="radio" name="other[7][checked]" id="inlineRadio1" value="是" <eq name="other.7.checked" value="是">checked</eq>> 是
+									</label>
+									<label class="radio-inline">
+									  <input type="radio" name="other[7][checked]" id="inlineRadio1" value="否" <eq name="other.7.checked" value="否">checked</eq>> 否
+									</label>
+									<div class="col-xs-12" <empty name="other.7.desc">style="display:none;"</empty>>										
+										<input type="text" name="other[7][desc]" class="form-control" placeholder="请详细说明" value="{{$other.7.desc}}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td rowspan="7" colspan="1" class="info text-center">员<br>工<br>声<br>明</td>
+							</tr>
+							<tr>
+								<td colspan="9">
+									1、员工入职需交的材料（包括但不限于）
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9" style="padding-left:20px;">
+									① 身份证原件收复印件<br>
+									② 相关学历证书、资格证书等原件收复印件<br>
+									③ 平安银行工资卡原件收复印件<br>
+								    ④ 原单位开具的离职证明或劳动手册及退工单原件（盖有原公司公章或人事章）；<br>
+								    ⑤ 三张一寸近期彩色免冠证件照片
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9">
+									2、员工确认，公司已如实告知工作内容、工作地点、工作条件、职业危害、安全生产状况、劳动报酬以及员工要求了解的情况。
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9">
+									3、员工在本表提供的个人信息、学历证明、资格证明、身份证明、工作经历等个人资料均真实，向公司提交的所有证件和材料等均真实有效，员工充分了解上述资料的真实性是双方订立劳动合同的前提条件，如有弄虚作假或隐瞒的情况，属于严重违反公司规章制度，同意公司有权解除劳动合同或对劳动合同做无效认定处理，公司因此遭受的损失，员工有对此赔偿的义务。
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9">
+									4、员工确认，本表所填写的通信地址为邮寄送达地址，公司向该通信地址寄送的文件或物品，如果发生收件人拒绝签收或其他无法送达的情形的，员工同意，从公司寄出之日起视为公司已经送达
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9" class="text-center">
+								 <div class="col-xs-2">&nbsp;</div>
+								<div class="col-xs-4">
+									  <div class="form-group">
+									    <label>填表人签名:</label>
+									    <input type="text" class="form-control" name="sign_name" value="{{$otherinfo.sign_name}}">
+									  </div>
+								</div>
+								<div class="col-xs-4">
+									  <div class="form-group">
+									    <label>日期：</label>
+									    <input type="text" class="form-control" <empty name="otherinfo.cdate">value="{{$nowtime|date='Y-m-d',###}}"<else/>value="{{$otherinfo.cdate|date='Y-m-d',###}}"</empty>>
+									  </div>
+								</div>
+									  <div class="col-xs-2">&nbsp;</div>
+								</td>
+							</tr>
+							
+							<tr>
+								<td colspan="10" class="text-center">
+									<input type="hidden" name="id" value="{{$Think.get.id}}">
+									<eq name="info.flow_type" value="4">
+									<button type="submit" class="btn btn-info">&nbsp;&nbsp;提交&nbsp;&nbsp;</button>
+									<else/>
+									<span  class="btn btn-default">&nbsp;&nbsp;您已提交信息&nbsp;&nbsp;</span>
+									</eq>
+								</td>
+							</tr>
+							
+						</table>
+						<!-- E-家庭主要成员及社会关系 -->
+					</div>
+					</form>
+				</div>
+				
+			</div>
+			
+		</div>
+		<!-- E-页面主要部分 -->
+		<script type="text/javascript">
+			var flow_type = '{{$info.flow_type}}';
+			//如果已经提交信息 所以表单不可操作
+			if(flow_type!=4){
+				$('#forms').find('input').attr('disabled',true);
+			}else{
+				//新增学习经历
+				$("#school button").click(function(event) {
+					var index = $('#school-table tr').length-3;
+					var html = "";
+					html+='<tr>';
+					html+='	<td colspan="2" class="text-center">';
+					html+='		<div class="col-xs-6">';		
+					html+='			<input type="text" class="form-control" placeholder="起始时间" name="education['+index+'][start_date]" onclick="WdatePicker()">';
+					html+='		</div>';
+					html+='		<div class="col-xs-6">';		
+					html+='			<input type="text" class="form-control" placeholder="结束时间" name="education['+index+'][end_date]" onclick="WdatePicker()">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="2" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="education['+index+'][name]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="1" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="education['+index+'][major]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="1" class="text-center">';
+					html+='		<div class="col-xs-12">	';									
+					html+='			<input type="text" class="form-control" name="education['+index+'][level]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='</tr>';
+
+					$("#school").before(html);
+				});
+				//新增工作经历
+				$("#work button").click(function(event) {
+					var index = $('#work-table tr').length-3;
+					var html = "";
+					html+='<tr>';
+					html+='	<td colspan="2" class="text-center">';
+					html+='		<div class="col-xs-6">';		
+					html+='			<input type="text" class="form-control" placeholder="起始时间" name="work['+index+'][start_date]" onclick="WdatePicker()">';
+					html+='		</div>';
+					html+='		<div class="col-xs-6">';		
+					html+='			<input type="text" class="form-control" placeholder="结束时间" name="work['+index+'][end_date]" onclick="WdatePicker()">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="2" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="work['+index+'][company]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="2" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="work['+index+'][depart]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='</tr>';
+					$("#work").before(html);
+				});
+				//新增工作经历
+				$("#family button").click(function(event) {
+					var index = $('#family-table tr').length-4;
+					var html = "";
+					html+='<tr>';
+					html+='	<td colspan="1" class="text-center">';
+					html+='		<div class="col-xs-12">';		
+					html+='			<input type="text" class="form-control" name="family['+index+'][name]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="1" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="family['+index+'][relation]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="2" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="family['+index+'][company]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="1" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="family['+index+'][job]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='	<td colspan="1" class="text-center">';
+					html+='		<div class="col-xs-12">';										
+					html+='			<input type="text" class="form-control" name="family['+index+'][phone]">';
+					html+='		</div>';
+					html+='	</td>';
+					html+='</tr>';
+					$("#family").before(html);
+				});
+			}
+			//其它个人资料选择
+			$(".else input[type='radio']").click(function(event) {
+				if ($(this).val() == "是") {
+					$(this).parent("label").siblings('div').fadeIn();
+				}
+				else{
+					$(this).parent("label").siblings('div').fadeOut();
+				}
+			});
+			
+			
+		</script>
+

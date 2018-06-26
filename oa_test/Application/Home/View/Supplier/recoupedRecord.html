@@ -1,0 +1,155 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<div class="pd10 bg-primary mg-bottom-10">
+	 供应商详情
+	</div>
+	<!-- S-表格部分 -->	
+	<ul class="nav nav-tabs">
+	  <li <eq name="_action" value="detail">class="active"</eq>><a href="{{:U('Supplier/detail',array('id'=>$info['sup_id']))}}">详情</a></li>
+	  <notempty name="recoupedRecord">
+		<li <eq name="_action" value="recoupedrecord">class="active"</eq>><a href="{{:U('Supplier/recoupedrecord',array('id'=>$info['sup_id']))}}">合作记录</a></li>
+	  </notempty>
+	  <li <eq name="_action" value="appraise">class="active"</eq>><a href="{{:U('Supplier/appraise',array('id'=>$info['sup_id']))}}">评价</a></li>
+	</ul>
+	<div class="table pd10">
+		<table class="table table-hover ">
+			<thead>
+				<tr id="table_head">
+					<th width="5%">序号</th>
+					<th width="15%">项目</th>
+					<th width="10%">金额</th>
+					<th width="15%">负责人</th>
+					<th width="10%">部门</th>
+					<th width="10%">时间</th>
+					<if condition="$is_admin OR $is_supplier_creat eq 1">
+					<th>操作</th>
+					</if>
+				</tr>
+			</thead>
+			<tbody >  
+				<volist name="list" id="vo" key="key">
+				<tr class="table_bd active" id="accordion{{$vo.rec_id}}" >
+					<td data-toggle="collapse" data-parent="#accordion{{$vo.rec_id}}" 
+				   href="#collapse{{$vo.rec_id}}" id="headerTd{{$vo.rec_id}}">
+						{{$key}} <notempty name="vo.pjlist"><span class="caret"></span></notempty>
+					</td>
+					<td>
+						{{$vo.project_name}}
+					</td>
+					<td>
+						{{$vo.tot_amt}}							
+					</td>
+					<td>
+						{{$vo.crt_user_name}}							
+					</td>
+					<td>
+						{{$vo.department}}							
+					</td>
+					<td>
+						{{$vo.crt_time|date='Y-m-d H:i:s',###}}							
+					</td>
+					
+					<if condition="$is_admin OR $user_id eq $vo.crt_user_id">
+					<td class="operate">
+						<if condition="$user_id eq $vo.crt_user_id OR $appraise neq ''">
+							<a href="javascript:void(0)" class="btn btn-primary pjbtn" data-rec="{{$vo.rec_id}}" data-sup="{{$vo.get_id}}" data-toggle="modal" data-target="#myModal">评价</a>
+						</if>
+					</td>
+					</if>
+				</tr> 
+				<tr id="collapse{{$vo.rec_id}}" class="panel-collapse collapse">
+					<td colspan="7">
+					<volist name="vo.pjlist" id="pvo" key="pkey">
+						
+						<div class="mg-bottom-5 pd5" style="background-color:#eaf0fb" >
+							<p>{{$pvo.content}}<p>
+							<p style="color:#908f8f">{{$pvo.crt_user_id|get_user_name=###}} - {{$pvo.crt_time|date='Y-m-d H:i:s',###}}<p>
+						</div>
+					</volist>
+					</td>
+				</tr>
+				</volist> 
+				<tr>
+					<td  colspan="7" class="pd-top-10"><strong>总计金额：￥{{$total_amount|default=0}}</strong></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="Pagination" style="border-bottom: 1px solid #dedede;border-top:none">{{$page}}</div>
+	</div>
+</div>
+<if condition="$user_id eq $vo.crt_user_id OR $appraise neq ''">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">评价</h4>
+            </div>
+            <div class="modal-body">
+				<form class="mg-top-20 form-inline" action="{{:U('Supplier/saveAppraise')}}" method="post">
+					<div class="form-group" style="width:100%" >
+						<label  class="col-sm-2 control-label">评价内容</label>
+						<div class="col-sm-10">
+						<textarea class="form-control" rows="5" style="width:100%"  name="content" id="content"></textarea>
+						</div>
+					</div>
+					<input type="hidden" name="sup_id" value="0" id="sup_id" />
+					<input type="hidden" name="rec_id" value="0" id="rec_id" />
+				</form>
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" id="submit" class="btn btn-primary">提交评价</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</if>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	
+	var click2 = true;
+	$("#submit").click(function(){
+		if(click2){
+			click2 = false;
+			var sup_id = $("#sup_id").val();
+			var rec_id = $("#rec_id").val();
+			var content = $("#content").val();
+			$.ajax({
+				url:"{{:U('Supplier/saveAppraise')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'sup_id':sup_id,'rec_id':rec_id,content:content},
+				success:function(data){
+					if(data.status == 1){
+						//window.location.reload();
+						$('#collapse'+rec_id+' td').prepend('<div class="mg-bottom-5 pd5" style="background-color:#eaf0fb" ><p>'+content+'<p><p style="color:#908f8f">{{$user_id|get_user_name=###}} - '+data.nowdate+'<p></div>');
+						$('#content').val('');
+						$('.modal-content .close').click();
+						//图标判断
+						if($('#headerTd'+rec_id).find('.caret').length==0){
+							$('#headerTd'+rec_id).append('<span class="caret"></span>');
+						}
+						if(!$('#collapse'+rec_id).hasClass('in')){
+							$('#headerTd'+rec_id).find('.caret').click();
+						}
+						click2 = true;
+					}else{
+						alert(data.msg);
+						click2 = true;
+					}
+				}
+			});
+		}
+	});
+});
+$('.pjbtn').click(function(){
+	var rec_id = $(this).data('rec');
+	var sup_id = $(this).data('sup');
+	$('#rec_id').val(rec_id);
+	$('#sup_id').val(sup_id);
+})
+</script>

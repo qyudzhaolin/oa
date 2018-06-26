@@ -1,0 +1,36 @@
+<!-- S-输入理由的弹出框 -->
+ <div class="modal fade bs-example-modal-sm approve_users" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">同意</h4>
+      </div>
+      <php>if(check_permission_left('Agree_approve', 'index')){</php>
+      <div class="modal-body">
+          <div class="form-group">
+		    <textarea name="" id="agree_opinion" cols="30" rows="10" class="form-control" placeholder="请输入备注" maxlength="100"></textarea>
+		  </div>
+      </div>
+      <php>}else{</php>
+      <input type="hidden" value="" id="agree_opinion" />
+      <php>}</php>
+      <div class="modal-body">
+          <div class="form-group">
+		    <select name="" id="cur_approver_id" class="form-control">
+				<option value="0">请选择审批人</option>
+				<foreach name="approve_users" item="vo" >
+					<option value="{{$vo.user_id}}" <eq name="recouped.cur_approver_id" value="$vo.user_id">selected="selected"</eq>>{{$vo.real_name}}</option>
+				</foreach>
+			</select>&nbsp;
+		  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="btn-success">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="hidden" value="" id="agree_num" />
+<!-- E-输入理由的弹出框 -->

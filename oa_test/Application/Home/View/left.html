@@ -1,0 +1,237 @@
+<div id="nav-col">
+<php>$is_admin = is_admin_power();</php>
+    <section id="col-left" class="col-left-nano">
+        <div id="col-left-inner" class="col-left-nano-content">
+            <!-- <div id="user-left-box" class="clearfix hidden-sm hidden-xs">
+                <img alt="" src="__PUBLIC__/common/img/samples/scarlet-159.png"/>
+            
+                <div class="user-box">
+                <span class="name">
+                Welcome
+                </span>
+                <span class="status">
+                <i class="fa fa-circle"></i> Online
+                </span>
+                </div>
+            </div> -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">
+				<!---后台管理者-->
+                <ul class="nav nav-pills nav-stacked">
+				
+					<!-- 二级菜单li>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-group"></i>
+                            <span>部门管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li >
+                                <a href="{:U('Department/index')}" >
+                                    所有部门
+                                </a>
+                            </li>
+                            <li >
+                                <a href="{:U('Department/add')}" >
+                                    新增部门
+                                </a>
+                            </li>
+                        </ul>
+                    </li-->
+					
+                    <li <if condition="$controller_name eq 'Project'">class="active"</if>>
+                        <a href="{{:U('Project/index')}}">
+                            <i class="fa">
+                                &#xe601;
+                            </i>
+                            <span class="icon_text">项目管理</span>
+                        </a>
+                    </li>
+                    <if condition="$user_id eq 33 or $is_admin eq 1">
+                    <li <if condition="$controller_name eq 'Contract'">class="active"</if>>
+                        <a href="{{:U('Contract/list')}}">
+                            <i class="fa">&#xe602;</i>
+                            <span class="icon_text">合同管理</span>
+                        </a>
+                    </li>
+                    </if>
+                    <li <if condition="$controller_name eq 'Budget'">class="active"</if>>
+                        <a href="{{:U('Budget/index')}}">
+                            <i class="fa">&#xe603;</i>
+                            <span class="icon_text">项目预算单</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'Borrow'">class="active"</if>>
+                        <a href="{{:U('Borrow/index')}}">
+                            <i class="fa">&#xe654;</i>
+                            <span class="icon_text">借款单</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'Pfrecouped'">class="active"</if>>
+                        <a href="{{:U('Pfrecouped/index')}}">
+                            <i class="fa">&#xe678;</i>
+                            <span class="icon_text">个人报销单</span>
+                        </a>
+                    </li>
+                    <php>if(check_permission_left('Teambuild', 'add')){</php>
+                    <li <if condition="$controller_name eq 'Teambuild' OR $controller_name eq 'Tbrecouped'">class="active"</if>>
+                        <a href="{{:U('Teambuild/index')}}" >
+                            <i class="fa">&#xe6b0;</i>
+                            <span class="icon_text">TB管理</span>
+                        </a>
+                    </li>
+                    <php>}</php>
+                    <li <if condition="$controller_name eq 'Recouped'">class="active"</if>>
+                        <a href="{{:U('Recouped/index')}}">
+                            <i class="fa">&#xe622;</i>
+                            <span class="icon_text">项目报销单</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'Refund'">class="active"</if>>
+                        <a href="{{:U('Refund/index')}}">
+                            <i class="fa">&#xe807;</i>
+                            <span class="icon_text">还款单</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'Approve'">class="active"</if>>
+                        <a href="{{:U('Approve/index')}}">
+                            <i class="fa">&#xe63c;</i>
+                            <span class="icon_text">审批任务</span>
+                        </a>
+                    </li>
+                    <if condition="$user_lvl_id lt 4">
+                    <li <if condition="$controller_name eq 'Customer'">class="active"</if>>
+                        <a href="{{:U('Customer/index')}}" >
+                            <i class="fa">&#xe627;</i>
+                            <span class="icon_text">客户库</span>
+                        </a>
+                    </li>
+                    </if>
+                    <if condition="$Think.session.is_supplier_creat eq 1 or $Think.session.is_supplier_show eq 1">
+                    <li <if condition="$controller_name eq 'Supplier'">class="active"</if>>
+                        <a href="{{:U('Supplier/index')}}">
+                            <i class="fa">&#xe801;</i>
+                            <span class="icon_text">供应商库</span>
+                        </a>
+                    </li>
+                    </if>
+                    
+                    <php>if(check_permission_left('Mjsupplier', 'index')){</php>
+                    <li <if condition="$controller_name eq 'Mjsupplier'">class="active"</if>>
+                        <a href="{{:U('Mjsupplier/index')}}">
+                            <i class="fa">&#xe687;</i>
+                            <span class="icon_text">媒介供应商库</span>
+                        </a>
+                    </li>
+                    <php>}</php>
+                    
+                    <li <if condition="$controller_name eq 'User' or $controller_name eq 'Depart'">class="active"</if>>
+                        <a href="{{:U('User/index','','')}}">
+                            <i class="fa">&#xe600;</i>
+                            <span class="icon_text">用户库</span>
+                        </a>
+                    </li>
+                    
+                    <li <if condition="$controller_name eq 'Book'">class="active"</if>>
+                        <a href="{{:U('Book/index')}}" >
+                            <i class="fa">&#xe6f5;</i>
+                            <span class="icon_text">通讯录</span>
+                        </a>
+                    </li>
+                    
+                    <php>if(check_permission_left('Notice', 'add')){</php>
+                    <li <if condition="$controller_name eq 'Notice'">class="active"</if>>
+                        <a href="{{:U('Notice/add')}}" >
+                            <i class="fa">&#xe7ac;</i>
+                            <span class="icon_text">公告设置</span>
+                        </a>
+                    </li>
+                    <php>}</php>
+                    
+                    <if condition="$user_lvl_id lt 5 and $user_lvl_id gt 1">
+                    <li <if condition="$controller_name eq 'Contract'">class="active"</if>>
+                        <a href="{{:U('Contract/index')}}" >
+                            <i class="fa">&#xe602;</i>
+                            <span class="icon_text">合同管理</span>
+                        </a>
+                    </li>
+                    </if>
+                    <li <if condition="$controller_name eq 'Attendance'">class="active"</if>>
+                        <a href="{{:U('Attendance/vacation')}}" >
+                            <i class="fa">&#xe749;</i>
+                            <span class="icon_text">考勤管理</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'Overtime'">class="active"</if>>
+                        <a href="{{:U('Overtime/index')}}" >
+                            <i class="fa">&#xe6b0;</i>
+                            <span class="icon_text">加班管理</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'OfficeSupplies' OR $controller_name eq 'OfficeSuppliesMain' OR $controller_name eq 'OfficeSuppliesRecord'">class="active"</if>>
+                        <a href="{{:U('officeSupplies/index')}}" >
+                        <i class="fa">&#xe605;</i>
+                        <span class="icon_text">办公用品</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'CardRecord'">class="active"</if>>
+                        <a href="{{:U('CardRecord/index')}}" >
+                        <i class="fa">&#xe63f;</i>
+                        <span class="icon_text">名片申请</span>
+                        </a>
+                    </li> 
+					<if condition="$depart_id eq 12 OR $depart_id eq 60 OR $is_admin eq 1">
+					<li <if condition="$controller_name eq 'Sms'">class="active"</if>>
+                        <a href="{{:U('Sms/index')}}" >
+                        <i class="fa">&#xe63f;</i>
+                        <span class="icon_text">短信设置</span>
+                        </a>
+                    </li>
+					
+					</if>	
+					<li <if condition="$controller_name eq 'UserHr' OR $controller_name eq 'Offer'">class="active"</if>>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa">&#xe801;</i>
+                            <span>招聘管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li <if condition="$controller_name eq 'UserHr' and $action_name eq 'index'">class="active"</if>>
+                                <a href="{{:U('UserHr/index')}}" >
+                                    面试管理
+                                </a>
+                            </li>
+                            <li <if condition="$controller_name eq 'UserHr' and $action_name eq 'offer'">class="active"</if>>
+                                <a href="{{:U('UserHr/offer')}}" >
+                                    offer管理
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+					<if condition="$depart_id eq 60 OR $depart_id eq 61 OR $is_admin eq 1">
+					<li <if condition="$controller_name eq 'WorkBoard'">class="active"</if>>
+                        <a href="{{:U('WorkBoard/index')}}">
+                            <i class="fa">&#xe63c;</i>
+                            <span>工作台</span>
+                        </a>
+                    </li>
+					</if>
+					
+					<li <if condition="$controller_name eq 'Seal'">class="active"</if>>
+                        <a href="{{:U('Seal/index')}}">
+                            <i class="fa">&#xe63c;</i>
+                            <span>用章申请</span>
+                        </a>
+                    </li>
+                    <li <if condition="$controller_name eq 'News'">class="active"</if>>
+                        <a href="{{:U('News/index')}}">
+                            <i class="fa">
+                                &#xe601;
+                            </i>
+                            <span class="icon_text">新闻管理</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>

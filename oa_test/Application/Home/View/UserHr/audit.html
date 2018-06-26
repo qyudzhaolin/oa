@@ -1,0 +1,193 @@
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<div class="pd10 bg-primary">
+ 面试意见
+</div>
+<form action="{{:U('UserHr/saveInterview')}}" method="post" name="forms" id="forms" class="form-horizontal">
+<notempty name="lastitvinfo.next_date"><div class="text-danger pd10">请务必在 <strong>{{$lastitvinfo.next_date}}</strong> 之前完成本轮面试！</div></notempty>
+<div id="interview">
+	<div class="form-group">
+		<label for="lastname" class="col-xs-2 control-label">优点</label>
+		<div class="col-xs-3">
+			<textarea name="advantage" id="advantage"  class="form-control" style="resize:none">{{$itvinfo.advantage}}</textarea>
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="disadvantage" class="col-xs-2 control-label">缺点</label>
+		<div class="col-xs-3">
+			<textarea name="disadvantage" id="disadvantage"  class="form-control" style="resize:none">{{$itvinfo.disadvantage}}</textarea>
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="lastname" class="col-xs-2 control-label">面试意见</label>
+		<div class="col-xs-3">
+			<textarea name="result" id="result"  class="form-control" style="resize:none">{{$itvinfo.result}}</textarea>
+		</div>
+	  </div>
+	  <div class="form-group ">
+		<label for="lastname" class="col-xs-2 control-label">面试结果</label>
+		<div class="col-xs-3">
+			 <label class="checkbox-inline result_status">
+				<input type="radio" name="result_status" id="optionsRadios3" value="1"  <eq name="itvinfo.status" value="1">checked</eq>>通过
+			  </label>
+			  <label class="checkbox-inline result_status">
+				<input type="radio" name="result_status" id="optionsRadios4" value="2"  <eq name="itvinfo.status" value="2">checked</eq>>暂定
+			  </label>
+			  <label class="checkbox-inline result_status">
+				<input type="radio" name="result_status" id="optionsRadios4" value="-1"  <eq name="itvinfo.status" value="-1">checked</eq>>不通过
+			  </label>
+		</div>
+	  </div>
+	  <div id="flowdiv" <eq name="itvinfo.status" value="1"><else/>class="hide"</eq>>
+	  <div class="form-group">
+		<label for="lastname" class="col-xs-2 control-label">流转部门</label>
+		<div class="col-xs-3">
+			<select class="form-control" name="depart_id" id="depart_id">
+				<option name="">请选择流转部门</option>
+				<volist name="departments" id="vo">   
+				<option value="{{$vo.depart_id}}" <eq name="vo.depart_id" value="$flowinfo.flow_depart_id">selected="selected"</eq>>{{$vo.html}}{{$vo.depart_name}}</option>
+				</volist>
+			</select>
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="lastname" class="col-xs-2 control-label">流转人员</label>
+		<div class="col-xs-5">
+			<div  id="flowuser">
+			请先选择部门
+			</div>
+			<input type="hidden" name="user_ids" id="user_ids" value="{{$flowinfo.flow_uids}}" />
+			<input type="hidden" name="id" id="id" value="{{$info.id}}" />
+			<input type="hidden" name="pre_user_ids" id="pre_user_ids" value="{{$flowinfo.flow_uids}}" />
+		</div>
+	  </div>
+	  <div class="form-group">
+		<label for="lastname" class="col-xs-2 control-label">下轮面试时间</label>
+		<div class="col-xs-3">
+			<input type="text" class="form-control" placeholder="面试时间" id="next_date" onclick="WdatePicker()" value="{{$itvinfo.next_date}}">
+		</div>
+	  </div>
+	 </div>
+	 <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="Submit_btn">
+				  <button type="button" class="btn btn-primary" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+				  <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+			</div>
+		</div>
+	  </div>
+</div>
+
+</form>
+<script>
+$('.result_status').click(function(){
+		var result_status = $(this).find('input[name="result_status"]').val();
+		if(result_status==1){
+			$('#flowdiv').removeClass('hide');
+			$('#flowdiv').show();
+		}else{
+			$('#flowdiv').hide();
+		}
+	})
+	var pre_flow_uids = $('#pre_user_ids').val();
+	if(pre_flow_uids){
+		loadUserList();
+	}
+	//------modal start后期写成扩展 可以直接调用 根据部门读取该部门下的人员
+	$('#depart_id').on('change',function(){
+		//重置user_ids
+		loadUserList();
+	})
+	
+	function loadUserList(){
+		var depart_id = $('#depart_id').val();
+		$('#user_ids').val('');
+		$.ajax({
+			url:'/index.php/Home/Depart/ajaxGetUsers',
+			type:'post',
+			data:{
+				depart_id:depart_id,
+				flow_uids : $('#pre_user_ids').val()
+			},
+			dataType:'json',
+			success:function(res){
+				if(res.status==1){
+					$('#flowuser').html(res.html);
+				}else{
+					$('#flowuser').html('暂无该级别人员');
+				}
+			}
+		});
+	}
+	
+	//用户选择用户后，拼接用户user_ids
+	$('#flowuser').on('click','.flowUserTab',function(){
+		var user_ids = $('#user_ids').val();
+		var user_id = $(this).find("input[type='checkbox']").val();
+		if(user_ids && user_ids!=user_id){
+			user_ids = user_ids + ','+ user_id; 
+		}else{
+			user_ids = user_id;
+		}
+		$('#user_ids').val(user_ids);
+	})
+	$("#Submit").click(function(event) {
+		var depart_id = '';
+		var user_ids = '';
+		var next_date = '';
+		var disadvantage=$("#disadvantage").val();
+		var advantage=$("#advantage").val();
+		var result=$("#result").val();
+		var result_status=$("input[name='result_status']:checked").val();
+		
+		var id=$("#id").val();
+		if (result=="") {
+			alert("请填写面试意见");
+			return
+		};
+		if (result_status=="") {
+			alert("请选择面试结果");
+			return
+		};
+		
+		if(result_status==1){
+			depart_id = $('#depart_id').val();
+			user_ids = $('#user_ids').val();
+			next_date = $('#next_date').val();
+			if(user_ids==''){
+				alert('请选择流转人员！');
+				return false;
+			}
+		}else{
+			user_ids = '';
+			next_date = '';
+			depart_id = '';
+		}
+		//表单提交
+		//$('#forms').submit();
+		var url = $('#forms').attr('action');
+		$.ajax({
+			url:url,
+			type:'post',
+			data:{
+				advantage:advantage,
+				disadvantage:disadvantage,
+				result:result,
+				result_status:result_status,
+				depart_id:depart_id,
+				user_ids:user_ids,
+				next_date:next_date,
+				id:id
+			},
+			dataType:'json',
+			success:function(res){
+				alert(res.msg);
+				if(res.code==1){
+					$('#closeAlert1').click(function(){
+						var backurl = $('#back_url').val();
+						window.location.href='/index.php/Home/UserHr/index';
+					})
+				}
+			}
+		});
+	})
+</script>

@@ -1,0 +1,87 @@
+<style type="text/css">
+	#tishi{
+		width: 100%;
+		background: #ccc;
+		position: fixed;
+		z-index: 100;
+		top:50px;
+		left: 0;
+		background: #fffbdd;
+		border:1px solid #f5e39d;
+		line-height: 40px;
+		overflow: hidden;
+		padding: 5px 0;
+		text-align: center;		
+	}
+	#tishi{
+		transition:all 1s 0.5s;
+		-webkit-transition:all 1s 0.3s;
+		-moz-transition:all 1s 0.3s;
+		-ms-transition:all 1s 0.3s;
+		-o-transition:all 1s 0.3s;
+	}
+	#tishi span{
+		display:inline-block;
+		margin-left: 5px;
+		color: #6f5e39;
+	}
+	.hide_ts{
+		transform: translate(0,-250px);
+		-webkit-transform: translate(0,-250px);
+		-moz-transform: translate(0,-250px);
+		-ms-transform: translate(0,-250px);
+		-s-transform: translate(0,-250px);
+		opacity: 0;
+	}
+</style>
+
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<!-- S-填写部分 -->
+	<div>
+	        欢迎进入智源动力OA系统
+	</div>
+	<!-- E-填写部分 -->
+</div>
+<!-- E-页面主要部分 -->
+
+
+<div class="modal fade bs-example-modal-lg" id="alert">
+		  <div class="modal-dialog ">
+			<div class="modal-content">
+			  <div class="modal-header">
+			    <button type="button" class="close" id="X" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				 <h4 class="modal-title">提示信息</h4>
+			</div>
+			<div class="modal-body affiche_content" style="max-height:500px;
+    overflow-y: auto;">
+				<!-- 内容 -->
+				{{$notice.description}}
+			</div>
+				<div class="modal-footer">
+				    <button type="button" class="btn btn-success" id="closeAlert1" data-dismiss="modal">确定</button>
+				</div>
+			 </div>
+		  </div>
+		</div>
+
+<!-- S-提示浏览器版本 -->
+<div id="tishi" class="hide_ts">
+	<span>请使用高版本的浏览器，以保证正常使用网站。推荐使用：</span><img src="__PUBLIC__/common/img/logo_icon.png" alt="">
+</div>
+<!-- E-提示浏览器版本 -->
+
+
+	<script type="text/javascript">
+		<notempty name="notice.description">
+		$("#alert").modal({
+		  keyboard: false
+		});
+		$('#alert').on('hide.bs.modal', function () {
+			$('#tishi').removeClass('hide_ts');
+			setTimeout(function(){
+				$('#tishi').addClass('hide_ts');
+			},7000);		  
+		})
+		</notempty>
+	</script>

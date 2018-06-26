@@ -1,0 +1,155 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">项目管理</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main form-inline">
+		<div style="float:left;">
+			<if condition="$is_proj_add">
+			<a id="add_btn" class="btn btn-primary" href="{{:U('Project/add')}}">&nbsp;&nbsp;新增项目&nbsp;&nbsp;</a>
+			</if>
+		</div>
+		<div style="float:right;">
+			<div class="form-group">
+			    <div class="input-group">
+			      <input type="text" class="form-control" id="keyword" value="{{$Think.get.keyword}}" placeholder="请输入项目名称/编号">
+			      <span class="input-group-btn">
+			        <button class="btn btn-primary" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+			</div>
+		</div>
+	</div>
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="10%">
+					<col width="15%">
+					<col width="10%">
+					<col width="25%">
+					<col width="8%">
+					<col width="5%">
+					<col width="5%">
+					<col width="5%">
+					<col width="8%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>项目编号</th>
+						<th>项目名称</th>
+					    <th>项目经理</th>
+					    <th>项目人员</th>
+					    <th>客户合同</th>
+					    <th>其他项目文件</th>
+					    <th>供应商合同</th>
+					    <th>创建人</th>
+					    <th>创建时间</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+	                <foreach name="list" item="vo" key="k">   
+	                <tr class="table_bd active">
+						<td>{{$vo.proj_no}}</td>
+						<td>{{$vo.proj_name}}</td>
+						<td>{{$vo.proj_mgr.real_name}}</td>
+						<td>{{$vo.users}}</td>
+						<td><a href="{{$vo.file_url}}" target="_blank">{{$vo.file_name}}</a></td>
+						<td><a href="{{$vo.other_file_url}}" target="_blank">{{$vo.other_file_name}}</a></td>
+						<td><a href="{{:U('Contract/index')}}?proj_id={{$vo.proj_id}}" class="edit">合同</a></td>
+						<td>{{$vo.crt_user.real_name}}</td>
+						<td>{{$vo.crt_time}}</td>
+						<td class="operate" id="{{$vo.proj_id}}">		
+							<if condition="$lvl_id eq '1' or $lvl_id eq '2'">
+							    <a href="{{:U('Project/add')}}?proj_id={{$vo.proj_id}}" class="edit">修改</a>
+								<a href="javascript:;" class="deleat">删除</a>
+						    <else/>	
+						    <eq name="user_id" value="$vo.crt_user_id">					
+								<a href="{{:U('Project/add')}}?proj_id={{$vo.proj_id}}" class="edit">修改</a>
+								<a href="javascript:;" class="deleat">删除</a>
+							<else/>
+								<a href="{{:U('Project/info')}}?proj_id={{$vo.proj_id}}" class="edit">详情</a>
+							</eq>
+							</if>
+							<php>if(check_permission_left('Project', 'over')){</php>
+							<if condition="$vo.is_over eq '1'">
+							已结束
+							<else/>
+							<a href="javascript:;" class="edit over">结束</a>
+							</if>
+							<php>}</php>
+						</td>
+					</tr> 
+					</foreach>    
+				</tbody>
+			</table>
+		</div>
+		
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var proj_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Project/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'proj_id':proj_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Project/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#search").click(function(){
+		window.location.href="{{:U('Project/index')}}?keyword="+$("#keyword").val();
+	});
+	
+	//删除
+	$("body").on("click",".table_bd .operate .over",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要结束该项目吗?")){
+			return false;
+		}
+		var proj_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Project/over')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'proj_id':proj_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Project/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+});
+</script>

@@ -1,0 +1,294 @@
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<style>
+	.search_main .mg-right-15{float:left}
+	.breadcrumb{padding: 8px 0;}
+	.cause label{display:block;padding: 5px 20px;}
+	.over-hidden{overflow: hidden;}
+	textarea{ resize:none;}
+	.write label{margin-bottom: 15px;}
+	.apply-info p{margin-bottom: 0px}
+</style>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('UserHrExpire/index')}}">合同到期信息</a></li>
+	  <li class="active">审批合同到期</li>
+	</ol>
+	
+	<div class="content_main">
+		<div class="alert alert-danger apply-info" role="alert">
+			<div class="over-hidden">					
+			  <div class="pull-left">					  	
+			  	<strong>申请人姓名：</strong>
+			  </div>
+			  <div class="pull-left">					  	
+				  <p>{{$user.real_name}}</p>
+			  </div>
+			</div>
+			<div class="over-hidden">					
+			  <div class="pull-left">					  	
+			  	<strong>职位：</strong>
+			  </div>
+			  <div class="pull-left">					  	
+				  <p>{{$user_hr.job}}</p>
+			  </div>
+			</div>
+			<div class="over-hidden">					
+			  <div class="pull-left">					  	
+			  	<strong>入职日期：</strong>
+			  </div>
+			  <div class="pull-left">					  	
+				  <p>{{$user_hr.entry_date}}</p>
+			  </div>
+			</div>
+			<div class="over-hidden">					
+			  <div class="pull-left">					  	
+			  	<strong>合同到期日期：</strong>
+			  </div>
+			  <div class="pull-left">					  	
+				  <p>{{$user_hr.contract_over_date}}</p>
+			  </div>
+			</div>
+			<notempty name="resign.campay_reson">
+			<div class="over-hidden">					
+			  <div class="pull-left">					  	
+			  	<strong>公司原因：</strong>
+			  </div>
+			  <div class="pull-left">	
+			  	  <foreach name="company_reson" item="vo" key="k">
+			  	  <in name="k+1" value="$resign.campay_reson">				  	
+				  <p>{{$vo}}</p>
+				  </in>
+				  </foreach>
+			  </div>
+			</div>
+			</notempty>
+			<notempty name="resign.person_reson">
+			<div class="over-hidden">					
+			  <div class="pull-left">					  	
+			  	<strong>个人原因：</strong>
+			  </div>
+			  <div class="pull-left">					  	
+				  <foreach name="person_reson" item="vo" key="k">
+			  	  <in name="k+1" value="$resign.person_reson">				  	
+				  <p>{{$vo}}</p>
+				  </in>
+				  </foreach>
+			  </div>
+			</div>
+			</notempty>
+		</div>
+	</div>
+	
+	<!-- S-填写部分 -->
+	<php>if($info['l_uid']){</php>
+    <div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+	主管审批意见
+    </div>
+	<!-- <div class="form-group ">
+		<label for="firstname" class="col-xs-2 control-label">意见</label>
+		<div class="bg"> 
+			<div class="col-xs-6">
+				<textarea name="l_opinion" id="l_opinion"  class="form-control" style="resize:none;height:200px" >{{$info.l_opinion}}</textarea>
+			</div>
+		</div>
+	 </div> -->
+	 <div class="form-group ">
+		<label for="lastname" class="col-xs-2 control-label">审批</label>
+		<div class="col-xs-3">
+			 <label class="checkbox-inline result_status">
+				<input type="radio" name="l_status"  value="1"  <eq name="info.l_status" value="1">checked</eq>>通过
+			  </label>
+			  <label class="checkbox-inline result_status">
+				<input type="radio" name="l_status"  value="2"  <eq name="info.l_status" value="2">checked</eq>>不通过
+			  </label>
+		</div>
+	  </div>
+	  <php>if(!$info['p_status'] && $info['l_uid'] == $user_id){</php>
+	  <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="Submit_btn">
+			      <button type="button" class="btn btn-primary" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+			</div>
+	  </div>
+	  </div>
+      <php>}</php>
+      
+	  <php>}</php>
+	 
+	 
+	 <php>if($info['p_status'] || $info['p_uid'] == $user_id){</php>
+    <div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+	部门负责人审批意见
+    </div>
+	<!-- <div class="form-group ">
+		<label for="firstname" class="col-xs-2 control-label">意见</label>
+		<div class="bg"> 
+			<div class="col-xs-6">
+				<textarea name="l_opinion" id="l_opinion"  class="form-control" style="resize:none;height:200px" >{{$info.l_opinion}}</textarea>
+			</div>
+		</div>
+	 </div> -->
+	 <div class="form-group ">
+		<label for="lastname" class="col-xs-2 control-label">审批</label>
+		<div class="col-xs-3">
+			 <label class="checkbox-inline result_status">
+				<input type="radio" name="p_status"  value="1"  <eq name="info.p_status" value="1">checked</eq>>通过
+			  </label>
+			  <label class="checkbox-inline result_status">
+				<input type="radio" name="p_status"  value="2"  <eq name="info.p_status" value="2">checked</eq>>不通过
+			  </label>
+		</div>
+	  </div>
+	  <php>if(!$info['h_status'] && $info['p_uid'] == $user_id){</php>
+	  <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="Submit_btn">
+			      <button type="button" class="btn btn-primary" id="P_Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+			</div>
+	  </div>
+	  </div>
+      <php>}</php>
+	  <php>}</php>
+	 
+	 <php>if($info['h_status'] || $info['h_uid'] == $user_id){</php>
+    <div class="pd10 bg-primary mg-bottom-10" style="padding:10px;margin-bottom:10px">
+	HR审批意见
+    </div>
+	<!-- <div class="form-group ">
+		<label for="firstname" class="col-xs-2 control-label">意见</label>
+		<div class="bg"> 
+			<div class="col-xs-6">
+				<textarea name="l_opinion" id="l_opinion"  class="form-control" style="resize:none;height:200px" >{{$info.l_opinion}}</textarea>
+			</div>
+		</div>
+	 </div> -->
+	 <div class="form-group ">
+		<label for="lastname" class="col-xs-2 control-label">新合同到期日期</label>
+		<div class="col-xs-3">
+			 <input type="text" class="form-control" value="{{$user_hr.contract_over_date}}" name="contract_over_date" id="contract_over_date" onclick="WdatePicker()" placeholder="新合同到期日期">
+		</div>
+	  </div>
+	 <div class="form-group ">
+		<label for="lastname" class="col-xs-2 control-label">审批</label>
+		<div class="col-xs-3">
+			 <label class="checkbox-inline result_status">
+				<input type="radio" name="h_status"  value="1"  <eq name="info.h_status" value="1">checked</eq>>通过
+			  </label>
+			  <label class="checkbox-inline result_status">
+				<input type="radio" name="h_status"  value="2"  <eq name="info.h_status" value="2">checked</eq>>不通过
+			  </label>
+		</div>
+	  </div>
+	  <php>if($info['h_uid'] == $user_id){</php>
+	  <div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="Submit_btn">
+			      <button type="button" class="btn btn-primary" id="H_Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+			</div>
+	  </div>
+	  </div>
+      <php>}</php>
+	  <php>}</php>
+	 
+	 
+	<input type="hidden" value="{{$info.user_id}}" id="user_id"/>	 
+	<!-- E-填写部分 -->
+	<!--S modal-填写部分 -->
+	
+	<!--E modal-填写部分 -->
+</div>
+<!-- E-页面主要部分 -->
+
+<style>
+	.form-group{
+		overflow:hidden;
+	}
+	.form-group>label{
+	    text-align: right;
+	}
+</style>
+<script>
+jQuery(document).ready(function($) {
+	$("#Submit").click(function(event) {
+		//部门名称
+		//var l_opinion = $("#l_opinion").val();
+		var l_status = $("input[name='l_status']:checked").val();
+/* 		if(l_opinion.length==0){
+			alert("请填写意见！");
+			return false;
+		}
+ */		if(l_status==undefined){
+			alert("请选择审批结果！");
+			return false;
+		}
+		$.ajax({
+			url:"{{:U('UserHrExpire/save')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'user_id':$("#user_id").val(),'l_status':l_status},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#P_Submit").click(function(event) {
+		//部门名称
+		var p_status = $("input[name='p_status']:checked").val();
+		if(p_status==undefined){
+			alert("请选择转正结果！");
+			return false;
+		}
+		$.ajax({
+			url:"{{:U('UserHrExpire/save')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'user_id':$("#user_id").val(),'p_status':p_status},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#H_Submit").click(function(event) {
+		var contract_over_date = $("#contract_over_date").val();
+		var h_status = $("input[name='h_status']:checked").val();
+		if(h_status==1 && contract_over_date.length==0){
+			alert("请填写新合同到期日期！");
+			return false;
+		}
+		if(h_status==undefined){
+			alert("请选择转正结果！");
+			return false;
+		}
+		$.ajax({
+			url:"{{:U('UserHrExpire/save')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'user_id':$("#user_id").val(),'h_status':h_status,'contract_over_date':contract_over_date},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+});
+</script>

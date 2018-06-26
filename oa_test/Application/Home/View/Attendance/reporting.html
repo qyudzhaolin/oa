@@ -1,0 +1,333 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<style>
+.file_click {width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: 1;opacity: 0;cursor: pointer;}
+.modal-body {padding: 5px 15px;}
+.panel {margin-bottom: 5px}
+.col-md-1{padding-left:0px;padding-right: 0px }
+</style>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">请假记录</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+    <form action="" method="get" id="form1">
+	<div class="search_main form-inline">
+		<div class="form-group">
+	        <label for="exampleInputName2">月份：</label>
+	        <input type="text" class="form-control" placeholder="月份" name="month" onclick="WdatePicker({dateFmt:'yyyy-MM'})" value="{{$Think.get.month}}" id="month">
+	    </div>
+		<div class="form-group">
+	        <label for="exampleInputName2">员工姓名：</label>
+	        <input type="text" class="form-control" placeholder="员工姓名" name="keyword" value="{{$Think.get.keyword}}" id="keyword">
+	    </div>
+		<div class="form-group">
+	        <button class="btn btn-primary" type="button" id="search">查询</button>
+	    </div>
+	    <php>if($is_count){</php>
+	    <div class="form-group">
+	        <button class="btn btn-primary" type="button" id="export">导出报表</button>
+	        <input type="hidden" name="type" value="" id="search_type"/>
+	    </div>
+		<div class="form-group">
+	        <button class="btn btn-primary" type="button" id="count_data">数据计算</button>
+	        <button class="btn btn-primary" type="button" id="count_data_holiday">计算非工作日加班</button>
+			<span style="color:red" id="msg"></span>
+	    </div>
+	    <php>}</php>
+	</div>
+	</form>
+	<!-- E-搜索框部分 -->
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<thead>
+					<tr id="table_head">
+						<th>月份</th>
+						<th>姓名</th>
+						<th>加班</th>
+					    <th>调休</th>
+					    <th>迟到</th>
+					    <th>事假</th>
+					    <th>病假</th>
+					    <th>年休假</th>
+					    <th>旷工</th>
+					    <th>忘签到</th>
+					    <th>其他假</th>
+					    <th>外出</th>
+					    <th>实际出勤天</th>
+					    <th>非工作日加班</th>
+					    <th>差值</th>
+					    <th>备注</th>
+					    <php>if($is_count){</php>
+					    <th>操作</th>
+					    <php>}</php>
+					</tr>
+				</thead>
+				<tbody>  
+					<foreach name="list" item="vo" key="k">   
+	                   <tr class="table_bd active">
+						<td>{{$vo.month}}</td>
+						<td>{{$vo.depart_name}}--{{$vo.real_name}}</td>
+						<td class="over_time">{{$vo.over_time}}</td>
+						<td class="rest_time">{{$vo.rest_time}}</td>
+						<td class="late_time">{{$vo.late_time}}</td>
+						<td class="s_vacation">{{$vo.s_vacation}}</td>
+						<td class="b_vacation">{{$vo.b_vacation}}</td>
+						<td class="nx_vacation">{{$vo.nx_vacation}}</td>
+						<td class="kg_time">{{$vo.kg_time}}</td>
+						<td class="forget_signin">{{$vo.forget_signin}}</td>
+						<td class="other">{{$vo.other}}</td>
+						<td class="other">{{$vo.go_out}}</td>
+						<td class="work_date">{{$vo.work_date}}</td>
+						<td class="holiday_over_time">{{$vo.holiday_over_time}}</td>
+						<td class="differ_time">{{$vo.differ_time}}</td>
+						<td class="mark">{{$vo.mark}}</td>
+						<php>if($is_count){</php>
+						<td class="operate" id="{{$vo.id}}">
+						    <a href="javascript:;" class="edit">修改</a>
+						</td>
+						<php>}</php>
+					</tr>    
+				  </foreach> 
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->	
+
+	<!-- 请假弹框 -->
+	<div class="modal fade" id="leave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h3 class="modal-title" id="myModalLabel">新增/修改</h3>
+	      </div>
+	      
+	      <form action="{{:U('Attendance/report_edit')}}" method="post" name="form2" id="form2">
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">信息</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row">
+			      		<div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">加班</div>
+			      		<div class="col-md-3 col-sm-3 col-md-3 text-center">
+			      			<input type="text" class="form-control" placeholder="加班" value="" name="over_time">	
+			      		</div>
+			      		<div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">调休</div>
+					    <div class="col-md-3 col-sm-3 col-md-3">
+					    	<input type="text" class="form-control" placeholder="调休" value="" name="rest_time">
+					    </div>
+					    <div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">迟到</div>
+					    <div class="col-md-3 col-sm-3 col-md-3">
+					    	<input type="text" class="form-control" placeholder="迟到" value="" name="late_time">
+					    </div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">事假</div>
+			      		<div class="col-md-3 col-sm-3 col-md-3 text-center">
+			      			<input type="text" class="form-control" placeholder="事假" value="" name="s_vacation">	
+			      		</div>
+			      		<div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">病假</div>
+					    <div class="col-md-3 col-sm-3 col-md-3">
+					    	<input type="text" class="form-control" placeholder="病假" value="" name="b_vacation">
+					    </div>
+					    <div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">年休假</div>
+					    <div class="col-md-3 col-sm-3 col-md-3">
+					    	<input type="text" class="form-control" placeholder="年休假" value="" name="nx_vacation">
+					    </div>
+			      	</div>
+			      	<div class="row">
+			      		<div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">旷工</div>
+			      		<div class="col-md-3 col-sm-3 col-md-3 text-center">
+			      			<input type="text" class="form-control" placeholder="旷工" value="" name="kg_time">	
+			      		</div>
+			      		<div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">忘签到</div>
+					    <div class="col-md-3 col-sm-3 col-md-3">
+					    	<input type="text" class="form-control" placeholder="忘签到" value="" name="forget_signin">
+					    </div>
+					    <div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">其他假</div>
+					    <div class="col-md-3 col-sm-3 col-md-3">
+					    	<input type="text" class="form-control" placeholder="其他假" value="" name="other">
+					    </div>
+			      	</div>
+			      	<div class="row no_border">
+			      		<div class="col-md-3 col-sm-3 col-md-3 text-center" style="line-height: 30px;">实际出勤天</div>
+			      		<div class="col-md-3 col-sm-3 col-md-3 text-center">
+			      			<input type="text" class="form-control" placeholder="实际出勤天" value="" name="work_date">	
+			      		</div>
+			      		<div class="col-md-1 col-sm-1 col-md-1 text-center" style="line-height: 30px;">差值</div>
+					    <div class="col-md-3 col-sm-3 col-md-3">
+					    	<input type="text" class="form-control" placeholder="差值" value="" name="differ_time">
+					    </div>
+			      	</div>
+		      </div>
+		    </div>
+	      </div>
+	      
+	      <!-- 理由 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">备注</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+					    	<textarea class="form-control" style="resize:none;" id="mark" name="mark"></textarea>
+					    </div>
+			      	</div>					   
+		      </div>
+		    </div>
+	      </div>
+	      
+	      <input type="hidden" name="rid" value="" id="rid"/>
+	      </form>
+	      <!-- 理由 -->
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="confirm_btn">确定</button>
+	        <input type="hidden" value="" id="v_id" />
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 请假弹框 -->
+
+</div>
+<!-- E-页面主要部分 -->
+
+<script>
+jQuery(document).ready(function($) {
+	$("body").on("click",".table_bd .operate .edit",function(){
+		var id = $(this).parent().attr('id');
+		var mark = $(this).parent().parent().find(".mark").text();
+		var over_time = $(this).parent().parent().find(".over_time").text();
+		var rest_time = $(this).parent().parent().find(".rest_time").text();
+		var late_time = $(this).parent().parent().find(".late_time").text();
+		var s_vacation = $(this).parent().parent().find(".s_vacation").text();
+		var b_vacation = $(this).parent().parent().find(".b_vacation").text();
+		var nx_vacation = $(this).parent().parent().find(".nx_vacation").text();
+		var kg_time = $(this).parent().parent().find(".kg_time").text();
+		var forget_signin = $(this).parent().parent().find(".forget_signin").text();
+		var other = $(this).parent().parent().find(".other").text();
+		var work_date = $(this).parent().parent().find(".work_date").text();
+		var differ_time = $(this).parent().parent().find(".differ_time").text();
+		
+		$("#leave input[name='over_time']").val(over_time);
+		$("#leave input[name='rest_time']").val(rest_time);
+		$("#leave input[name='late_time']").val(late_time);
+		$("#leave input[name='s_vacation']").val(s_vacation);
+		$("#leave input[name='b_vacation']").val(b_vacation);
+		$("#leave input[name='nx_vacation']").val(nx_vacation);
+		$("#leave input[name='kg_time']").val(kg_time);
+		$("#leave input[name='forget_signin']").val(forget_signin);
+		$("#leave input[name='other']").val(other);
+		$("#leave input[name='work_date']").val(work_date);
+		$("#leave input[name='differ_time']").val(differ_time);
+		
+		$("#rid").val(id);
+		$("#mark").val(mark);
+		$('#leave').modal('show');
+	});
+	
+	
+	$('#confirm_btn').on("click",function(){
+		var click= true;
+		if(click){
+			click = false;
+			$("#form2").ajaxSubmit({
+		         url: "{{:U('Attendance/report_edit')}}",
+		         type:'post',
+		         dataType: 'json',
+		         success:function(data){
+		           if(data.status == 1){
+		        	   alert("操作成功！","{{:U('Attendance/reporting')}}");
+		           }else{
+		               $('#msg').text(data.msg);
+		           }            
+		         },error:function(){
+		              $('#msg').text("上传失败");
+		         }
+		    }) 
+		    click = true;
+		}
+	});
+	
+	$('#count_data').on("click",function(){
+		if(!confirm('你确定要计算？')){
+			return false;
+		}
+		var click= true;
+		$('#msg').text("计算中请稍后....");
+		if(click){
+			click = false;
+			$.ajax({
+				url:"{{:U('Attendance/count_data')}}",
+				type:"post",
+				dataType:'json',
+				data:{'month':$("#month").val(),"keyword":$("#keyword").val()},
+				success:function(data){
+					if(data.status == 1){
+						$('#msg').text("计算完毕");
+					}else{
+						$('#msg').text(data.msg);
+						click = true;
+						return false;
+					}
+				},error:function(){
+		              $('#msg').text("计算失败");
+		         }
+			});
+		}
+	});
+	
+	$('#count_data_holiday').on("click",function(){
+		if(!confirm('你确定要计算？')){
+			return false;
+		}
+		var click= true;
+		$('#msg').text("计算中请稍后....");
+		if(click){
+			click = false;
+			$.ajax({
+				url:"{{:U('Attendance/count_data')}}",
+				type:"post",
+				dataType:'json',
+				data:{'month':$("#month").val(),"keyword":$("#keyword").val(),'is_count_holiday':1},
+				success:function(data){
+					if(data.status == 1){
+						$('#msg').text("计算完毕");
+					}else{
+						$('#msg').text(data.msg);
+						click = true;
+						return false;
+					}
+				},error:function(){
+		              $('#msg').text("计算失败");
+		         }
+			});
+		}
+	});
+	
+	
+	$("#export").on("click",function(){
+		$("#search_type").val('export');
+		$("#form1").submit();
+	})
+	
+	$("#search").on("click",function(){
+		$("#search_type").val('');
+		$("#form1").submit();
+	})
+});
+</script>

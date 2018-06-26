@@ -1,0 +1,57 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client_add.css">
+<script type="text/javascript" src="__JS__/news_add.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('News/index')}}">新闻库</a></li>
+			  <li class="active">新增/修改新闻库</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form action="{{:U('News/save')}}" method="post" name="forms" id="forms">	
+				<input type="hidden" value="{{$info.id}}" name="news_id" id="news_id" >
+				<input type="hidden" value="{{:U('News/index')}}" name="back_url" id="back_url" >			
+				<div class="list_main">		
+				
+					<div class=" list">
+					  <div class="col-xs-2 name">新闻标题</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="" id="titile" name="titile" placeholder="请输入新闻标题">
+					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">新闻来源</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.source}}" id="source" name="source" placeholder="请输入新闻来源">
+					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">新闻内容</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.content}}" id="content" name="content" placeholder="请输入新闻内容">
+					    </div>
+					  </div>
+					</div>
+
+
+					<div class=" list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <button type="button" class="btn btn-success" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->

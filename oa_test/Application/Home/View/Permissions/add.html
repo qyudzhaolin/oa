@@ -1,0 +1,281 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_add.css">
+<script type="text/javascript" src="__JS__/budget_add.js"></script>
+<!-- S-页面主要部分 -->
+	<div class="mainContent">
+		<ol class="breadcrumb">
+		  <li><a href="{{:U('Permissions/index')}}">权限管理</a></li>
+		  <li class="active">新增/编辑权限</li>
+		</ol>
+
+		<!-- S-填写部分 -->
+		<table class="table table-condensed">
+			<colgroup>
+				<col width="15%">
+				<col width="80%">
+			</colgroup>
+			<tr>
+				<td class="left">权限名称&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-4">
+				    	<input type="text" class="form-control" id="per_name"  maxlength="30" placeholder="请填写权限名称" value="{{$permissions.per_name}}" <if condition="$Think.get.proj_id neq ''">disabled="disabled"</if>>
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">上级权限&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-4">
+				    	<select name="" id="pid" class="form-control">
+  	  					<option value="0">请选择上级权限</option>
+  	  					<foreach name="p_pers" item="vo" key="k">
+							<option value="{{$vo.per_id}}" <eq name="permissions.pid" value="$vo.per_id">selected="selected"</eq>>{{$vo.per_name}}</option>
+						</foreach>
+						</select>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">控制器&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-4">
+				    	<input type="text" class="form-control" id="controller"  maxlength="100" id="proj_name" placeholder="请填写控制器" value="{{$permissions.controller}}">
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">行为&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-4">
+				    	<input type="text" class="form-control" maxlength="20" id="action" placeholder="请填写行为" value="{{$permissions.action}}">
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">是否左侧菜单</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_module" <if condition="$permissions.is_module eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_module" <if condition="$permissions.is_module eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">左侧图标样式&nbsp;&nbsp;</td>
+				<td class="right">
+					<div class="col-xs-4">
+				    	<input type="text" class="form-control" maxlength="20" id="css" placeholder="左侧图标样式" value="{{$permissions.css}}">
+				    </div>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">是否总经理默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_2" <if condition="$permissions.is_2 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_2" <if condition="$permissions.is_2 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否财务默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_3" <if condition="$permissions.is_3 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_3" <if condition="$permissions.is_3 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否出纳默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_4" <if condition="$permissions.is_4 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_4" <if condition="$permissions.is_4 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否AD默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_5" <if condition="$permissions.is_5 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_5" <if condition="$permissions.is_5 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否SAM默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_6" <if condition="$permissions.is_6 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_6" <if condition="$permissions.is_6 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否AAM默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_7" <if condition="$permissions.is_7 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_7" <if condition="$permissions.is_7 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否AM默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_8" <if condition="$permissions.is_8 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_8" <if condition="$permissions.is_8 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否PM默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_9" <if condition="$permissions.is_9 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_9" <if condition="$permissions.is_9 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否SAE默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_10" <if condition="$permissions.is_10 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_10" <if condition="$permissions.is_10 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left">是否AE默认</td>
+				<td class="right">
+					<div class="checkbox col-xs-11">
+				       <label>
+				         <input type="radio" value="1" name="is_11" <if condition="$permissions.is_11 eq '1'">checked="checked"</if>>是
+				       </label>
+				       <label>
+				         <input type="radio" value="0" name="is_11" <if condition="$permissions.is_11 eq '0' or !$permissions">checked="checked"</if>>否
+				       </label>
+				    </div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="left"></td>
+				<td class="right">
+					<div class="Submit_btn">
+				      <button type="button" class="btn btn-default" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+				      <button type="reset" class="btn btn-default" id="reset" onclick="history.go(-1)">返回</button>					    	
+				    </div>
+				</td>
+			</tr>
+
+		</table>
+		<!-- E-填写部分 -->		
+		<input type="hidden" value="{{$permissions.per_id}}" id="per_id" />
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#Submit").click(function(event) {
+		var per_name = $("#per_name").val();
+		var pid = $("#pid").val();
+		var controller = $("#controller").val();  
+		var action = $("#action").val();
+		var css = $("#css").val();
+		var is_module = $("input[name='is_module']:checked").val();
+		var is_2 = $("input[name='is_2']:checked").val();
+		var is_3 = $("input[name='is_3']:checked").val();
+		var is_4 = $("input[name='is_4']:checked").val();
+		var is_5 = $("input[name='is_5']:checked").val();
+		var is_6 = $("input[name='is_6']:checked").val();
+		var is_7 = $("input[name='is_7']:checked").val();
+		var is_8 = $("input[name='is_8']:checked").val();
+		var is_9 = $("input[name='is_9']:checked").val();
+		var is_10 = $("input[name='is_10']:checked").val();
+		var is_11 = $("input[name='is_11']:checked").val();
+		var per_id = $("#per_id").val();
+		if(per_name.length==0){
+			alert("请填写权限名称！");
+			return false;
+		}
+		if (controller=="") {
+			alert("请填写控制器名称！");
+			return false;
+		}
+		
+		if (action==""){
+			alert("请填写行为！");
+			return false;
+		}
+		
+		$.ajax({
+			url:"{{:U('Permissions/add')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'per_name':per_name,'pid':pid,"controller":controller, "action":action, "is_module":is_module, "is_2":is_2,'css':css, 
+				"is_3":is_3, "is_4":is_4, "is_5":is_5, "is_6":is_6, "is_7":is_7, "is_8":is_8, "is_9":is_9, "is_10":is_10, "is_11":is_11,"per_id":per_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！","{{:U('Permissions/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+});
+</script>

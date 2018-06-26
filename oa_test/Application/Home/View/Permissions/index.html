@@ -1,0 +1,110 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">权限管理</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main">
+		<a id="add_btn" class="btn btn-primary" href="{{:U('Permissions/add')}}">&nbsp;&nbsp;新增权限&nbsp;&nbsp;</a>
+		<div class="search_input">
+			<div class="col-lg-9">
+			    <div class="input-group">
+			      <input type="text" class="form-control" placeholder="权限名称" id="keyword" value="{{$Think.get.keyword}}">
+			      <span class="input-group-btn">
+			        <button class="btn btn-success" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+		  </div>
+		</div>
+	</div>
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="15%">
+					<col width="15%">
+					<col width="20%">
+					<col width="20%">
+					<col width="10%">
+					<col width="10%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>权限名称</th>
+						<th>上级权限</th>
+					    <th>控制器</th>
+					    <th>行为</th>
+					    <th>是否左侧菜单</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+	                <foreach name="list" item="vo" key="k">   
+	                <tr class="table_bd active">
+						<td>{{$vo.per_name}}</td>
+						<td>{{$vo.p_per_name}}</td>
+						<td>{{$vo.controller}}</td>
+						<td>{{$vo.action}}</td>
+						<td><if condition="$vo.is_module eq 1">是<else/>否</if></td>
+						<td class="operate" id="{{$vo.per_id}}">		
+
+							<div class="dropdown">
+							  <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							    操作
+							    <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">		    
+									<li><a href="{{:U('Permissions/add')}}?per_id={{$vo.per_id}}" class="edit">修改</a></li>
+									<li><a href="javascript:;" class="deleat">删除</a></li>
+							  </ul>
+							</div>
+
+
+
+						</td>
+					</tr> 
+					</foreach>    
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#search").click(function(){
+		window.location.href="{{:U('Permissions/index')}}?keyword="+$("#keyword").val();
+	});
+	
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?如果是上级权限，下级权限也将全部删除")){
+			return false;
+		}
+		var per_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Permissions/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'per_id':per_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Permissions/index')}}?keyword="+$("#keyword").val());
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+})
+</script>

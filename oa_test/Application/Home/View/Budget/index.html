@@ -1,0 +1,243 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<!-- E-页面主要部分 -->
+
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">项目预算单</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main form-inline">
+		<!-- 左 -->	
+		<div style="float:left;">			
+			<div class="form-group">			
+				<if condition="$is_budget_add">
+					<a id="add_btn" class="btn btn-primary" href="{{:U('Budget/add')}}">&nbsp;&nbsp;新增预算单&nbsp;&nbsp;</a>
+				</if>
+			</div>
+		</div>
+		<!-- 左 -->	
+		<!-- 右 -->	
+		<div style="float:right;">			
+			<div class="form-group">
+		        <label for="exampleInputName2">起止时间：</label>
+		        <input type="text" class="form-control" placeholder="开始日期" name="start_date" id="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}">
+		    </div>
+			<div class="form-group">
+		        <label for="exampleInputName2">至</label>
+		        <input type="text" class="form-control" placeholder="结束日期" name="end_date" id="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+		    </div>
+			<div class="form-group" id="select">
+				<label for="exampleInputName2">状态：</label>
+		        <select name="" id="way_select" class="form-control">
+					<option value="0">全部</option>
+				   	<option value="1" <if condition="$Think.get.way eq 1">selected="selected"</if>>已完成</option>
+				   	<option value="2" <if condition="$Think.get.way eq 2">selected="selected"</if>>未完成</option>
+			   </select>
+		    </div>
+		    <div class="form-group">
+		    	<div class="input-group ">
+			      <input type="text" class="form-control" id="keyword" value="{{$Think.get.keyword}}" placeholder="输入项目编号">
+			      <span class="input-group-btn">
+			        <button class="btn btn-primary" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+		    </div>
+		    <php>if(check_permission_left('financial_approve', 'budget_export')){</php>
+		    <div class="form-group">
+		    	<a id="export" class="btn btn-primary">&nbsp;&nbsp;导出&nbsp;&nbsp;</a>
+		    </div>
+		    <php>}</php>
+		</div>
+		<!-- 右 -->	
+	</div>
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+		<table class="table-striped table-bordered table-hover " style="width:100%;">
+			<thead>
+				<tr id="table_head">
+					<th class="theme-bg">预算单号</th>
+					<th class="theme-bg">项目编号</th>
+					<th class="theme-bg">项目名称</th>
+					<if condition="$access_allvoucher">
+					<th class="theme-bg">预算收入</th>
+					<th class="theme-bg">预算利润</th>
+					<th class="theme-bg">决算收入</th>
+					<th class="theme-bg">决算利润</th>
+				    <th class="theme-bg">已发生费用</th>
+				    <th class="theme-bg">未发生费用</th>
+				    <th class="theme-bg">PO金额</th>
+				    <th class="theme-bg">开票金额</th>
+				    <th class="theme-bg">回款金额</th>
+					</if>
+				    <th class="theme-bg">申请人</th>
+				    <th class="theme-bg">状态</th>
+				    <th class="theme-bg">创建时间</th>
+				    <th class="theme-bg">操作</th>
+				</tr>
+			</thead>
+			<tbody>  
+                <foreach name="list" item="vo" key="k">   
+                <tr class="table_bd active">
+					<td>{{$vo.bud_no}}</td>
+					<td>{{$vo.proj_no}}</td>
+					<td>{{$vo.proj_name}}</td>
+					<if condition="$access_allvoucher">
+					<td>{{$vo.budget_cntr_income}}</td>
+					<td>{{$vo.budget_proj_profit}}</td>
+					<td>{{$vo.final_cntr_income}}</td>
+					<td>{{$vo.final_proj_profit}}</td>
+					<td>{{$vo.total_use_money}}</td>
+					<td>{{$vo.total_nuse_money}}</td>
+					<td>{{$vo.po_money}}</td>
+					<td>{{$vo.kp_money}}</td>
+					<td>{{$vo.back_money}}</td>
+					</if>
+					<td>{{$vo.depart_name}}--{{$vo.real_name}}</td>
+					<td>{{$vo.result_info}}</td>
+					<td>{{$vo.crt_time}}</td>
+					<td class="operate" id="{{$vo.bud_id}}">				
+					    <if condition="$vo.action eq 'add'">
+					   		 <a href="{{:U('Budget/add')}}?id={{$vo.bud_id}}" class="edit">修改</a>
+							<a href="javascript:;" class="deleat">删除</a>
+					    <else/>	
+							<a href="{{:U('Budget/info')}}?id={{$vo.bud_id}}" class="edit">详情</a>
+						</if>
+						
+						<if condition="$vo.modify_action eq '1'">
+							<a href="{{:U('Modifybudget/index')}}?bud_id={{$vo.bud_id}}" class="edit">变更</a>
+						</if>
+						
+						<if condition="$vo.crt_user_id eq $user_id or $lvl_id eq 3 or $lvl_id eq 1">
+							<a href="{{:U('Budget/add_po')}}?bud_id={{$vo.bud_id}}" class="edit">开票统计</a>
+						</if>
+						<php>if(check_permission_left('financial_approve', 'finance') && $vo['result']==1){</php>
+						<a href="javascript:;" class="deleat">删除</a>
+						<a href="javascript:;" class="edit edit-info" end-time="{{$vo.end_time}}">修改</a>
+						<php>}</php>
+						<if condition="$is_mjsupplier_export">
+							<a href="{{:U('Budget/mj_import')}}?proj_id={{$vo.proj_id}}" class="edit">媒介导入</a>
+						</if>
+					</td>
+				</tr> 
+				</foreach>    
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->
+	
+	<!-- 请假弹框 -->
+	<div class="modal fade" id="leave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h3 class="modal-title" id="myModalLabel">修改</h3>
+	      </div>
+	      
+	      <form action="{{:U('Attendance/report_edit')}}" method="post" name="form2" id="form2">
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">信息</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row">
+			      		<div class="col-md-3 col-sm-1 text-center" style="line-height: 30px;">项目截止日期</div>
+			      		<div class="col-md-3 col-sm-3 text-center">
+			      			<input type="text" class="form-control" placeholder="加班" value="" name="end_time" id="end_time" onclick="WdatePicker()">	
+			      		</div>
+			      	</div>
+		      </div>
+		    </div>
+	      </div>
+	      
+	      <input type="hidden" name="bud_id" value="" id="bud_id"/>
+	      </form>
+	      <!-- 理由 -->
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="confirm_btn">确定</button>
+	        <input type="hidden" value="" id="v_id" />
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 请假弹框 -->
+	
+	
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var bud_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Budget/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'bud_id':bud_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Budget/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#search").click(function(){
+		window.location.href="{{:U('Budget/index')}}?keyword="+$("#keyword").val()+"&way="+$("#way_select").val()+"&start_date="+$("#start_date").val()+"&end_date="+$("#end_date").val();
+	});
+	
+	$("#export").click(function(){
+		window.location.href="{{:U('Budget/export')}}?keyword="+$("#keyword").val()+"&way="+$("#way_select").val()+"&start_date="+$("#start_date").val()+"&end_date="+$("#end_date").val();
+	});
+	
+	$("body").on("click",".table_bd .operate .edit-info",function(){
+		var id = $(this).parent().attr('id');
+		$("#bud_id").val(id);
+		$("#end_time").val($(this).attr("end-time"));
+		$('#leave').modal('show');
+	});
+	
+	
+	
+	$('#confirm_btn').on("click",function(){
+		var click= true;
+		if(click){
+			click = false;
+			$("#form2").ajaxSubmit({
+		         url: "{{:U('Budget/budget_edit')}}",
+		         type:'post',
+		         dataType: 'json',
+		         success:function(data){
+		           if(data.status == 1){
+		        	   alert("操作成功！",window.location.href);
+		           }else{
+		               $('#msg').text(data.msg);
+		           }            
+		         },error:function(){
+		              $('#msg').text("操作失败");
+		         }
+		    }) 
+		    click = true;
+		}
+	});
+});
+</script>

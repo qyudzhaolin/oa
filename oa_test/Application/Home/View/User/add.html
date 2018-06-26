@@ -1,0 +1,252 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client_add.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('User/index')}}">用户库</a></li>
+	  <li class="active">新增用户</li>
+	</ol>
+	<!-- S-填写部分 -->
+	<form action="">				
+		<div class="list_main">		
+			<div class=" list">
+			  <div class="col-xs-2 name">用户名</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="text" class="form-control" id="user_name" placeholder="请输入用户名" value="{{$user.user_name}}" maxlength="20" <if condition="!$handle_permission">disabled="disabled"</if>>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class=" list">
+			  <div class="col-xs-2 name">密码</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="password" class="form-control" id="password" placeholder="请输入密码" maxlength="20" value="">
+			    </div>
+			  </div>
+			</div>
+			
+			<div class=" list">
+			  <div class="col-xs-2 name">确认密码</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="password" class="form-control" id="repassword" placeholder="请输入确认密码" maxlength="20">
+			    </div>
+			  </div>
+			</div>
+			
+			<div class=" list">
+			  <div class="col-xs-2 name">真实姓名</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="text" class="form-control" id="real_name" placeholder="请输入真实姓名" value="{{$user.real_name}}" maxlength="20" <if condition="!$handle_permission">disabled="disabled"</if>>
+			    </div>
+			  </div>
+			</div>
+			<div class=" list">
+			  <div class="col-xs-2 name">手机</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="text" class="form-control" id="phone" placeholder="请输入手机" value="{{$user.phone}}" maxlength="11" />
+			    </div>
+			  </div>
+			</div>
+			<div class="list">
+			  <div class="col-xs-2 name">生日</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="text" class="form-control" id="birthday" placeholder="请输入生日" value="{{$user.birthday}}" onclick="WdatePicker()" />
+					
+			    </div>
+			  </div>
+			</div>
+
+			
+			<div class=" list">
+			  <div class="col-xs-2 name">邮箱</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="text" class="form-control" id="email" placeholder="请输入邮箱" value="{{$user.email}}" maxlength="100" <if condition="!$handle_permission">disabled="disabled"</if>>
+			    </div>
+			  </div>
+			</div>
+
+			<div class=" list">
+			  <div class="col-xs-2 name">所在部门</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<select name="" id="depart_id" class="form-control" <if condition="!$handle_permission">disabled="disabled"</if>>
+  	  					<option value="0">请选择所在部门</option>
+  	  					<foreach name="departs" item="vo" key="k">
+  	  						<option value="{{$vo.depart_id}}" <eq name="user.depart_id" value="$vo.depart_id">selected="selected"</eq>>{{$vo.depart_name}}</option>
+  	  					</foreach>
+ 					</select>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class=" list">
+			  <div class="col-xs-2 name">用户级别</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<select name="" id="lvl_id" class="form-control" <if condition="!$handle_permission">disabled="disabled"</if>>
+  	  					<option value="0">请选择用户级别</option>
+  	  					<foreach name="levels" item="vo" key="k">
+  	  						<option value="{{$vo.lvl_id}}" <eq name="user.lvl_id" value="$vo.lvl_id">selected="selected"</eq>>{{$vo.lvl_name}}</option>
+  	  					</foreach>
+ 					</select>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class=" list">
+			  <div class="col-xs-2 name">直属上级</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<select name="" id="leader_uid" class="form-control" <if condition="!$handle_permission">disabled="disabled"</if>>
+  	  					<option value="0">请选择直属上级</option>
+  	  					<foreach name="leader_users" item="vo" key="k">
+  	  						<option value="{{$vo.user_id}}" <eq name="user.leader_uid" value="$vo.user_id">selected="selected"</eq>>{{$vo.real_name}}</option>
+  	  					</foreach>
+ 					</select>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class=" list">
+			  <div class="col-xs-2 name">剩余年假</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-12 col-md-3 col-sm-10">
+			    	<input type="text" class="form-control" id="nx_vacation" placeholder="请输入剩余年假" value="{{$user.nx_vacation}}" maxlength="20" <if condition="!$handle_permission">disabled="disabled"</if>>
+			    </div>
+			  </div>
+			</div>
+
+			<div class=" list">
+			  <div class="col-xs-2 name"></div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="Submit_btn">
+			      <button type="button" class="btn btn-success" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset" onclick="history.go(-1)">返回</button>				    	
+			    </div>
+			  </div>
+			</div>
+			<input type="hidden" value="{{$user.user_id}}" id="user_id" />
+		</div>
+	</form>
+	<!-- E-填写部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	$("#Submit").click(function(event) {
+		//部门名称
+		var user_name = $("#user_name").val();
+		var password = $("#password").val();
+		var repassword = $("#repassword").val();
+		var real_name = $("#real_name").val();
+		var email = $("#email").val();
+		var depart_id = $("#depart_id").val();
+		var lvl_id = $("#lvl_id").val();
+		var user_id = $("#user_id").val();
+		var nx_vacation = $("#nx_vacation").val();
+		var phone = $("#phone").val();
+		var birthday = $("#birthday").val();
+		var leader_uid = $("#leader_uid").val(); 
+		if (user_name.length == 0) {
+			alert("请填写用户名！");
+			return false;
+		}
+		if(user_id.length == 0){
+			if (password.length==0) {
+				alert("请填写密码！");
+				return false;
+			}
+			if (repassword.length==0) {
+				alert("请填写确认密码！");
+				return false;
+			}
+		}
+		if((password.length > 0 || repassword.length > 0) && password != repassword){
+			alert("密码不一致！");
+			return false;
+		}
+		if (real_name.length == 0) {
+			alert("请填写真实姓名！");
+			return false;
+		}
+		if (email.length == 0){
+			alert("请填写邮箱！");
+			return false;
+		}
+		if (depart_id == 0) {
+			alert("请选择所在部门！");
+			return false;
+		}
+		if (lvl_id == 0) {
+			alert("请选择用户级别！");
+			return false;
+		}
+		if (nx_vacation.length == 0) {
+			alert("请填写年休假！");
+			return false;
+		}
+		
+		$.ajax({
+			url:"{{:U('User/add')}}",
+			type:"post",
+			dataType:'json', 
+			data:{
+				'user_name':user_name,
+				"password":password,
+				"repassword":repassword,
+				"real_name":real_name,
+				"email":email,
+				"depart_id":depart_id,
+				"lvl_id":lvl_id,
+				"user_id":user_id,
+				"nx_vacation":nx_vacation,
+				"phone":phone,
+				"birthday":birthday,
+				"leader_uid":leader_uid,
+			},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",document.referrer);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#depart_id,#lvl_id").change(function(){
+		$.ajax({
+			url:"{{:U('User/get_leader')}}",
+			type:"post",
+			dataType:'json', 
+			data:{
+				"depart_id":$("#depart_id").val(),
+				"lvl_id":$("#lvl_id").val(),
+			},
+			success:function(data){
+				if(data.status == 1){
+					var users = eval(data.users);
+					var str = '<option value="0">请选择直属上级</option>';
+					if(users.length > 0){
+						for(var i=0;i<users.length;i++){
+							str += '<option value="'+users[i]['user_id']+'">'+users[i]['real_name']+'</option>';
+						}
+					}
+					$("#leader_uid").html(str);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	})
+});
+</script>

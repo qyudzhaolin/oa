@@ -1,0 +1,139 @@
+{__NOLAYOUT__}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=640, user-scalable=no, target-densitydpi=device-dpi">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<!-- 公共引用部分 -->
+<link rel="stylesheet" type="text/css" href="__CSS__/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/allhead.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script type="text/javascript" src="__JS__/jquery-1.11.2.min.js"></script>
+<style type="text/css">
+td{padding: 2px 8px !important;}
+@media print{#print-buttom{display:none}}
+</style>
+<!-- 公共引用部分 -->
+</head>
+<body>
+	<!--S-主体部分 -->
+<!-- S-页面主要部分 -->
+<div id="mainContent" class="mainContent" style="width: 100%;padding-top:0px;height:auto">
+	<ol class="breadcrumb" style="text-align: center;margin-bottom:0px">
+	  <li style="width: 100%">
+		<span style="float: left; padding-left: 20px">个人报销单&nbsp;&nbsp;{{$schedule.aprv_no}}</span> 
+		<span style="float: right; padding-right: 20px">申请日期：{{$recouped.crt_time}}</span>
+	  </li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<!-- S-部门项目等 -->
+		<table class="table table-striped table-bordered" id="first-table" style="border-bottom: 0px">
+			<tr>
+				<td class="col-md-2 active">部门</td>
+				<td class="col-md-4">{{$depart.depart_name}}</td>
+				<td class="col-md-2 active">姓名</td>
+				<td class="col-md-4">{{$apply_user.real_name}}</td>
+			</tr>
+			<tr>
+				<td rowspan="3" class="active">
+					支付方式
+				</td>
+				<td rowspan="3">
+					<if condition="$recouped.borrow_way eq '1'">
+					现金
+					<elseif condition="$recouped.borrow_way eq 2"/>  
+					转账
+					<else/>
+					其它：{{$recouped.other}}
+					</if>
+				</td>
+				<td class="active">收款人</td>
+				<td><if condition="$recouped.borrow_way eq '1'">--<else/>{{$recouped.get_user}}</if></td>
+			</tr>
+			<tr>
+				<td class="active">银行</td>
+				<td><if condition="$recouped.borrow_way eq '1'">--<else/>{{$recouped.bnk_branch}}</if></td>
+			</tr>
+			<tr>
+				<td class="active">银行账号</td>
+				<td><if condition="$recouped.borrow_way eq '1'">--<else/>{{$recouped.bnk_acct}}</if></td>
+			</tr>
+			
+			<tr id="no_border">
+				<td colspan="4"></td>
+			</tr>
+			<tr id="th">
+				<td class="col-md-2 active" >款项</td>
+				<td class="col-md-1 active">报销金额</td>
+				<td class="col-md-7 active" colspan="2">备注说明</td>
+			</tr>
+			<foreach name="money_list" item="vo" key="k">
+			<tr class="fund">
+				<td class="col-md-2">{{$vo.money_name}}</td>
+				<td class="col-md-1">{{$vo.money}}</td>
+				<td class="col-md-7" colspan="2">{{$vo.comm}}</td>
+			</tr>
+			</foreach>
+			<tr>
+				<td colspan="1" class="active">金额总计（小写）</td>
+				<td colspan="5">{{$recouped.tot_amt}}</td>
+			</tr>
+			<tr>
+				<td colspan="1" class="active">金额总计（大写）</td>
+				<td colspan="5">{{$recouped.tot_amt_d}}</td>
+			</tr>
+			<tr id="no_border">
+				<td colspan="4"></td>
+			</tr>
+		</table>
+		<!-- E-部门项目等 -->
+		<!-- S-申请完操作 -->
+		<table class="table table-striped table-bordered"  style="border-top: 0px">
+			<tr>
+				<td class="active">申请人</td>
+				<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+				<td class="active">{{$vo}}</td>
+				</foreach>
+			</tr>
+			<tr>
+				<td>{{$apply_user.real_name}}</td>
+				<include file="./Application/Home/View/approve_banner.html" />
+			</tr>
+		</table>
+		<!-- E-申请完操作 -->
+		<ol class="breadcrumb" style="text-align: center">
+			<li style="width: 100%">
+				<span style="float: right; padding-right: 10px">打印日期：{{$recouped.print_time}}&nbsp;&nbsp;&nbsp; </span>
+			</li>
+		</ol>
+	</div>
+	</div>
+	<div style="text-align: center" id="print-buttom">
+		<a class="btn btn-primary" onclick="prints()">&nbsp;&nbsp;打印&nbsp;&nbsp;</a>
+	</div>
+	<!-- E-表格部分 -->	
+	<!--E-主体部分 -->
+</body>
+</html>
+
+
+<script type="text/javascript">
+function prints(){
+	window.print();
+	$.ajax({
+		url:"{{:U('Print/confirmprint')}}",
+		type:"post",
+		dataType:'json', 
+		data:{'type':2,'id':{{$Think.get.id}}},
+		success:function(data){
+			window.location.reload();
+		}
+	});
+	window.location.reload();
+}
+</script>

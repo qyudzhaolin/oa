@@ -1,0 +1,262 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script type="text/javascript" src="__JS__/recouped.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">用章申请</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+		<!-- S-部门项目等 -->
+			<table class="table-striped table-bordered">
+				<tr>
+					<td class="col-md-2 active">部门</td>
+					<td class="col-md-4">{{$depart.depart_name}}</td>
+					<td class="col-md-2 active">姓名</td>
+					<td class="col-md-4">{{$apply_user.real_name}}</td>
+				</tr>
+				<tr>
+					<td class="active">
+						用章类型
+					</td>
+					<td>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="s_type" id="cash" value="1" <if condition="$seal.s_type eq '1' or $seal.s_type eq ''">checked="checked"</if>> 盖章申请
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="s_type" id="transfer" value="2" <if condition="$seal.s_type eq 2">checked="checked"</if>> 借章申请
+						</label>
+					</td>
+					<td class="active">所属公司</td>
+					<td>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="c_type" value="1" <if condition="$seal.c_type eq '1' or $seal.c_type eq ''">checked="checked"</if>> 榕智
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="c_type" value="2" <if condition="$seal.c_type eq 2">checked="checked"</if>> 炜旻
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="c_type" value="3" <if condition="$seal.c_type eq 3">checked="checked"</if>> 络昕
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="active">印章类型</td>
+					<td>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="se_type" value="1" <if condition="$seal.se_type eq '1' or $seal.se_type eq ''">checked="checked"</if>> 公章
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="se_type" value="2" <if condition="$seal.se_type eq 2">checked="checked"</if>> 财务章
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="se_type" value="3" <if condition="$seal.se_type eq 3">checked="checked"</if>> 法人章
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="se_type" value="4" <if condition="$seal.se_type eq '4'">checked="checked"</if>> 发票章
+						</label>
+						<label class="radio-inline">
+						  <input disabled="disabled" type="radio" name="se_type" value="5" <if condition="$seal.se_type eq '5'">checked="checked"</if>> 合同章
+						</label>
+					</td>
+					<td class="active" id="change_td"><if condition="$seal.s_type eq '1' or $seal.s_type eq ''">印章次数<else/>日期</if></td>
+					<td id="change_td_1">
+						<if condition="$seal.s_type eq '1' or $seal.s_type eq ''">
+						{{$seal.use_num}}
+						<else/>
+						<label class="radio-inline"><p style="float:left;margin-top: 6px;margin-right: 10px;">借出</p><input style="float:left;width: 70%;" type="text" class="form-control" placeholder="日期" id="out_date" name="out_date"  value="{{$seal.out_date}}" readonly="readonly"></label>
+						<label class="radio-inline"><p style="float:left;margin-top: 6px;margin-right: 10px;">归还</p><input style="float:left;width: 70%;" type="text" class="form-control" placeholder="日期" id="back_date" name="back_date" value="{{$seal.back_date}}" readonly="readonly"></label>
+						</if>
+					</td>
+				</tr>
+				<tr>
+					<td class="active">使用原因</td>
+					<td colspan="4">
+						{{$seal.reason}}
+					</td>
+				</tr>
+			</table>
+			<!-- E-部门项目等 -->
+		
+			<!-- S-申请完操作 -->
+			<table class="table-striped table-bordered">
+				<tr>
+					<td class="active">申请人</td>
+					<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+					<td class="active">{{$vo}}</td>
+					</foreach>
+				</tr>
+				<tr>
+					<td>{{$apply_user.real_name}}</td>
+					<include file="./Application/Home/View/approve_banner.html" />
+				</tr>
+			</table>
+			<!-- E-申请完操作 -->
+		
+			<!-- S-提交部分 -->
+			<if condition="$is_restart eq 1">
+			<div class="edit text-center">
+				<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+			</div>
+			</if>
+			<!-- E-提交部分 -->
+		
+		
+			<!-- S-输入理由的弹出框 -->
+			<include file="./Application/Home/View/noagree.html" />
+			<!-- E-输入理由的弹出框 -->
+		
+			<!-- S-选择审批人的弹出框 -->
+			<include file="./Application/Home/View/approve.html" />
+			<!-- E-选择审批人的弹出框 -->
+		
+		</div>
+	</div>
+	
+	
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$seal.se_id}}" id="se_id" />
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	var click=true;
+	$("#btn-success").click(function(){
+		if(click){
+			var se_id = $("#se_id").val();
+			var num = $("#agree_num").val();
+			var cur_approver_id = $("#cur_approver_id").val();
+			if(confirm('确定要执行同意操作吗？')){
+				click = false;
+				$(".approve_users").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Seal/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'se_id':se_id,'num':num,'result':1,'cur_approver_id':cur_approver_id,'option':$("#agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							alert("操作成功！",window.location.href);
+						}else{
+							alert(data.msg);
+							click = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click = true;	
+			}
+		}
+	})
+	
+	
+	var click1=true; 
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var t_id = $("#t_id").val();
+		var num = $(this).attr("val");
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".noagree").modal('show');
+		}else{
+			$("#agree_num").val(num);
+			<if condition="$is_show_app eq 1">
+			$(".approve_users").modal('show');
+			<else/>
+			$("#btn-success").click();
+			</if>
+		}
+	});
+	
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var se_id = $("#se_id").val();
+		if(click3){
+			if(confirm('确定要执行不同意操作吗？')){
+				click3 = false;
+				$(".account").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Seal/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'se_id':se_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							alert("操作成功！",window.location.href);
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+	
+	var click2 = true;
+	$("#Restart").click(function(){
+		if(click2){
+			click2 = false;
+			if(confirm('确定要重新发启？')){
+				var se_id = $("#se_id").val();
+				$.ajax({
+					url:"{{:U('Seal/restart')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'se_id':se_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Seal/index')}}");
+						}else{
+							alert(data.msg);
+							click2 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click2 = true;
+			}
+		}
+	});
+	
+	var click4 = true;
+	$(".btn-warning").click(function(){
+		if(click4){
+			click4 = false;
+			if(confirm('确定要返回操作吗？')){
+				var se_id = $("#se_id").val();
+				$.ajax({
+					url:"{{:U('Seal/back')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'se_id':se_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！",window.location.href);
+						}else{
+							alert(data.msg);
+							click4 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click4 = true;
+			}
+		}
+	})
+});
+</script>

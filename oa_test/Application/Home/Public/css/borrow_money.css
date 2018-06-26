@@ -1,0 +1,65 @@
+/*
+* @Author: win
+* @Date:   2016-04-14 12:22:53
+* @Last Modified by:   win
+* @Last Modified time: 2017-06-29 10:49:13
+*/
+.search_main{
+	width: 100%;
+	height: 50px;
+}
+#select{
+	margin-top: 8px;
+	float: left;
+	cursor: pointer;
+}
+.search_input{
+	width:400px;
+	height: 50px;
+	float: right;
+}
+.search_input>div{
+	float: right;
+	margin-top:8px;
+}
+
+.table td{
+	text-align: center;
+	background: #f3f3f8;
+
+}
+.active{
+	background: #e2e5ea!important;
+}
+#no_border td{
+	border: none;
+	background: #fff;
+	color:#fff;
+}
+#th td{
+	border-right-color: #fff;
+}
+#add_append{
+	cursor: pointer;
+}
+#click_name{
+	border-radius: 4px;
+	height: 34px;
+}
+/* 选项卡部分 */
+#myModal .active{
+	background: #fff!important;
+}
+.selecr_parent{
+	width: 25%;
+	display: inline-block;
+	overflow: hidden;
+	margin-top: 20px;
+}
+.edit {
+    background: #f3f3f8 none repeat scroll 0 0;
+    border: 1px solid #ccc;
+    height: 50px;
+    margin-top: -1px;
+    padding-top: 7px;
+}

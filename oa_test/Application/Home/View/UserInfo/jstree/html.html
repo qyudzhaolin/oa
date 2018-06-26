@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/jstree/style.min.css">
+	<script type="text/javascript" src="__PUBLIC__/jstree/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/jstree/jstree.min.js"></script>
+</head>
+<body>
+	<input type="text" id="plugins4_q" placeholder="输入部门或者姓名">
+	
+	<div id="container">
+	  <ul>
+	    <li data-jstree='{ "selected" : false, "opened" : true,"type" : "gs" }'>智源动力
+	      <ul>
+	        <li data-jstree='{"type" : "group" }'>
+	        	技术部
+	        	<ul>
+			        <li data-jstree='{"type" : "list" }'>张三</li>
+			        <li data-jstree='{"type" : "list" }'>李四</li>
+			        <li data-jstree='{"type" : "list" }'>张三</li>
+			        <li data-jstree='{"type" : "list" }'>李四</li>
+			        <li data-jstree='{"type" : "list" }'>张三</li>
+			        <li data-jstree='{"type" : "list" }'>李四</li>
+			    </ul>
+	        </li>
+	        <li data-jstree='{"type" : "group" }'>
+	        	设计部
+	        	<ul>
+			        <li data-jstree='{"type" : "list" }'>张三</li>
+			        <li data-jstree='{"type" : "list" }'>李四</li>
+			        <li data-jstree='{"type" : "list" }'>张三</li>
+			        <li data-jstree='{"type" : "list" }'>李四</li>
+			        <li data-jstree='{"type" : "list" }'>张三</li>
+			        <li>李四</li>
+			    </ul>
+	        </li>
+	      </ul>
+	    </li>
+	  </ul>
+	</div>
+
+	<script>
+	$(function() {
+	  $('#container').jstree(
+	  		
+	  	);
+
+	  	var to = false;
+	  	$('#plugins4_q').keyup(function () {
+		    if(to) { clearTimeout(to); }
+		    to = setTimeout(function () {
+		      var v = $('#plugins4_q').val();
+		      $('#container').jstree(true).search(v);
+		    }, 250);
+	  	});
+	});
+	</script>
+</body>
+</html>

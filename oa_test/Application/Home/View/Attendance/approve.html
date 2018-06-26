@@ -1,0 +1,192 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">审批任务</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<form action="" method="get">
+		<div class="search_main form-inline">
+			<div class="form-group">
+		        <label for="exampleInputName2">审批状态：</label>
+		        <select name="way" id="way_select" class="form-control">
+					<option value="0">全部</option>
+				   	<option value="1" <if condition="$way eq 1">selected="selected"</if>>已审核</option>
+				   	<option value="2" <if condition="$way eq 2">selected="selected"</if>>未审核</option>
+			   </select>
+		    </div>
+			<div class="form-group">
+		        <label for="exampleInputName2">起止时间：</label>
+		        <input type="text" class="form-control" placeholder="开始日期" name="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}">
+		    </div>
+			<div class="form-group">
+		        <label for="exampleInputName2">至</label>
+		        <input type="text" class="form-control" placeholder="结束日期" name="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+		    </div>
+			<div class="form-group">
+		        <input type="text" class="form-control" placeholder="姓名" name="keyword" value="{{$Think.get.keyword}}" >
+		    </div>
+			<div class="form-group">
+		        <button class="btn btn-primary" type="submit" id="search">查询</button>
+		    </div>
+		</div>
+	</form>
+	<!-- E-搜索框部分 -->
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="3%">
+					<col width="8%">
+					<col width="5%">
+					<col width="15%">
+					<col width="15%">
+					<col width="8%">
+					<col width="8%">
+					<col width="10%">
+					<col width="8%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>编号</th>
+						<th>姓名</th>
+						<th>请假类型</th>
+						<th>请假时间</th>
+						<th>备注(原因)</th>
+						<th>附件</th>
+						<th>申请时间</th>
+					    <th>审核状态</th>
+					    <th>审批</th>
+					</tr>
+				</thead>
+				<tbody>  
+					<foreach name="list" item="vo" key="k">   
+	                   <tr class="table_bd active">
+						<td>{{$k+1}}</td>
+						<td>{{$vo.depart_name}}--{{$vo.real_name}}</td>
+						<td>{{$vo.v_type}}</td>
+						<td>{{$vo.start_date}}至{{$vo.end_date}}</td>
+						<td>{{$vo.reason}}</td>
+						<td><a href="{{$vo.file_url}}" target="_blank">{{$vo.file_name}}</a></td>
+						<td>{{$vo.crt_time}}</td>
+						<td>{{$vo.result_info}}</td>
+						<td class="operate">
+							<php>
+							if(($user_id == $aide_userid || $user_id == $zjl_userid) && $vo['mark']){
+							</php>
+						    <font style="color:red">{{$vo.mark}}</font>
+						    <php>
+						    }	
+						    </php>
+							<if condition="$vo.is_approve eq 1">
+								<a class="btn btn-primary approve-agree" data-id="{{$vo.aprv_id}}" >同意</a>
+								<eq name="user_id" value="$aide_userid">
+										<a class="btn btn-primary approve-noagree" data-id="{{$vo.aprv_id}}">不同意</a>
+										<a class="btn btn-primary approve-zjl" data-id="{{$vo.aprv_id}}">转老板</a>
+								<else/>
+									<a class="btn btn-primary approve-noagree" data-id="{{$vo.aprv_id}}">不同意</a>
+								</eq>
+							</if>
+						</td>
+					</tr>    
+				  </foreach> 
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->	
+	
+	<!-- 请假弹框 -->
+	<div class="modal fade" id="leave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h3 class="modal-title" id="myModalLabel">审批</h3>
+	      </div>
+	      <!-- 理由 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">原因</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+					    	<textarea class="form-control" style="resize:none;" id="reason"></textarea>
+					    </div>
+			      	</div>					   
+		      </div>
+		    </div>
+	      </div>
+	      <!-- 理由 -->
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="confirm_btn">确定</button>
+	        <input type="hidden" value="" id="aprv_id" />
+	        <input type="hidden" value="" id="result" />
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 请假弹框 -->
+</div>
+<!-- E-页面主要部分 -->
+
+<script>
+jQuery(document).ready(function($) {
+	//不同意
+	$(".approve-noagree").on("click",function(){
+		var aprv_id = $(this).attr('data-id');
+		$("#aprv_id").val(aprv_id);
+		$("#result").val(2);
+		$('#leave').modal('show');
+	});
+	
+	$(".approve-zjl").on("click",function(){
+		var aprv_id = $(this).attr('data-id');
+		$("#aprv_id").val(aprv_id);
+		$("#result").val(3);
+		$('#leave').modal('show');
+	});
+	
+	//同意
+	$(".approve-agree").on("click",function(){
+		var aprv_id = $(this).attr('data-id');
+		$("#aprv_id").val(aprv_id);
+		$("#result").val(1);
+		approve();
+	});
+	
+	$("#confirm_btn").on("click",function(){
+		approve();
+	});
+});
+
+function approve(){
+	var click=true;
+	if(click){
+		click = false;
+		$.ajax({
+			url:"{{:U('Attendance/operate')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'aprv_id':$("#aprv_id").val(),"result":$("#result").val(), "reason":$("#reason").val()},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！",window.location.href);
+				}else{
+					alert(data.msg);
+					click = true;
+					return false;
+				}
+			}
+		});
+	}
+}
+</script>

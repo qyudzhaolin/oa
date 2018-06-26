@@ -1,0 +1,103 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client_add.css">
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('Customer/index')}}">客户库</a></li>
+			  <li class="active">新增/修改客户库</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form action="{{:U('Customer/save')}}" method="post" name="forms" id="forms">	
+				<input type="hidden" value="{{$info.cust_id}}" name="cust_id" id="cust_id" >
+				<input type="hidden" value="{{:U('Customer/index')}}" name="back_url" id="back_url" >			
+				<div class="list_main">		
+				
+					<div class=" list">
+					  <div class="col-xs-2 name">品牌名称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.brand_name}}" id="brand_name" placeholder="如origins 悦木之源">
+					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">客户简称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.cust_short_name}}" id="client_name" placeholder="请填写客户名称">
+					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">客户全称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.cust_full_name}}" id="client_name_2" placeholder="如雅思兰黛集团有限公司">
+					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">联系人</div>
+					  <div class="col-xs-10 input_text">
+						  	<div class="col-sm-10 col-md-3" id="write">
+	  					    	<input type="text" class="form-control" value="{{$info.contact}}" id="contacts" placeholder="请填写联系人">
+	  					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">联系电话</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.contact_number}}" id="telephone" placeholder="请填写联系电话">
+					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">专营业务员</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.sales_man}}" id="salesman" placeholder="请填写专营业务员">
+					    </div>
+					  </div>
+					</div>
+
+					<div class=" list">
+					  <div class="col-xs-2 name">分管部门</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input type="text" class="form-control" value="{{$info.department}}" id="department" placeholder="请填写分管部门">
+					    </div>
+					  </div>
+					</div>
+
+					<notempty name="info.user_name">
+					<div class=" list">
+					  <div class="col-xs-2 name">填表人</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-sm-10 col-md-3">
+					    	<input readonly type="text" class="form-control" value="{{$info.user_name}}"  id="user_name" placeholder="填表人">
+					    </div>
+					  </div>
+					</div>
+					</notempty>
+
+					<div class=" list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <button type="button" class="btn btn-success" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->

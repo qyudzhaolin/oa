@@ -1,0 +1,40 @@
+/*
+* @Author: win
+* @Date:   2016-04-14 12:22:53
+* @Last Modified by:   win
+* @Last Modified time: 2017-06-30 17:07:14
+*/
+.search_main{
+	width: 100%;
+}
+#select{
+	margin-top: 8px;
+	float: left;
+	cursor: pointer;
+}
+.search_input{
+	width:400px;
+	height: 50px;
+	float: right;
+}
+.search_input>div{
+	float: right;
+	margin-top:8px;
+}
+
+.table{
+	width: 100%;
+	overflow:hidden;
+	padding-right:10px;
+}
+#table_head th{
+	text-align: center;
+	font-size: 14px;
+}
+.table_bd td{
+	text-align: center;
+}
+
+.table_bd .operate a{
+	cursor: pointer;
+}

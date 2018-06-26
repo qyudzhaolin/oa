@@ -1,0 +1,155 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script type="text/javascript" src="__JS__/supplier.js"></script>
+<style>
+.error_index{border:1px solid red}
+</style>	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li class="active">办公用品申领记录</li>
+			</ol>
+			<!-- S-搜索框部分 -->
+			<form action="__URL__/index" method="post">
+			<div class="search_main form-inline">
+				<div class="form-group">
+			        <label for="exampleInputName2">起止时间：</label>
+			        <input type="text" class="form-control" placeholder="开始日期" name="start_date" onclick="WdatePicker()" value="{{$search.start_date}}">
+			    </div>
+				<div class="form-group">
+			        <label for="exampleInputName2">至</label>
+			        <input type="text" class="form-control" placeholder="结束日期" name="end_date" id="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+			    </div>
+			    <if condition="$is_admin OR $user_id eq 172 OR $user_id eq 173  OR $depart_id eq 42">
+					<div class="form-group">
+				        <label for="exampleInputName2">姓名：</label>
+				        <input type="text" class="form-control" placeholder="姓名" name="real_name" value="{{$search.real_name}}">
+				    </div>
+					<div class="form-group">
+				        <label for="exampleInputName2">部门：</label>
+				        <select class="form-control" name="depart_id">
+							<option value="0">部门</option>
+							<volist name="departments" id="vo">   
+							<option value="{{$vo.depart_id}}" <eq name="vo.depart_id" value="$search.depart_id">selected="selected"</eq>>{{$vo.html}}{{$vo.depart_name}}</option>
+							</volist>
+						</select>
+				    </div>
+				</if>
+				<div class="form-group">
+					<button class="btn btn-primary" type="submit" id="search">查询</button>
+					<a id="get_goods_btn" class="btn btn-primary" href="{{:U('OfficeSupplies/index')}}" >申领办公用品</a>
+				</div>
+					<!--	
+					<div id="select" class="">
+						<button class="btn btn-primary" type="submit" id="search">查询</button>
+					</div>
+				<div id="select" class="mg-left-15">
+					<a id="get_goods_btn" class="btn btn-primary" href="{{:U('OfficeSupplies/index')}}" >申领办公用品</a>
+				</div>-->
+			</div>
+			</form>
+			<!-- E-搜索框部分 -->
+			<!-- S-表格部分 -->
+			<div class="table">
+				<div class="min-width1000">
+					<form class="form-inline">
+					<table class="table-striped table-bordered table-hover ">
+						<thead>
+							<tr id="table_head">
+								<th width="5%">序号</th>
+								<th width="10%">申请单编号</th>
+								<th width="10%">姓名</th>
+								<th width="10%">部门</th>
+								<th width="10%">总价</th>
+								<th width="15%">申请时间</th>
+							    <th width="10%">状态</th>
+							    <th width="10%">操作者</th>
+							    <th width="15%">操作</th>
+							</tr>
+						</thead>
+						<tbody>  
+							<volist name="list" id="vo" key="key">
+		                    <tr class="table_bd active">
+								<td>
+									<!--div class="checkbox-nice">
+									<label style="width:100%;height:100%" for="m-checkbox-{{$vo.id}}"><input id="m-checkbox-{{$vo.id}}" name="checkmenu[]" value="{{$vo.id}}" type="checkbox">
+									{{$key}}</label>
+									</div-->
+									{{$key}}
+								</td>
+								<td>
+									{{$vo.no}}
+								</td>
+								<td>
+									{{$vo.real_name}}
+								</td>
+								<td>
+									{{$vo.depart_name}}							
+								</td>
+								<td class="">
+									{{$vo.all_price|default=0}}
+								</td>
+								<td>
+									{{$vo.crt_time|date='Y-m-d H:i',###}}
+								</td>
+								<td>
+									<eq name="vo.get_status" value="1">已领取<else/>未领取</eq>
+								</td>
+								<td>
+									{{$vo.deal_name}}
+								</td>
+								<td class="operate">
+									<a href="{{:U('OfficeSuppliesRecord/index',array('mid'=>$vo['id']))}}" class="edit">查看详情</a>
+									
+									<!--a href="javascript:void(0)" value="{{$vo.id}}" url="{{:U('OfficeSuppliesRecord/del')}}" class="deleat">删除</a-->
+								</td>
+							</tr>
+							
+							</volist> 
+							<!--tr>
+								<td colspan="8" class="text-center">
+								数量：{{$sum.page_count_num|default=0}} &nbsp;&nbsp;&nbsp;&nbsp;
+								总价：{{$sum.page_count_price|default=0}} 元
+								</td>
+							</tr-->
+						</tbody>
+					</table>
+					
+					</form>
+				</div>				
+			</div>
+			
+			<div class="Pagination">{{$page}}</div>
+			<div class="bg-warning text-right pd20 pd-right-30" >
+				<strong>总价：{{$sum.count_price|default=0}} 元</strong>
+			</div>
+			<!-- E-表格部分 -->
+
+		</div>
+		<!-- E-页面主要部分 -->
+		<script>
+		$("#changestatus").click(function() {
+		var id = $(this).data('id');
+			$.ajax({
+				url: "{{:U('OfficeSuppliesMain/changestatus')}}",
+				data:{id:id},
+				type:'post',
+				cache:false,
+				dataType:'json',
+				success:function(data) {
+				  if(data.code==1)
+				  {
+					 alert("设置成功！");
+					//刷新当前页面
+					window.location.reload();
+				  }else{
+					alert(data.msg);
+				  }
+				}
+			});
+		});
+		
+		</script>

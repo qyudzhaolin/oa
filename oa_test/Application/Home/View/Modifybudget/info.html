@@ -1,0 +1,409 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_add.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_list.css">
+<script type="text/javascript" src="__JS__/budget_list.js"></script>
+<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="index.html">项目预算单</a></li>
+			</ol>
+
+			<!-- S-表格部分 -->	
+			<div class="table main">
+
+				<table class="table table-bordered">
+						<colgroup>
+							<col width="20%">
+							<col width="15%">
+							<col width="15%">
+							<col width="20%">
+							<col width="15%">							
+							<col width="15%">							
+						</colgroup>
+					<!-- S-上半部分 -->
+					<tr>
+						<td class="active1">客户</td>
+						<td colspan="2">
+							<select name="" id="customer_id" class="form-control input-sm" disabled="disabled">
+								<option value="0">请选择客户</option>
+								<option value="{{$customers.cust_id}}" <eq name="budget.cust_id" value="$customers.cust_id">selected="selected"</eq>>{{$customers.cust_short_name}}</option>
+							</select>
+						</td>
+						<td class="active1">项目</td>
+						<td colspan="2">
+							<select name="" id="proj_id" class="form-control input-sm" disabled="disabled">
+								<option value="0">请选择项目</option>
+		  	  					<option value="{{$proj.proj_id}}" <eq name="budget.proj_id" value="$proj.proj_id">selected="selected"</eq>>{{$proj.proj_name}}</option>
+							</select>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="active1">项目编号</td>
+						<td colspan="2" id="proj_no">{{$proj.proj_no}}</td>
+						
+						<td class="active1">合同金额</td>
+						<td colspan="2" id="cntr_val">{{$proj.cntr_val}}</td>
+					</tr>
+
+					<tr>
+						<td class="active1" >项目经理</td>
+						<td colspan="2" id="proj_mgr">{{$proj.proj_mgr}}</td>
+						<td class="active1" >项目人员</td>
+						<td colspan="2" id="proj_users">{{$proj.proj_users}}</td>
+					</tr>
+
+					<tr>
+						<td class="th">科目</td>
+						<td class="th" colspan="2">旧预算金额</td>
+						<td class="th" colspan="2">变更后预算金额</td>
+						<td class="th"></td>
+					</tr>
+
+					<tr>
+						<td class="active1" colspan="1">合同收入</td>
+						<td colspan="2">
+							<input class="form-control input-sm" type="text" id="budget_cntr_income"  value="{{$budget.budget_cntr_income}}" maxlength="10" disabled="disabled">
+						</td>
+						<td colspan="2">
+							<input class="form-control input-sm" type="text" id="modify_cntr_income"  value="{{$modify.modify_cntr_income}}" maxlength="10" disabled="disabled">
+						</td>
+						<td></td>
+					</tr>
+					
+					<notempty name="modify.budget_profit_percent">
+					<tr>
+						<td class="active1" colspan="1">利润率</td>
+						<td colspan="2">
+							<input class="form-control input-sm" type="text" id="budget_profit_percent"  value="{{$modify.budget_profit_percent}}" maxlength="10" disabled="disabled">
+						</td>
+						<td colspan="2">
+							<input class="form-control input-sm" type="text" id="modify_profit_percent"  value="{{$modify.modify_profit_percent}}" maxlength="10" disabled="disabled">
+						</td>
+						<td></td>
+					</tr>
+					</notempty>
+					<!-- E-上半部分 -->
+
+
+				</table>
+				
+				<!-- S-第三方费用部分 -->
+				<table class="table table-bordered trilateral" <notempty name="third_party">style="display: table;"</notempty>>
+					<colgroup>
+						<col width="20%">
+						<col width="15%">
+						<col width="15%">
+						<col width="20%">
+						<col width="15%">							
+						<col width="15%">							
+					</colgroup>
+					<tr>
+						<td colspan="6" class="danger">第三方费用</td>
+					</tr>
+					<tr>
+						<td class="th">科目</td>
+						<td class="th">旧预算金额</td>
+						<td class="th">科目说明</td>
+						<td class="th">变更后预算金额</td>
+						<td class="th" colspan="2">变更备注</td>
+					</tr>
+					<notempty name="third_party">
+					<foreach name="third_party" item="vo" key="k">
+					<tr class="third_party">
+						<td>
+							<input type="text" class="form-control input-sm cost" readonly="readonly" data-cost="{{$vo.cost_id}}" data-exp="{{$vo.exp_id}}" value="{{$vo.money_name}}">
+						</td>
+						<td>
+							<input class="form-control input-sm budget_money"  type="text" value="{{$vo.budget_money}}" disabled="disabled">
+						</td>
+						<td><input class="form-control input-sm budget_info"  type="text" value="{{$vo.comm}}"  title="{{$vo.comm}}" disabled="disabled"></td>
+						<td><input class="form-control input-sm modify_money"  type="text" value="{{$vo.modify_money}}"  disabled="disabled"></td>
+						<td colspan="2">
+							<empty name="vo.mark">
+								<if condition="$vo.exp_id eq 0 ">
+								<span style="color:red">新增项</span>
+								<else/>
+								<input class="form-control input-sm mark"  type="text" value="{{$vo.mark}}" disabled="disabled" />
+								</if>
+							<else/>
+								<input class="form-control input-sm mark"  type="text" value="{{$vo.mark}}" disabled="disabled" />
+							</empty>
+						</td>
+					</tr>
+					</foreach>
+					</notempty>
+				</table>
+				<!-- E-第三方费用部分 -->
+
+				<!-- S-智源体系部分 -->
+				<table class="table table-bordered setup" <notempty name="system_party">style="display: table;"</notempty>>
+					<colgroup>
+						<col width="20%">
+						<col width="15%">
+						<col width="15%">
+						<col width="20%">
+						<col width="15%">							
+						<col width="15%">							
+					</colgroup>
+					<tr>
+						<td colspan="6" class="danger">智源体系</td>
+					</tr>
+					<tr>
+						<td class="th">科目</td>
+						<td class="th">旧预算金额</td>
+						<td class="th">科目说明</td>
+						<td class="th">变更后预算金额</td>
+						<td class="th" colspan="2">变更备注</td>
+					</tr>
+					<notempty name="system_party">
+					<foreach name="system_party" item="vo" key="k">
+					<tr class="system_party">
+						<td>
+							<input type="text" class="form-control input-sm cost" readonly="readonly" data-cost="{{$vo.cost_id}}" data-exp="{{$vo.exp_id}}" value="{{$vo.money_name}}">
+						</td>
+						<td>
+							<input class="form-control input-sm budget_money"  type="text" value="{{$vo.budget_money}}" maxlength="10" disabled="disabled">
+						</td>
+						<td><input class="form-control input-sm budget_info"  type="text" value="{{$vo.comm}}" title="{{$vo.comm}}" disabled="disabled"></td>
+						<td>
+							<input class="form-control input-sm modify_money"  type="text" value="{{$vo.modify_money}}" maxlength="10"  disabled="disabled">
+						</td>
+						<td colspan="2">
+							<empty name="vo.mark">
+								<if condition="$vo.exp_id eq 0 ">
+								<span style="color:red">新增项</span>
+								<else/>
+								<input class="form-control input-sm mark"  type="text" value="{{$vo.mark}}" disabled="disabled" />
+								</if>
+							<else/>
+								<input class="form-control input-sm mark"  type="text" value="{{$vo.mark}}" disabled="disabled" />
+							</empty>
+						</td>
+					</tr>
+					</foreach>
+					</notempty>
+				</table>
+				<!-- E-智源体系部分 -->
+
+				<!-- S-申请完操作 -->
+				<table class="table table-striped table-bordered">
+					<tr>
+						<td class="active">申请人</td>
+						<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+						<td class="active">{{$vo}}</td>
+						</foreach>
+					</tr>
+					<tr>
+						<td>{{$app_real_name}}</td>
+						<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+						<td>
+							<empty name="approve_arr.approve_user_arr.$k">
+							--
+							<else/>
+							<eq name="approve_arr.approve_user_arr.$k.result" value="1">
+								同意（{{$approve_arr.approve_user_arr.$k.user_real_name}}）<notempty name="approve_arr.approve_user_arr.$k.opinion"><br/>备注：{{$approve_arr.approve_user_arr.$k.opinion}}</notempty>
+								<p>{{$approve_arr.approve_user_arr.$k.time|date='Y-m-d H:i:s',###}}</p>
+							<else/>
+								<eq name="approve_arr.approve_user_arr.$k.result" value="-1">
+								不同意（{{$approve_arr.approve_user_arr.$k.user_real_name}}）<notempty name="approve_arr.approve_user_arr.$k.opinion"><br/>理由：{{$approve_arr.approve_user_arr.$k.opinion}}</notempty>
+								<p>{{$approve_arr.approve_user_arr.$k.time|date='Y-m-d H:i:s',###}}</p>
+								<else/>
+									<eq name="user_id" value="$approve_arr.approve_user_arr.$k.user_id">
+										<button type="button" class="btn btn-success btn-sm" value="1" val="{{$k+1}}">同意</button>
+										<button type="button" class="btn btn-danger btn-sm" value="-1" val="{{$k+1}}">不同意</button>
+									<else/>
+									等待审批（{{$approve_arr.approve_user_arr.$k.user_real_name}}）
+									</eq>
+								</eq>
+							</eq>
+							</empty>
+							
+							<php>
+							$approve_user_row = $approve_arr['approve_user_arr'][$k];
+							if($approve_user_row['user_lvl_id']==2 && $approve_user_row['user_id']==$user_id && $approve_user_row['result']!=0 && (!$approve_arr['approve_user_arr'][$k+1] || $approve_arr['approve_user_arr'][$k+1]['result']==0)){
+								echo '<button type="button" class="btn btn-warning" value="1" val="3" style="padding: 5px 10px;">返回</button>';
+							}
+							</php>
+						</td>
+						</foreach>
+					</tr>
+				</table>
+				<!-- E-申请完操作 -->
+				
+				<!-- S-提交部分 -->
+				<if condition="$is_restart eq 1">
+				<div class="edit text-center">
+					<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+				</div>
+				</if>
+				
+				<if condition="$is_final eq 1">
+					<div class="edit text-center">
+						<button type="button" class="btn btn-primary" id="final_submit">决算提交</button>
+					</div>
+				</if>
+				
+				<!-- E-提交部分 -->
+				
+				<!-- S-输入理由的弹出框 -->
+				<include file="./Application/Home/View/noagree.html" />
+				<!-- E-输入理由的弹出框 -->
+				
+				<!-- S-选择审批人的弹出框 -->
+				<include file="./Application/Home/View/approve.html" />
+				<!-- E-选择审批人的弹出框 -->
+				
+			</div>
+			<!-- E-表格部分 -->	
+			
+			<input type="hidden" value="{{$modify.mod_id}}" id="mod_id" />
+			<input type="hidden" value="{{$modify.bud_id}}" id="bud_id" />
+		</div>
+		<!-- E-页面主要部分 -->
+		
+<script>
+jQuery(document).ready(function($) {
+	var click=true;
+	$("#btn-success").click(function(event) {
+		var cur_approver_id = $("#cur_approver_id").val();
+		var mod_id = $("#mod_id").val();
+		var num = $("#agree_num").val();
+		if(click){
+			if(confirm('确定要执行同意操作吗？')){
+				click = false;
+				$(".approve_users").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Modifybudget/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'mod_id':mod_id,'num':num,'result':1,"cur_approver_id":cur_approver_id,'option':$("#agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Modifybudget/info')}}?id="+mod_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click = true;
+							return false;
+						}
+					}
+				});
+			}
+		}
+	});
+	
+	var click1=true; 
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var num = $(this).attr("val");
+		
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".noagree").modal('show');
+		}else{
+			$("#agree_num").val(num);
+			<if condition="$is_show_app eq 1">
+			$(".approve_users").modal('show');
+			<else/>
+			$("#btn-success").click();
+			</if>
+		}
+	});
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var mod_id = $("#mod_id").val();
+		if(click3){
+			if(confirm('确定要执行不同意操作吗？')){
+				click3 = false;
+				$(".account").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Modifybudget/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'mod_id':mod_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Modifybudget/info')}}?id="+mod_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+	
+	var click2 = true;
+	$("#Restart").click(function(){
+		if(click2){
+			click2 = false;
+			if(confirm('确定要重新发启？')){
+				var mod_id = $("#mod_id").val();
+				var bud_id = $("#bud_id").val();
+				$.ajax({
+					url:"{{:U('Modifybudget/restart')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'mod_id':mod_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Modifybudget/index')}}?bud_id="+bud_id);
+						}else{
+							alert(data.msg);
+							click2 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click2 = true;
+			}
+		}
+	});
+	
+	var click5 = true;
+	$(".btn-warning").click(function(){
+		if(click5){
+			click5 = false;
+			if(confirm('确定要返回操作吗？')){
+				var mod_id = $("#mod_id").val();
+				$.ajax({
+					url:"{{:U('Modifybudget/back')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'obj_id':mod_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Modifybudget/info')}}?id="+mod_id);
+						}else{
+							alert(data.msg);
+							click5 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click5 = true;
+			}
+		}
+	})
+});
+</script>

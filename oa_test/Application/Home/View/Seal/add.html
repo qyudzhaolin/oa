@@ -1,0 +1,204 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/baoxiao.css">
+<script type="text/javascript" src="__JS__/pfrecouped.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">用章申请</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<!-- S-部门项目等 -->
+			<table class="table-striped table-bordered" style="overflow: auto;">
+				<tr>
+					<td class="col-md-2 active">部门</td>
+					<td class="col-md-4">
+						<input class="form-control input-sm" type="text" readonly="readonly" value="{{$depart.depart_name}}">
+					</td>
+					<td class="col-md-2 active">姓名</td>
+					<td class="col-md-4">
+						<input class="form-control input-sm" type="text" readonly="readonly" value="{{$app_real_name}}">
+					</td>
+				</tr>
+				<tr>
+					<td class="active">
+						用章类型
+					</td>
+					<td>
+						<label class="radio-inline">
+						  <input type="radio" name="s_type" id="cash" value="1" <if condition="$seal.s_type eq '1' or $seal.s_type eq ''">checked="checked"</if>> 盖章申请
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="s_type" id="transfer" value="2" <if condition="$seal.s_type eq 2">checked="checked"</if>> 借章申请
+						</label>
+					</td>
+					<td class="active">所属公司</td>
+					<td>
+						<label class="radio-inline">
+						  <input type="radio" name="c_type" value="1" <if condition="$seal.c_type eq '1' or $seal.c_type eq ''">checked="checked"</if>> 榕智
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="c_type" value="2" <if condition="$seal.c_type eq 2">checked="checked"</if>> 炜旻
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="c_type" value="3" <if condition="$seal.c_type eq 3">checked="checked"</if>> 络昕
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="active">印章类型</td>
+					<td>
+						<label class="radio-inline">
+						  <input type="radio" name="se_type" value="1" <if condition="$seal.se_type eq '1' or $seal.se_type eq ''">checked="checked"</if>> 公章
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="se_type" value="2" <if condition="$seal.se_type eq 2">checked="checked"</if>> 财务章
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="se_type" value="3" <if condition="$seal.se_type eq 3">checked="checked"</if>> 法人章
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="se_type" value="4" <if condition="$seal.se_type eq '4'">checked="checked"</if>> 发票章
+						</label>
+						<label class="radio-inline">
+						  <input type="radio" name="se_type" value="5" <if condition="$seal.se_type eq '5'">checked="checked"</if>> 合同章
+						</label>
+					</td>
+					<td class="active" id="change_td"><if condition="$seal.s_type eq '1' or $seal.s_type eq ''">印章次数<else/>日期</if></td>
+					<td id="change_td_1">
+						<if condition="$seal.s_type eq '1' or $seal.s_type eq ''">
+						<input class="form-control input-sm" type="text" value="{{$seal.use_num}}" id="use_num">
+						<else/>
+						<label class="radio-inline"><p style="float:left;margin-top: 6px;margin-right: 10px;">借出</p><input style="float:left;width: 70%;" type="text" class="form-control" placeholder="日期" id="out_date" name="out_date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="{{$seal.out_date}}"></label>
+						<label class="radio-inline"><p style="float:left;margin-top: 6px;margin-right: 10px;">归还</p><input style="float:left;width: 70%;" type="text" class="form-control" placeholder="日期" id="back_date" name="back_date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="{{$seal.back_date}}"></label>
+						</if>
+					</td>
+				</tr>
+				<tr>
+					<td class="active">使用原因</td>
+					<td colspan="4">
+						<textarea class="form-control"  rows="" cols="" id="reason">{{$seal.reason}}</textarea>
+					</td>
+				</tr>
+				<tr id="no_border">
+					<td colspan="4">.</td>
+				</tr>
+			</table>
+			<!-- E-部门项目等 -->
+		
+		
+		
+		<!-- S-提交部分 -->
+		<if condition="$is_show_app eq 1">
+		<div class="edit text-center">
+			<select name="" id="cur_approver_id">
+				<option value="0">请选择审批人</option>
+				<foreach name="approve_users" item="vo">
+					<option value="{{$vo.user_id}}" <eq name="seal.cur_approver_id" value="$vo.user_id">selected="selected"</eq>>{{$vo.real_name}}</option>
+				</foreach>
+			</select>&nbsp;
+			<button type="button" class="btn btn-primary" id="Submit">提交</button>
+		</div>
+		</if>
+		<if condition="$is_restart eq 1">
+		<div class="edit text-center">
+			<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+		</div>
+		</if>
+		<!-- E-提交部分 -->
+	</div>
+	<!-- E-表格部分 -->	
+	<input type="hidden" value="{{$seal.se_id}}" id="se_id" />
+	<input type="hidden" value="{{$seal.use_num}}" id="o_use_num" />
+	<input type="hidden" value="{{$seal.out_date}}" id="o_out_date" />
+	<input type="hidden" value="{{$seal.back_date}}" id="o_back_date" />
+	
+	<!-- S-输入理由的弹出框 -->
+	<include file="./Application/Home/View/noagree.html" />
+	<!-- E-输入理由的弹出框 -->
+	
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	
+	var click=true;
+	$("#Submit").click(function(event) {
+		var a=/^[0-9]*(\.[0-9]{1,2})?$/;
+		var se_id = $("#se_id").val();
+		var s_type = $("input[name='s_type']:checked").val();
+		var c_type = $("input[name='c_type']:checked").val();
+		var se_type = $("input[name='se_type']:checked").val();
+		var use_num = $("#use_num").val();
+		var out_date = $("#out_date").val();
+		var back_date = $("#back_date").val();
+		var reason = $("#reason").val();
+		var cur_approver_id = $("#cur_approver_id").val();
+		
+		if(s_type == '2'){
+			if(out_date.length == 0){
+				alert("请填写借出日期！");
+				return false;
+			}
+			if(back_date.length == 0){
+				alert("请填写归还日期！");
+				return false;
+			}
+		}else if(s_type == '1'){
+			if(use_num.length == 0){
+				alert("请填写印章次数！");
+				return false;
+			}
+		}
+		if(reason.length == 0){
+			alert("请填写使用原因！");
+			return false;
+		}
+		<if condition="!$seal">
+		if (cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		</if>
+		
+		if(click){
+			click = false;
+			$("#loading").show();
+			$.ajax({
+				url:"{{:U('Seal/add')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'se_id':se_id,"s_type":s_type,"c_type":c_type,"se_type":se_type,"use_num":use_num,"out_date":out_date,"back_date":back_date,"reason":reason,"cur_approver_id":cur_approver_id},
+				success:function(data){
+					$("#loading").hide();
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Seal/index')}}");
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	$("input[name='s_type']").change(function(){
+		var s_type = $(this).val();
+		if(s_type == '1'){
+			$("#change_td").text("印章次数");
+			$("#change_td_1").html('<input class="form-control input-sm" type="text" value="'+$("#o_use_num").val()+'" id="use_num">');
+		}else if(s_type == '2'){
+			$("#change_td").text("日期");
+			var str = '<label class="radio-inline"><p style="float:left;margin-top: 6px;margin-right: 10px;">借出</p><input style="float:left;width: 70%;" type="text" class="form-control" placeholder="日期" id="out_date" name="out_date" onclick="WdatePicker({dateFmt:\'yyyy-MM-dd\'})" value="'+$("#o_out_date").val()+'"></label>';
+			str += '<label class="radio-inline"><p style="float:left;margin-top: 6px;margin-right: 10px;">归还</p><input style="float:left;width: 70%;"  type="text" class="form-control" placeholder="日期" id="back_date" name="back_date" onclick="WdatePicker({dateFmt:\'yyyy-MM-dd\'})" value="'+$("#o_back_date").val()+'"></label>';
+			$("#change_td_1").html(str);
+		}
+	})
+});
+
+</script>

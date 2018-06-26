@@ -1,0 +1,634 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_add.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/budget_list.css">
+<script type="text/javascript" src="__JS__/budget_list.js"></script>
+<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="index.html">项目预算单</a></li>
+			</ol>
+
+			<!-- S-表格部分 -->	
+			<div class="table main">
+				<div class="min-width1000">
+				<table class=" table-bordered">
+						<colgroup>
+							<col width="20%">
+							<col width="15%">
+							<col width="15%">
+							<col width="20%">
+							<col width="15%">							
+							<col width="15%">							
+						</colgroup>
+					<!-- S-上半部分 -->
+					<tr>
+						<td class="active1">客户</td>
+						<td colspan="2">
+							<foreach name="customers" item="vo" key="k">
+							<eq name="budget.cust_id" value="$vo.cust_id">{{$vo.cust_short_name}}</eq>
+							</foreach>
+						</td>
+						<td class="active1">项目</td>
+						<td colspan="2">
+							<foreach name="projs" item="vo" key="k">
+	  	  						<eq name="budget.proj_id" value="$vo.proj_id">{{$vo.proj_name}}</eq>
+	  	  					</foreach>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="active1">项目编号</td>
+						<td colspan="2" id="proj_no">{{$proj.proj_no}}</td>
+						
+						<td class="active1">合同金额</td>
+						<td colspan="2" id="cntr_val">{{$proj.cntr_val}}</td>
+					</tr>
+
+					<tr>
+						<td class="active1" >项目经理</td>
+						<td colspan="2" id="proj_mgr">{{$proj.proj_mgr}}</td>
+						<td class="active1" >项目人员</td>
+						<td colspan="2" id="proj_users">{{$proj.proj_users}}</td>
+					</tr>
+
+					<tr>
+						<td class="theme-bg">科目</td>
+						<td class="theme-bg" colspan="3">预算</td>
+						<td class="theme-bg" colspan="3">决算</td>
+					</tr>
+
+					<tr>
+						<td class="active1" colspan="1">合同收入</td>
+						<td colspan="2">
+							<input class="form-control input-sm" type="text" disabled="disabled" id="budget_cntr_income" onkeyUp="addBudgetMoney()" onblur="toFixed(this);addBudgetMoney()" value="{{$budget.budget_cntr_income}}">
+						</td>
+						<td></td>
+						<td><input class="form-control input-sm" type="text" <if condition="$is_final neq 1">disabled="disabled"</if> id="final_cntr_income" onkeyUp="addFinalMoney()" onblur="toFixed(this);addFinalMoney()" value="{{$budget.final_cntr_income}}"></td>
+						<td></td>
+					</tr>
+
+					<tr>
+						<td class="active1" colspan="1">税点</td>
+						<td colspan="2" id="budget_point">{{$budget.budget_point}}</td>
+						<td>6.34%</td>
+						<td id="final_point">{{$budget.final_point}}</td>
+						<td>6.34%</td>
+					</tr>
+
+					<tr>
+						<td class="active1" colspan="1">项目利润</td>
+						<td colspan="2" id="budget_proj_profit">{{$budget.budget_proj_profit}}</td>
+						<td>{{$budget.profit_percent}}</td>
+						<td id="final_proj_profit">{{$budget.final_proj_profit}}</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="active1" colspan="1">项目截止日期</td>
+						<td colspan="2" ><if condition="$budget.end_time neq 0">{{$budget.end_time|date='Y-m-d',###}}</if></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<!-- E-上半部分 -->
+
+
+				</table>
+				
+				<!-- S-第三方费用部分 -->
+				<table class="table-bordered trilateral" <notempty name="third_party">style="display: table;"</notempty>>
+					<colgroup>
+						<col width="20%">
+						<col width="15%">
+						<col width="15%">
+						<col width="20%">
+						<col width="15%">							
+						<col width="15%">							
+					</colgroup>
+					<tr>
+						<td colspan="6" class="danger">第三方费用</td>
+					</tr>
+					<tr>
+						<td class="theme-bg">科目</td>
+						<td class="theme-bg">预算</td>
+						<td class="theme-bg">比例%</td>
+						<td class="theme-bg">说明</td>
+						<td class="theme-bg" colspan="2">决算</td>
+					</tr>
+					<notempty name="third_party">
+					<foreach name="third_party" item="vo" key="k">
+					<tr class="third_party">
+						<td>
+							{{$vo.money_name}}
+						</td>
+						<td>
+							{{$vo.budget_money}}
+						</td>
+						<td></td>
+						<td>{{$vo.comm}}</td>
+						<td>{{$vo.final_money}}</td>
+						<td><input class="exp_id" value="{{$vo.exp_id}}"  type="hidden" /></td>
+					</tr>
+					</foreach>
+					</notempty>
+
+					<tr>
+						<td></td>
+						<td class="d_budget_total">
+							预算总计：{{$budget.d_budget_total}}
+						</td>
+						<td></td>
+						<td></td>
+						<td class="d_final_total">决算总计：{{$budget.d_final_total}}</td>
+						<td></td>
+					</tr>
+				</table>
+				<!-- E-第三方费用部分 -->
+
+				<!-- S-智源体系部分 -->
+				<table class="table-bordered setup" <notempty name="system_party">style="display: table;"</notempty>>
+					<colgroup>
+						<col width="20%">
+						<col width="15%">
+						<col width="15%">
+						<col width="20%">
+						<col width="15%">							
+						<col width="15%">							
+					</colgroup>
+					<tr>
+						<td colspan="6" class="danger">智源体系</td>
+					</tr>
+					<tr>
+						<td class="theme-bg">科目</td>
+						<td class="theme-bg">预算</td>
+						<td class="theme-bg">比例%</td>
+						<td class="theme-bg">说明</td>
+						<td class="theme-bg" colspan="2"></td>
+					</tr>
+					<notempty name="system_party">
+					<foreach name="system_party" item="vo" key="k">
+					<tr class="system_party">
+						<td>
+							{{$vo.money_name}}
+						</td>
+						<td>
+							{{$vo.budget_money}}
+						</td>
+						<td></td>
+						<td>{{$vo.comm}}</td>
+						<td>{{$vo.final_money}}</td>
+						<td><input class="exp_id" value="{{$vo.exp_id}}"  type="hidden" /></td>
+						
+					</tr>
+					</foreach>
+					</notempty>
+					<tr>
+						<td></td>
+						<td class="z_budget_total">预算总计：{{$budget.z_budget_total}}</td>
+						<td></td>
+						<td></td>
+						<td class="z_final_total">决算总计：{{$budget.z_final_total}}</td>
+						<td></td>
+					</tr>
+				</table>
+				<!-- E-智源体系部分 -->
+
+				<!-- S-申请完操作 -->
+				<table class="table-striped table-bordered">
+					<tr>
+						<td class="theme-bg">申请人</td>
+						<td class="theme-bg">项目经理</td>
+						<td class="theme-bg">部门领导</td>
+						<td class="theme-bg">总经理</td>
+						<td class="theme-bg">财务</td>
+					</tr>
+					<tr>
+						<td>{{$apply_user.real_name}}</td>
+						<td>
+							<if condition="$schedule.aprv_result1 eq '1'">
+							同意（{{$schedule.user_real_name1}}）
+							<p>{{$schedule.aprv_time1|date='Y-m-d H:i:s',###}}</p>
+							<elseif condition="$schedule.aprv_result1 eq '-1'"/>
+							不同意（{{$schedule.user_real_name1}}）<notempty name="schedule.aprv_opinion1"><br/>理由：{{$schedule.aprv_opinion1}}</notempty>
+							<p>{{$schedule.aprv_time1|date='Y-m-d H:i:s',###}}</p>
+							<else/>
+							<eq name="user_id" value="$schedule.aprv_user_id1">
+								<button type="button" class="btn btn-success btn-sm" value="1" val="1">同意</button>
+								<button type="button" class="btn btn-danger btn-sm" value="-1" val="1">不同意</button>
+							<else/>
+								<if condition="$schedule.aprv_user_id1 neq '0'">
+								等待审批（{{$schedule.user_real_name1}}）
+								<else/>
+								--
+								</if>
+							</eq>
+							</if>
+						</td>
+						<td>
+							<if condition="$schedule.aprv_result2 eq '1'">
+							同意（{{$schedule.user_real_name2}}）
+							<p>{{$schedule.aprv_time2|date='Y-m-d H:i:s',###}}</p>
+							<elseif condition="$schedule.aprv_result2 eq '-1'"/>
+							不同意（{{$schedule.user_real_name2}}）<notempty name="schedule.aprv_opinion2"><br/>理由：{{$schedule.aprv_opinion2}}</notempty>
+							<p>{{$schedule.aprv_time2|date='Y-m-d H:i:s',###}}</p>
+							<else/>
+							<eq name="user_id" value="$schedule.aprv_user_id2">
+								<button type="button" class="btn btn-success btn-sm" value="1" val="2">同意</button>
+								<button type="button" class="btn btn-danger btn-sm" value="-1" val="2">不同意</button>
+							<else/>
+								<if condition="$schedule.aprv_user_id2 neq '0'">
+								等待审批（{{$schedule.user_real_name2}}）
+								<else/>
+								--
+								</if>
+							</eq>
+							</if>
+						</td>
+						<td>
+							<if condition="$schedule.aprv_result3 eq '1'">
+							同意（{{$schedule.user_real_name3}}）
+							<p>{{$schedule.aprv_time3|date='Y-m-d H:i:s',###}}</p>
+							<elseif condition="$schedule.aprv_result3 eq '-1'"/>
+							不同意（{{$schedule.user_real_name3}}）<notempty name="schedule.aprv_opinion3"><br/>理由：{{$schedule.aprv_opinion3}}</notempty>
+							<p>{{$schedule.aprv_time3|date='Y-m-d H:i:s',###}}</p>
+							<else/>
+							<eq name="user_id" value="$schedule.aprv_user_id3">
+								<button type="button" class="btn btn-success btn-sm" value="1" val="3">同意</button>
+								<button type="button" class="btn btn-danger btn-sm" value="-1" val="3">不同意</button>
+							<else/>
+								<if condition="$schedule.aprv_user_id3 neq '0'">
+								等待审批（{{$schedule.user_real_name3}}）
+								<else/>
+								--
+								</if>
+							</eq>
+							</if>
+							
+							<if condition="$schedule.aprv_result3 neq '0' and $schedule.aprv_result4 eq '0'">
+								<eq name="user_id" value="$schedule.aprv_user_id3">
+									<button type="button" class="btn btn-warning" value="1" val="3" style="padding: 5px 10px;">返回</button>
+								</eq>
+							</if>
+						</td>
+						<td>
+							<if condition="$schedule.aprv_result4 eq '1'">
+							同意（{{$schedule.user_real_name4}}）
+							<p>{{$schedule.aprv_time4|date='Y-m-d H:i:s',###}}</p>
+							<elseif condition="$schedule.aprv_result4 eq '-1'"/>
+							不同意（{{$schedule.user_real_name4}}）<notempty name="schedule.aprv_opinion4"><br/>理由：{{$schedule.aprv_opinion4}}</notempty>
+							<p>{{$schedule.aprv_time4|date='Y-m-d H:i:s',###}}</p>
+							<else/>
+							<eq name="user_id" value="$schedule.aprv_user_id4">
+								<button type="button" class="btn btn-success btn-sm" value="1" val="4">同意</button>
+								<button type="button" class="btn btn-danger btn-sm" value="-1" val="4">不同意</button>
+							<else/>
+								<if condition="$schedule.aprv_user_id4 neq '0'">
+								等待审批（{{$schedule.user_real_name4}}）
+								<else/>
+								--
+								</if>
+							</eq>
+							</if>
+						</td>
+					</tr>
+				</table>
+				<!-- E-申请完操作 -->
+				
+				<!-- S-提交部分 -->
+				<if condition="$is_show_app eq 1">
+				<div class="edit text-center">
+					<select name="" id="cur_approver_id">
+						<option value="0">请选择审批人</option>
+						<foreach name="approve_users" item="vo">
+  	  						<option value="{{$vo.user_id}}" <eq name="budget.cur_approver_id" value="$vo.user_id">selected="selected"</eq>>{{$vo.real_name}}</option>
+  	  					</foreach>
+					</select>&nbsp;
+					<button type="button" class="btn btn-primary" id="Submit">提交</button>
+				</div>
+				</if>
+				<if condition="$is_restart eq 1">
+				<div class="edit text-center">
+					<button type="button" class="btn btn-primary" id="Restart">重新发启</button>
+				</div>
+				</if>
+				
+				<if condition="$is_final eq 1">
+					<div class="edit text-center">
+						<button type="button" class="btn btn-primary" id="final_submit">决算提交</button>
+					</div>
+				</if>
+				
+				<!-- E-提交部分 -->
+				
+				<!-- S-输入理由的弹出框 -->
+				<include file="./Application/Home/View/noagree.html" />
+				<!-- E-输入理由的弹出框 -->
+				
+			
+			<!-- E-表格部分 -->	
+			
+			<input type="hidden" value="{{$budget.bud_id}}" id="bud_id" />
+			<input type="hidden" value="{{$budget.d_budget_total}}" id="d_budget_total" />
+			<input type="hidden" value="{{$budget.z_budget_total}}" id="z_budget_total" />
+			<input type="hidden" value="{{$budget.d_final_total}}" id="d_final_total" />
+			<input type="hidden" value="{{$budget.z_final_total}}" id="z_final_total" />
+			
+			<if condition="$lvl_id lt 5  and $budget.result eq '1'">
+			<div class="table">
+				<table class="table-striped table-bordered table-hover ">
+					<colgroup>
+						<col width="15%">
+						<col width="14%">
+						<col width="8%">
+						<col width="10%">
+						<col width="10%">
+						<col width="8%">
+						<col width="8%">
+						<col width="10%">
+						<col width="8%">
+					</colgroup>
+					<thead>
+						<tr id="table_head">
+							<th class="theme-bg">借款单号</th>
+							<th class="theme-bg">申请人</th>
+							<th class="theme-bg">借款方式</th>
+						    <th class="theme-bg">金额总计</th>
+						    <th class="theme-bg">状态</th>
+						    <th class="theme-bg">已报销金额</th>
+				    		<th class="theme-bg">已还款金额</th>
+						    <th class="theme-bg">创建时间</th>
+						    <th class="theme-bg">操作</th>
+						</tr>
+					</thead>
+					<tbody>  
+		                <foreach name="borrows" item="vo" key="k">   
+		                <tr class="table_bd active">
+		                	<td>{{$vo.borrow_no}}</td>
+							<td>{{$vo.depart_name}}--{{$vo.real_name}}</td>
+							<td>{{$vo.borrow_way_name}}</td>
+							<td>{{$vo.tot_amt}}</td>
+							<td>{{$vo.result_info}}</td>
+							<td>{{$vo.total_recouped_money}}</td>
+							<td>{{$vo.total_refund_money}}</td>
+							<td>{{$vo.crt_time}}</td>
+							<td class="operate" id="{{$vo.borrow_id}}">
+								<a href="{{:U('Borrow/info')}}?id={{$vo.borrow_id}}" >详情</a>
+								
+							</td>
+						</tr> 
+						</foreach>    
+					</tbody>
+				</table>
+			</div>
+			<br/>
+				<table class="table table-striped table-bordered table-hover ">
+					<colgroup>
+						<col width="15%">
+						<col width="15%">
+						<col width="10%">
+						<col width="8%">
+						<col width="10%">
+						<col width="10%">
+						<col width="10%">
+						<col width="8%">
+					</colgroup>
+					<thead>
+						<tr id="table_head">
+							<th class="theme-bg">报销单号</th>
+							<th class="theme-bg">借款单号</th>
+							<th class="theme-bg">申请人</th>
+							<th class="theme-bg">报销方式</th>
+						    <th class="theme-bg">金额总计</th>
+						    <th class="theme-bg">状态</th>
+						    <th class="theme-bg">创建时间</th>
+						    <th class="theme-bg">操作</th>
+						</tr>
+					</thead>
+					<tbody>  
+		                <foreach name="recoupeds" item="vo" key="k">   
+		                <tr class="table_bd active">
+		                	<td>{{$vo.rec_no}}</td>
+		                	<td>{{$vo.borrow_no}}</td>
+							<td>{{$vo.depart_name}}--{{$vo.real_name}}</td>
+							<td>{{$vo.borrow_way_name}}</td>
+							<td>{{$vo.tot_amt}}</td>
+							<td>{{$vo.result_info}}</td>
+							<td>{{$vo.crt_time}}</td>
+							<td class="operate" id="{{$vo.rec_id}}">
+								<a href="{{:U('Recouped/info')}}?id={{$vo.rec_id}}" >详情</a>
+							</td>
+						</tr> 
+						</foreach>    
+					</tbody>
+				</table>
+			</if>
+		</div>
+		<!-- E-页面主要部分 -->
+	</div>
+	</div>
+		
+<script>
+jQuery(document).ready(function($) {
+	var click=true;
+	$("#Submit").click(function(event) {
+		var cur_approver_id = $("#cur_approver_id").val();
+		var bud_id = $("#bud_id").val();
+		if (cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		if(click){
+			click = false;
+			$("#loading").show();
+			$.ajax({
+				url:"{{:U('Budget/choose')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'bud_id':bud_id,"cur_approver_id":cur_approver_id},
+				success:function(data){
+					$("#loading").hide();
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Budget/info')}}?id="+bud_id);
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	var click1=true; 
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var num = $(this).attr("val");
+		var bud_id = $("#bud_id").val();
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".account").modal('show');
+		}else{
+			if(click1){
+				click1 = false;
+				if(confirm('确定要执行同意操作吗？')){
+					$("#loading").show();
+					$.ajax({
+						url:"{{:U('Budget/operate')}}",
+						type:"post",
+						dataType:'json', 
+						data:{'bud_id':bud_id,'num':num,'result':val},
+						success:function(data){
+							$("#loading").hide();
+							if(data.status == 1){
+								<if condition="$lvl_id neq 2">
+								alert("操作成功！","{{:U('Budget/info')}}?id="+bud_id);
+								<else/>
+								alert("操作成功！","{{:U('Approve/index')}}");
+								</if>
+							}else{
+								alert(data.msg);
+								click1 = true;
+								return false;
+							}
+						}
+					});
+				}else{
+					click1 = true;	
+				}
+			}
+		}
+	});
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var bud_id = $("#bud_id").val();
+		if(click3){
+			click3 = false;
+			if(confirm('确定要执行不同意操作吗？')){
+				$(".account").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Budget/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'bud_id':bud_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Budget/info')}}?id="+bud_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+	
+	var click2 = true;
+	$("#Restart").click(function(){
+		if(click2){
+			click2 = false;
+			if(confirm('确定要重新发启？')){
+				var bud_id = $("#bud_id").val();
+				$.ajax({
+					url:"{{:U('Budget/restart')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'bud_id':bud_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Budget/index')}}");
+						}else{
+							alert(data.msg);
+							click2 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click2 = true;
+			}
+		}
+	})
+	
+	var click4 = true;
+	$("#final_submit").click(function(){
+		if(click4){
+			click4 = false;
+			calculate();
+			
+			var a=/^[0-9]*(\.[0-9]{1,2})?$/;
+			
+			var bud_id = $("#bud_id").val();
+			var proj_id = $("#proj_id").val();
+			var final_cntr_income = $("#final_cntr_income").val();
+			var final_point = $("#final_point").text();
+			var final_proj_profit = $("#final_proj_profit").text();
+			var d_final_total = $("#d_final_total").val();
+			var z_final_total = $("#z_final_total").val();
+			if(final_cntr_income.length == 0){
+				alert("请填写决算合同收入！");
+				return false;
+			}
+			if(!a.test(final_cntr_income)){
+				alert("决算合同收入格式不正确！");
+				return false;
+			}
+			
+			$.ajax({
+				url:"{{:U('Budget/finaledit')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'bud_id':bud_id,"final_cntr_income":final_cntr_income,"final_point":final_point,"final_proj_profit":final_proj_profit,"d_final_total":d_final_total,"z_final_total":z_final_total},
+				success:function(data){
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Budget/index')}}");
+						click4 = true;
+					}else{
+						alert(data.msg);
+						click4 = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	
+	var click5 = true;
+	$(".btn-warning").click(function(){
+		if(click5){
+			click5 = false;
+			if(confirm('确定要返回操作吗？')){
+				var bud_id = $("#bud_id").val();
+				$.ajax({
+					url:"{{:U('Budget/back')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'obj_id':bud_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Budget/info')}}?id="+bud_id);
+						}else{
+							alert(data.msg);
+							click5 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click5 = true;
+			}
+		}
+	})
+});
+</script>

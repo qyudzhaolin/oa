@@ -1,0 +1,44 @@
+/*
+* @Author: win
+* @Date:   2016-04-14 12:22:53
+* @Last Modified by:   win
+* @Last Modified time: 2016-04-20 16:49:20
+*/
+.search_main{
+	width: 100%;
+	height: 50px;
+}
+#add_btn,#add_btn2{
+	display: block;
+	float: left;
+	margin-top:8px;
+	margin-right:5px;
+}
+.search_input{
+	width:400px;
+	height: 50px;
+	float: right;
+}
+.search_input>div{
+	float: right;
+	margin-top:8px;
+}
+
+.table{
+	width: 100%;
+	overflow:hidden;
+	padding-right:10px;
+}
+#table_head th{
+	background: #007bb9!important;
+	color: #fff!important;
+	text-align: center;
+	font-size: 14px;
+}
+.table_bd td{
+	text-align: center;
+}
+
+.table_bd .operate a{
+	cursor: pointer;
+}

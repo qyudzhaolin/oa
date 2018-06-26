@@ -1,0 +1,191 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<script type="text/javascript" src="__JS__/supplier.js"></script>
+<style>
+.error_index{border:1px solid red}
+</style>	<!--E-头部 -->
+
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li class="active">办公用品管理</li>
+			</ol>
+			<!-- S-搜索框部分 -->
+			<div class="search_main">
+				<if condition="$is_admin OR $user_id eq 172 OR $user_id eq 173  OR $depart_id eq 42">
+				<div id="select" class="mg-right-15">
+				<a class="btn btn-primary" href="{{:U('OfficeSupplies/add')}}">&nbsp;&nbsp;新增办公用品&nbsp;&nbsp;</a>
+				</div>
+				</if>
+				
+				<div id="select" class="mg-right-15">
+				<a class="btn btn-primary" href="{{:U('officeSuppliesMain/index')}}" >申领记录</a>
+				</div>
+				<!--form name="searchform" action="{{:U('OfficeSupplies/index')}}" method="post">
+				<div class="search_input">
+					<div class="col-lg-9">
+					    <div class="input-group">
+					      <input type="text" placeholder="名称" value="{{$search.name}}" name="name" class="form-control">
+					      <span class="input-group-btn">
+					        <button class="btn btn-default"  type="submit">搜索</button>
+					      </span>
+					    </div>
+				    </div>
+				</div>
+				</form-->
+			</div>
+			
+			<!-- E-搜索框部分 -->
+			<!-- S-表格部分 -->
+			<div class="table">
+			<!--div class="pd10 tabgroup">
+				<a class="btn btn-default mg-right-5" href="__URL__/index">全部</a>
+			<volist name="category" id="vo">
+				<a class="btn btn-default mg-right-5" data-cid="{{$vo.id}}" href="__URL__/index?cid={{$vo.id}}">{{$vo.name}}</a>
+			</volist>
+			</div-->
+			<div id="tablegroup">
+				<div class="table">				
+					<div class="min-width1000">
+						<table class="table-striped table-bordered table-hover <gt name='vkey' value='1'>hide</gt>" id="table_list{{$vol.cid}}" >
+							<thead>
+								<tr id="table_head">
+									<th width="5%">序号</th>
+									<th width="15%">名称</th>
+									<th width="10%">分类</th>
+									<th width="10%">库存</th>
+									<th width="10%">单价</th>
+								    <th width="15%">更新时间</th>
+								    <th width="10%">备注</th>
+								    <th width="5%">申领数量</th>
+									<if condition="$is_admin OR $user_id eq 172 OR $user_id eq 173  OR $depart_id eq 42">
+								    <th width="15%">操作</th>
+									</if>
+								</tr>
+							</thead>
+							
+							<tbody>  
+								<volist name="list" id="vo" key="key">
+			                    <tr class="table_bd active">
+									<td>
+										<!--div class="checkbox-nice">
+										<label style="width:100%;height:100%" for="m-checkbox-{{$vo.id}}"><input id="m-checkbox-{{$vo.id}}" name="checkmenu[]" value="{{$vo.id}}" type="checkbox">
+										{{$key}}</label>
+										</div-->
+										{{$key}}
+									</td>
+									<td>
+										{{$vo.name}}
+									</td>
+									<td>
+										{{$vo.cat_name}}							
+									</td>
+									<td class="">{{$vo.inventory|default=0}} 
+									<!--&nbsp; &nbsp;<input size="5" class="form-control input-small inventory" type="text" name="inventory" id="inventory">-->
+									
+									</td>
+									<td>
+										{{$vo.price|default=0}}			
+									</td>
+									<td>
+										<notempty name="vo.mod_time">{{$vo.mod_time|date='Y-m-d H:i',###}}<else/>{{$vo.crt_time|date='Y-m-d H:i',###}}</notempty>
+									</td>
+									<td>
+										{{$vo.remark}}			
+									</td>
+									<td class="">
+									<input size="5" class="form-control input-small get_num" type="text" data-inventory="{{$vo.inventory}}" data-recordid="{{$vo.id}}" value="0" name="get_num">
+									</td>
+									<if condition="$is_admin OR $user_id eq 172 OR $user_id eq 173  OR $depart_id eq 42">
+									<td class="operate">							
+										<a href="{{:U('OfficeSupplies/add',array('id'=>$vo['id']))}}" class="edit">修改</a>
+										<a href="javascript:void(0)" value="{{$vo.id}}" url="{{:U('OfficeSupplies/del')}}" class="deleat">删除</a>
+									</td>
+									</if>
+								</tr> 
+								</volist> 
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<a id="get_goods_btn" class="btn btn-primary get_goods_btn" href="javascript:void(0)" >提交申领</a>
+			</div>
+			
+			<div class="Pagination">{{$page}}</div>
+			
+			<!-- E-表格部分 -->
+
+		</div>
+		<!-- E-页面主要部分 -->
+		<script>
+		$("#checkall").click(function() {
+			  if($(this).attr("ischecked")==1)
+			  {
+				$(this).attr("ischecked",0);
+				$("input[name='checkmenu[]']").each(function() {
+				  $(this).prop('checked',false);
+				});
+			  }else{
+				$(this).attr("ischecked",1);
+				$("input[name='checkmenu[]']").each(function() {
+				  $(this).prop('checked',true);
+				});
+			  }
+		});
+		 $(".get_goods_btn").click(function(){
+				var ids = 0;
+				var error_i = 0;
+				var postdata = [];
+				$("input[name='get_num']").each(function(){
+					var get_num = $(this).val();
+					var inventory = $(this).data('inventory');
+					var id = $(this).data('recordid');
+					//是否>0&&<库存
+					if(get_num>0){
+						if(get_num>inventory){
+							$(this).addClass('error_index');
+							/*alert('申领数量不能大于库存');
+							$(this).css({"border":"1px solid red"});
+							$(this).focus();
+							throw "";*/
+							error_i++;
+						}else{
+							$(this).removeClass('error_index');
+							ids++;
+							postdata.push({'id': id,'num':get_num});
+						}
+					}
+				})
+				if(error_i>0){
+					$('.error_index').eq(0).focus();
+					alert('申领数量不能大于库存');
+				}else{
+					if(ids==0){
+						alert("请填写要申领的办公用品的数量！");
+						return false;
+					}
+					$.ajax({
+						url: "{{:U('OfficeSuppliesRecord/saveByMain')}}",
+						data:{'data':postdata},
+						type:'post',
+						cache:false,
+						dataType:'json',
+						success:function(data) {
+						  if(data.code==1){
+							 window.location.href="{{:U('OfficeSuppliesRecord/index')}}?mid="+data.mid;	
+						  }else{
+							alert(data.msg);
+						  }
+						}
+					});
+				}
+			
+		  });
+		  /*$(".tabgroup a").click(function(){
+			var cid = $(this).data('cid');
+			$("#tablegroup table").addClass("hide");
+			$('#table_list'+cid).removeClass("hide");
+		  })*/
+		</script>

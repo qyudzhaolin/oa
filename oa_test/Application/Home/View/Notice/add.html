@@ -1,0 +1,83 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client_add.css">
+<script charset="utf-8" src="__PUBLIC__/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="__PUBLIC__/kindeditor/lang/zh_CN.js"></script>
+<style>
+.list_main .input_text{height:auto;}
+</style>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li><a href="{{:U('User/index')}}">用户库</a></li>
+	  <li class="active">新增用户</li>
+	</ol>
+	<!-- S-填写部分 -->
+	<form action="">				
+		<div class="list_main">		
+			<div class=" list">
+			  <div class="col-xs-2 name" style="height:402px;">公告信息</div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="col-xs-3" style="width:600px">
+			    	<textarea id="description" class="textarea_wx" style="height: 400px;" name="description">{{$notice.description}}</textarea>
+			    </div>
+			  </div>
+			</div>
+
+			<div class=" list">
+			  <div class="col-xs-2 name"  style="height:39px;"></div>
+			  <div class="col-xs-10 input_text">
+			  	<div class="Submit_btn">
+			      <button type="button" class="btn btn-success" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+			      <button type="reset" class="btn btn-default" id="reset" onclick="history.go(-1)">返回</button>				    	
+			    </div>
+			  </div>
+			</div>
+			<input type="hidden" value="{{$user.user_id}}" id="user_id" />
+		</div>
+	</form>
+	<!-- E-填写部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	KindEditor.ready(function(K) {
+   	    window.editor = K.create('#description',{
+   	    	width : "100%",
+   	    	resizeType : 1,
+   	    	uploadJson : "{{:U('Uploadfy/kindeditor','','')}}",
+   	    	items : [
+   	  			'source', 'undo', 'redo', '|', 'justifyleft', 'justifycenter', 'justifyright',
+   	  			'justifyfull', 'clearhtml', 'fontsize', 'forecolor', 'bold',
+   	  			'italic', 'underline', 'link', 'unlink', '|', 'image'
+   	  		],afterBlur:function(){
+                this.sync();
+   	  		}
+        });
+   	});
+	
+	
+	$("#Submit").click(function(event) {
+		var description = $("#description").val();
+		if (description.length == 0) {
+			alert("请填写公告信息！");
+			return false;
+		}
+		
+		$.ajax({
+			url:"{{:U('Notice/add')}}",
+			type:"post",
+			dataType:'json', 
+			data:{
+				'description':description,
+			},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！","{{:U('Notice/add')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+});
+</script>

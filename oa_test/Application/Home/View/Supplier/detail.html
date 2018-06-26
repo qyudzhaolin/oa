@@ -1,0 +1,300 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier_add.css">
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<div class="pd10 bg-primary mg-bottom-10">
+	 供应商详情
+	</div>
+	<!-- S-表格部分 -->	
+	<ul class="nav nav-tabs">
+	  <li <eq name="_action" value="detail">class="active"</eq>><a href="{{:U('Supplier/detail',array('id'=>$info['sup_id']))}}">详情</a></li>
+	  <notempty name="recoupedRecord">
+		<li <eq name="_action" value="recoupedrecord">class="active"</eq>><a href="{{:U('Supplier/recoupedrecord',array('id'=>$info['sup_id']))}}">合作记录</a></li>
+	  </notempty>
+	  <li <eq name="_action" value="appraise">class="active"</eq>><a href="{{:U('Supplier/appraise',array('id'=>$info['sup_id']))}}">评价</a></li>
+	</ul>
+	<div class="table pd-top-10">
+		<!-- S-部门项目等 -->
+		<form action="{{:U('Supplier/save')}}" method="post" name="forms" id="forms">
+				<div class="list_main">
+				
+					<div class="row list">
+					  <div class="col-xs-1 name">供应商名称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+							{{$info.sup_full_name}}
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-1 name">供应商简称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+							{{$info.sup_short_name}}
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">一级分类</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3">  
+								{{$info.level1_name}}
+		  					  
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">二级分类</div>
+					  <div class="col-xs-10 input_text">
+	  					    <div class="col-xs-3">				    	
+		  					  {{$info.level2_name}}
+	  					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">收款人</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.payee}}
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list">
+					  <div class="col-xs-1 name">收款方式</div>
+					  <div class="col-xs-10 input_text">
+					  		<!-- S-手写部分 -->
+						  	<div class="col-xs-3">
+	  					    	{{$info.pay_method}}
+	  					    </div>
+	  					    <!-- E-手写部分 -->
+	  					    <!--div class="col-xs-3" id="select">  					    	
+		  					   <select name="pay_method" id="way" class="form-control" disabled>
+									<volist name="methods" id="mv" key="mk">
+			  					   	<option <eq name="info.pay_method" value="$mk">selected checked</eq> value="{{$mk}}">{{$mv}}</option>
+									</volist>
+		  					   </select>
+	  					    </div-->
+							
+					  </div>
+					</div>
+					
+					<div class="row list bank" <if condition="$info.pay_method eq '1' or $info.pay_method eq ''"><else/>style="display:none"</if>>
+					  <div class="col-xs-1 name">所属银行</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.bnk_branch}}
+					    </div>
+					  </div>
+					</div>
+
+					<div class="row list bank" <if condition="$info.pay_method eq '1' or $info.pay_method eq ''"><else/>style="display:none"</if>>
+					  <div class="col-xs-1 name">银行账号</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.bnk_acct}}
+					    </div>
+					  </div>
+					</div>
+					
+					
+					<div class="row list">
+					  <div class="col-xs-1 name">区域</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.area}}
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">联系人</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.contact}}
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-1 name">联系方式</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.contact_tel}}
+					    </div>
+					  </div>
+					</div>
+					<notempty name="info.user_name">
+					<div class="row list">
+					  <div class="col-xs-1 name">填表人</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.user_name}}
+					    </div>
+					  </div>
+					</div>
+					</notempty>
+					<div class="row list other" <if condition="$info.pay_method eq '3'"><else/>style="display:none"</if>>
+					  <div class="col-xs-1 name">其他</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	{{$info.other}}
+					    </div>
+					  </div>
+					</div>
+				</div>
+			</form>
+		
+	</div>
+	
+	<div class="pd10">
+		<notempty name="recoupedRecord">
+		<a class="btn btn-primary" href="{{:U('Supplier/recoupedrecord',array('id'=>$info['sup_id']))}}">&nbsp;&nbsp;合作记录&nbsp;&nbsp;</a>
+		</notempty>
+		<a class="btn btn-primary" href="{{:U('Supplier/appraise',array('id'=>$info['sup_id']))}}">&nbsp;&nbsp;评价&nbsp;&nbsp;</a>
+		
+	</div>
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	var click1=true; 
+	$("#btn-success").click(function(){
+		if(click1){
+			var rec_id = $("#rec_id").val();
+			var num = $("#agree_num").val();
+			var cur_approver_id = $("#cur_approver_id").val();
+			if(confirm('确定要执行同意操作吗？')){
+				click1 = false;
+				$(".approve_users").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Recouped/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'rec_id':rec_id,'num':num,'result':1,'cur_approver_id':cur_approver_id},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Recouped/info')}}?id="+rec_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click1 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click1 = true;	
+			}
+		}
+	})
+	
+	$(".btn-sm").click(function(){
+		var val = $(this).attr("value");
+		var num = $(this).attr("val");
+		if(val==-1){
+			$("#no_agree_num").val(num);
+			$(".account").modal('show');
+		}else{
+			$("#agree_num").val(num);
+			<if condition="$is_show_app eq 1">
+			$(".approve_users").modal('show');
+			<else/>
+			$("#btn-success").click();
+			</if>
+		}
+	});
+	
+	var click3 = true;
+	$("#no-agree").click(function(){
+		var num = $("#no_agree_num").val();
+		var rec_id = $("#rec_id").val();
+		if(click3){
+			if(confirm('确定要执行不同意操作吗？')){
+				click3 = false;
+				$(".account").modal('hide');
+				$("#loading").show();
+				$.ajax({
+					url:"{{:U('Recouped/operate')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'rec_id':rec_id,'num':num,'result':-1,'option':$("#no_agree_opinion").val()},
+					success:function(data){
+						$("#loading").hide();
+						if(data.status == 1){
+							<if condition="$lvl_id neq 2">
+							alert("操作成功！","{{:U('Recouped/info')}}?id="+rec_id);
+							<else/>
+							alert("操作成功！","{{:U('Approve/index')}}");
+							</if>
+						}else{
+							alert(data.msg);
+							click3 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click3 = true;	
+			}
+		}
+	});
+	
+	var click2 = true;
+	$("#Restart").click(function(){
+		if(click2){
+			click2 = false;
+			if(confirm('确定要重新发启？')){
+				var rec_id = $("#rec_id").val();
+				$.ajax({
+					url:"{{:U('Recouped/restart')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'rec_id':rec_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Recouped/index')}}");
+						}else{
+							alert(data.msg);
+							click2 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click2 = true;
+			}
+		}
+	});
+	
+	var click4 = true;
+	$(".btn-warning").click(function(){
+		if(click4){
+			click4 = false;
+			if(confirm('确定要返回操作吗？')){
+				var rec_id = $("#rec_id").val();
+				$.ajax({
+					url:"{{:U('Recouped/back')}}",
+					type:"post",
+					dataType:'json', 
+					data:{'obj_id':rec_id},
+					success:function(data){
+						if(data.status == 1){
+							alert("操作成功！","{{:U('Recouped/info')}}?id="+rec_id);
+						}else{
+							alert(data.msg);
+							click4 = true;
+							return false;
+						}
+					}
+				});
+			}else{
+				click4 = true;
+			}
+		}
+	})
+});
+</script>

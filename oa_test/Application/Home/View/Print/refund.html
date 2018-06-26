@@ -1,0 +1,156 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=640, user-scalable=no, target-densitydpi=device-dpi">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<!-- 公共引用部分 -->
+<link rel="stylesheet" type="text/css" href="__CSS__/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/allhead.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/borrow_money.css">
+<script type="text/javascript" src="__JS__/jquery-1.11.2.min.js"></script>
+<style>
+	td{padding: 2px 8px !important;}
+	#first-table td{width:25%}
+	@media print{#print-buttom{display:none}}
+</style>
+<!-- 公共引用部分 -->
+</head>
+<body>
+<!-- S-页面主要部分 -->
+<div class="mainContent" class="mainContent" style="width: 100%;padding-top:0px;height:auto">
+	<ol class="breadcrumb" style="text-align: center;margin-bottom:0px">
+		<li style="width: 100%">
+			<span style="float: left; padding-left: 20px">还款单&nbsp;&nbsp;{{$schedule.aprv_no}}</span> 
+			<span style="float: right; padding-right: 20px">申请日期：{{$refund.crt_time}}</span>
+		</li>
+	</ol>
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<!-- S-部门项目等 -->
+		<table class="table table-striped table-bordered">
+			<tr>
+				<td class="col-md-2 active">部门</td>
+				<td class="col-md-4">{{$depart.depart_name}}</td>
+				<td class="col-md-2 active">姓名</td>
+				<td class="col-md-4">{{$apply_user.real_name}}</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">项目</td>
+				<td class="col-md-4">
+					<foreach name="projs" item="vo" key="k">
+ 	  					<eq name="refund.proj_id" value="$vo.proj_id">{{$vo.proj_name}}</eq>
+ 	  				</foreach>
+				</td>
+				<td class="col-md-2 active">项目编号</td>
+				<td class="col-md-4">{{$refund.proj_no}}</td>
+			</tr>
+			<tr>
+				<td class="col-md-2 active">借款单</td>
+				<td class="col-md-4">
+					<foreach name="borrows" item="vo" key="k">
+						<eq name="refund.borrow_id" value="$vo.borrow_id">{{$vo.borrow_no}}</eq>
+ 	  				</foreach>
+				</td>
+			</tr>
+			<tr id="no_border">
+				<td colspan="4">.</td>
+			</tr>
+		</table>
+		<!-- E-部门项目等 -->
+		<!-- S-填写款项金额等 -->
+		<table class="table table-striped table-bordered">
+			<tr id="th">
+				<td class="col-md-1 active">款项</td>
+				<td class="col-md-1 active">可用余额</td>
+				<td class="col-md-1 active">还款金额</td>
+				<td class="col-md-9 active">备注说明</td>
+			</tr>
+			<foreach name="money_list" item="vo" key="k">
+			<tr class="fund">
+				<td class="col-md-1">{{$vo.money_name}}</td>
+				<td class="col-md-1">{{$vo.usable_money}}</td>
+				<td class="col-md-1">{{$vo.money}}</td>
+				<td class="col-md-9">{{$vo.comm}}</td>
+			</tr>
+			</foreach>
+			<tr>
+				<td colspan="1" class="active">金额总计（小写）</td>
+				<td colspan="3">
+					<div class="col-xs-5">{{$refund.tot_amt}}</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="1" class="active">金额总计（大写）</td>
+				<td colspan="3">
+					<div class="col-xs-5">{{$refund.tot_amt_d}}</div>
+				</td>
+			</tr>
+		</table>
+		<!-- E-填写款项金额等 -->
+		<!-- S-申请完操作 -->
+		<table class="table table-striped table-bordered">
+			<tr>
+				<td class="active">申请人</td>
+				<td class="active">财务</td>
+			</tr>
+			<tr>
+				<td>{{$apply_user.real_name}}</td>
+				<td>
+					<if condition="$schedule.aprv_result1 eq '1'">
+					已处理（{{$schedule.user_real_name1}}）
+					<p>{{$schedule.aprv_time1|date='Y-m-d H:i:s',###}}</p>
+					<elseif condition="$schedule.aprv_result1 eq '-1'"/>
+					不同意（{{$schedule.user_real_name1}}）<notempty name="schedule.aprv_opinion1"><br/>理由：{{$schedule.aprv_opinion1}}</notempty>
+					<p>{{$schedule.aprv_time1|date='Y-m-d H:i:s',###}}</p>
+					<else/>
+					<eq name="user_id" value="$schedule.aprv_user_id1">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="1">确认处理</button>
+					<else/>
+						<if condition="$schedule.aprv_user_id1 neq '0'">
+						待处理（{{$schedule.user_real_name1}}）
+						<else/>
+						--
+						</if>
+					</eq>
+					</if>
+				</td>
+			</tr>
+		</table>
+		<!-- E-申请完操作 -->
+	</div>
+	
+	<ol class="breadcrumb" style="text-align: center">
+		<li style="width: 100%">
+			<span style="float: right; padding-right: 20px">打印日期：{{$refund.print_time}}&nbsp;&nbsp;&nbsp;</span>
+		</li>
+	</ol>
+			<!-- E-表格部分 -->
+		</div>
+		<div style="text-align: center" id="print-buttom">
+			<a class="btn btn-primary" onclick="prints()">&nbsp;&nbsp;打印&nbsp;&nbsp;</a>
+		</div>
+		<!-- E-页面主要部分 -->
+	<!--E-主体部分 -->
+</body>
+</html>
+<script type="text/javascript">
+function prints(){
+	window.print();
+	$.ajax({
+		url:"{{:U('Print/confirmprint')}}",
+		type:"post",
+		dataType:'json', 
+		data:{'type':3,'id':{{$Think.get.id}}},
+		success:function(data){
+			window.location.reload();
+		}
+	});
+	window.location.reload();
+}
+</script>

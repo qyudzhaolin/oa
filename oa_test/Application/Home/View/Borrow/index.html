@@ -1,0 +1,148 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script type="text/javascript" src="__JS__/client_add.js"></script>
+<!-- E-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">借款单</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+	<div class="search_main">
+		<a id="add_btn" class="btn btn-primary" href="{{:U('Borrow/add')}}">&nbsp;&nbsp;新增借款单&nbsp;&nbsp;</a>
+		<if condition="$depart_id eq 1 OR $is_admin neq ''"><a id="export" class="btn btn-primary" style="float:right;margin-top: 8px;">&nbsp;&nbsp;导出&nbsp;&nbsp;</a></if>
+		<div class="search_input" style="width:900px">
+			<div class="col-lg-9" style="width:300px">
+			    <div class="input-group">
+			      <input type="text" class="form-control" id="keyword" value="{{$Think.get.keyword}}" placeholder="请输入项目名称">
+			      <span class="input-group-btn">
+			        <button class="btn btn-default" type="button" id="search">搜索</button>
+			      </span>
+			    </div>
+		  </div>
+		  <div class="col-xs-2" id="select" style="float:right;margin:8px 0px;width:130px">
+			   <select name="" id="way_select" class="form-control">
+					<option value="0">全部</option>
+				   	<option value="1" <if condition="$Think.get.way eq 1">selected="selected"</if>>已完成</option>
+				   	<option value="2" <if condition="$Think.get.way eq 2">selected="selected"</if>>未完成</option>
+			   </select>
+		  </div>
+		  <span style="float:right;margin:8px 0px 0px 10px;line-height:34px;">状态：</span>
+		    
+		  
+	      <div id="select" class="col-xs-1" style="float:right;margin:8px 0px;width:130px">
+			  <input type="text" class="form-control" placeholder="结束日期" name="end_date" id="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}" style="float:left;">
+		  </div>
+		  <span style="float:right;margin-top:8px;line-height:34px;">至</span>
+		  <div id="select" class="col-xs-1" style="float:right;margin:8px 0px;width:130px">
+			  <input type="text" class="form-control" placeholder="开始日期" name="start_date" id="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}" style="float:left;">
+		  </div>
+		  <span style="float:right;margin-top:8px;line-height:34px;">起止时间：</span>
+		  
+		  
+		</div>
+	</div>
+	<!-- E-搜索框部分 -->
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+		<table class="table-striped table-bordered table-hover ">
+			<colgroup>
+				<col width="15%">
+				<col width="10%">
+				<col width="10%">
+				<col width="8%">
+				<col width="10%">
+				<col width="10%">
+				<if condition="$lvl_id lt 5">
+				<col width="8%">
+				<col width="8%">
+				</if>
+				<col width="8%">
+				<col width="8%">
+			</colgroup>
+			<thead>
+				<tr id="table_head">
+					<th class="theme-bg">借款单号</th>
+					<th class="theme-bg">项目名称</th>
+					<th class="theme-bg">申请人</th>
+					<th class="theme-bg">借款方式</th>
+				    <th class="theme-bg">金额总计</th>
+				    <th class="theme-bg">状态</th>
+				    <if condition="$lvl_id lt 5">
+					<th class="theme-bg">已报销金额</th>
+				    <th class="theme-bg">已还款金额</th>
+					</if>
+				    <th class="theme-bg">创建时间</th>
+				    <th class="theme-bg">操作</th>
+				</tr>
+			</thead>
+			<tbody>  
+                <foreach name="list" item="vo" key="k">   
+                <tr class="table_bd active">
+                	<td>{{$vo.borrow_no}}</td>
+					<td>{{$vo.proj_name}}</td>
+					<td>{{$vo.depart_name}}--{{$vo.real_name}}</td>
+					<td>{{$vo.borrow_way_name}}</td>
+					<td>{{$vo.tot_amt}}</td>
+					<td>{{$vo.result_info}}</td>
+					<if condition="$lvl_id lt 5">
+					<td>{{$vo.total_recouped_money}}</td>
+					<td>{{$vo.total_refund_money}}</td>
+					</if>
+					<td>{{$vo.crt_time}}</td>
+					<td class="operate" id="{{$vo.borrow_id}}">
+					    <if condition="$vo.action eq 'add'">
+					    	<a href="{{:U('Borrow/add')}}?id={{$vo.borrow_id}}" class="edit">修改</a>	
+					    	<a href="javascript:;" class="deleat">删除</a>	
+					    <else/>	
+					    	<a href="{{:U('Borrow/info')}}?id={{$vo.borrow_id}}" class="edit">详情</a>	
+						</if>
+						<php>if(check_permission_left('financial_approve', 'finance') && session('lvl_id')!=1){</php>
+						<a href="javascript:;" class="deleat">删除</a>
+						<php>}</php>
+					</td>
+				</tr> 
+				</foreach>    
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->
+</div>
+<!-- E-页面主要部分 -->
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var borrow_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Borrow/delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'borrow_id':borrow_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", "{{:U('Borrow/index')}}");
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$("#search").click(function(){
+		window.location.href="{{:U('Borrow/index')}}?keyword="+$("#keyword").val()+"&way="+$("#way_select").val()+"&start_date="+$("#start_date").val()+"&end_date="+$("#end_date").val();
+	})
+	$("#export").click(function(){
+		window.location.href="{{:U('Borrow/export')}}?keyword="+$("#keyword").val()+"&way="+$("#way_select").val()+"&start_date="+$("#start_date").val()+"&end_date="+$("#end_date").val();
+	})
+});
+</script>

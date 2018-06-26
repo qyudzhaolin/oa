@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="jstree/style.min.css">
+	<script type="text/javascript" src="jstree/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="jstree/jstree.min.js"></script>
+</head>
+<body>
+	<input type="text" id="plugins4_q" placeholder="输入部门或者姓名">
+	
+	<div id="container">
+	  <!-- <ul>
+	    <li data-jstree='{ "selected" : false, "opened" : true,"type" : "gs" }'>智源动力
+	      <ul>
+	        <li data-jstree='{"type" : "group" }' data-id="1">
+	        	技术部
+	        </li>
+	        <li data-jstree='{"type" : "group" }' data-id="1">
+	        	设计部
+	        </li>
+	      </ul>
+	    </li>
+	  </ul> -->
+	</div>
+
+	<script>
+	$(function() {
+	  $('#container').jstree(
+	  		{
+				'core' : {
+					'data' : {
+						'url' : 'append.html',
+						'data' : function (node) {
+							return { 'id' : node.id };
+						}
+					}
+				},
+			    "types" : {
+			     "default" : {
+			        "icon" : "jstree/throbber.gif"  //默认图片
+			      },
+			      "gs" : {
+			        "icon" : "jstree/gs.png" 
+			      },
+			      "group" : {
+			        "icon" : "jstree/zu.png"
+			      },
+			      "list" : {
+			        "icon" : "jstree/list.png"
+			      }
+			    },
+			    "plugins" : [ "types","search"]
+			}
+
+	  	);
+
+
+
+
+
+
+
+
+
+
+
+	  	var to = false;
+	  	$('#plugins4_q').keyup(function () {
+		    if(to) { clearTimeout(to); }
+		    to = setTimeout(function () {
+		      var v = $('#plugins4_q').val();
+		      $('#container').jstree(true).search(v);
+		    }, 250);
+	  	});
+	});
+
+	$("body").on('click', '#container li', function(event) {
+		event.preventDefault();
+		if ($(this).attr("data-id")) {			
+			/*var html = "";
+			html+='<ul>';
+		    html+='    <li data-jstree="{"type" : "list" }">张三</li>';
+		    html+='    <li data-jstree="{"type" : "list" }">李四</li>';
+		    html+='    <li data-jstree="{"type" : "list" }">张三</li>';
+		    html+='    <li data-jstree="{"type" : "list" }">李四</li>';
+		    html+='    <li data-jstree="{"type" : "list" }">张三</li>';
+		    html+='</ul>';
+		   $(this).find("ul").remove();
+		   $(this).append(html);*/
+
+
+		};
+	});
+
+	</script>
+</body>
+</html>

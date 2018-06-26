@@ -1,0 +1,278 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="__CSS__/jquery.datetimepicker.css">
+<script type="text/javascript" src="__JS__/jquery.datetimepicker.full.min.js"></script>
+<script type="text/javascript" src="__JS__/jquery.datetimepicker.min.js"></script> -->
+<style>
+option{padding: 3px 12px;}
+</style>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">考勤记录</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+    <form action="" method="get">
+	<div class="search_main form-inline">
+		<div class="form-group">
+	        <label for="exampleInputName2">起止时间：</label>
+	        <input type="text" class="form-control" placeholder="开始日期" name="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}">
+	    </div>
+		<div class="form-group">
+	        <label for="exampleInputName2">至</label>
+	        <input type="text" class="form-control" placeholder="结束日期" name="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+	    </div>
+		<div class="form-group">
+			<if condition="$is_vo_power">
+		        <label for="exampleInputName2">员工姓名：</label>
+		        <input type="text" class="form-control" placeholder="员工姓名" name="keyword" value="{{$Think.get.keyword}}">
+	   		 </if>
+	    </div>
+		<div class="form-group">
+			<button class="btn btn-primary" type="submit" id="search">查询</button>
+	    </div>
+		<div class="form-group">
+			<a class="btn btn-primary" href="{{:U('Attendance/vacation')}}">请假管理</a>
+			<if condition="$is_approver">
+				<a class="btn btn-primary" href="{{:U('Attendance/approve')}}">审批任务</a>
+			</if>
+			<if condition="$is_vo_power">
+				<a class="btn btn-primary" href="{{:U('Attendance/upload_date')}}">更新考勤</a>
+				<a class="btn btn-primary" href="{{:U('Attendance/reporting')}}">月度报表</a>
+			</if>
+		</div>
+	</div>
+	</form>
+	<!-- E-搜索框部分 -->
+
+	<!-- S-表格部分 -->	
+	<div class="table">
+		<div class="min-width1000">
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="5%">
+					<col width="8%">
+					<col width="8%">
+					<col width="8%">
+					<col width="8%">
+					<col width="8%">
+					<if condition="$is_vo_power">
+					<col width="8%">
+					<col width="8%">
+					<col width="8%">
+					</if>
+					<col width="8%">
+					<col width="8%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>考勤号码</th>
+						<th>姓名</th>
+						<th>部门</th>
+						<th>日期</th>
+					    <th>签到时间</th>
+					    <th>签退时间</th>
+					    <if condition="$is_vo_power">
+					    <th>迟到时间</th>
+					    <th>加班情况</th>
+					    <th>出勤时间</th>
+					    </if>
+					    <!-- <th>签到例外情况</th>
+					    <th>签退例外情况</th> -->
+					</tr>
+				</thead>
+				<tbody>  
+					<foreach name="list" item="vo" key="k">   
+	                   <tr class="table_bd active">
+						<td>{{$vo.att_num}}</td>
+						<td>{{$vo.real_name}}</td>
+						<td>{{$vo.depart_name}}</td>
+						<td>{{$vo.att_date}}</td>
+						<td <if condition="$vo.start_color eq 'yellow' or $vo.start_color eq 'gray'">style="background-color:yellow"</if>>{{$vo.att_start_time}}</td>
+						<td <if condition="$vo.end_color eq 'yellow' or $vo.end_color eq 'gray'">style="background-color:yellow"</if>>{{$vo.att_end_time}}</td>
+						<if condition="$is_vo_power">
+						<td>{{$vo.late_time}}</td>
+						<td>{{$vo.over_time}}</td>
+						<td>{{$vo.work_time}}</td>
+						</if>
+						<!-- <td><if condition="$vo.start_color eq 'yellow' and $vo.start_status eq 0"><a class="btn btn-primary add_att" data-type="start" data-time="{{$vo.att_start_time}}" data-id="{{$vo.att_id}}" data-date="{{$vo.att_date}}">新增</a><elseif condition="$vo.start_color eq 'gray'"/>已过期<else/>{{$vo.start_status_name}}</if></td>
+						<td><if condition="$vo.end_color eq 'yellow' and $vo.end_status eq 0"><a class="btn btn-primary add_att" data-type="end" data-time="{{$vo.att_end_time}}" data-id="{{$vo.att_id}}" data-date="{{$vo.att_date}}">新增</a><elseif condition="$vo.end_color eq 'gray'"/>已过期<else/>{{$vo.end_status_name}}</if></td> -->
+					</tr>    
+				  </foreach> 
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->	
+	
+	<!-- 请假弹框 -->
+	<div class="modal fade" id="leave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h3 class="modal-title" id="myModalLabel">请假选择</h3>
+	      </div>
+	      <!-- 起止时间 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">起止时间</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row">
+			      		<div class="col-md-2 col-sm-2 col-md-2 text-center" style="line-height: 30px;">从</div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input type="text" class="form-control" placeholder="开始日期" id="start_date" onclick="WdatePicker()" value="">
+					    </div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input type="text" class="form-control" placeholder="时间" id="start_time" onclick="WdatePicker({dateFmt:'HH:mm'})" value="">
+					    </div>
+			      	</div>
+			      	<div class="row no_border">
+			      		<div class="col-md-2 col-sm-2 col-md-2 text-center" style="line-height: 30px;">到</div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input type="text" class="form-control" placeholder="开始日期" id="end_date" onclick="WdatePicker()" value="" >
+					    </div>
+					    <div class="col-md-5 col-sm-5 col-md-5">
+					    	<input class="form-control" type="text" placeholder="时间" id="end_time" onclick="WdatePicker({dateFmt:'HH:mm'})" value="">
+					    </div>
+			      	</div>
+		      </div>
+		    </div>
+	      </div>
+	      <!-- 起止时间 -->
+	      <!-- 请假类型 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">选择请假的类型</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+						    <select class="form-control" id="v_type">
+						    	<foreach name="v_type_arr" item="vo1" key="k1">   
+						    	<option value="{{$k1}}">{{$vo1}}</option>
+						    	</foreach>
+					    	</select>
+					    </div>
+			      	</div>
+			      	<div style="display:none;color:red" id="v_type_msg">提示：年假须提前15天请</div>					   
+		      </div>
+		    </div>
+	      </div>
+	      <!-- 请假类型 -->
+	      <!-- 理由 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">原因</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+					    	<textarea class="form-control" style="resize:none;" id="reason"></textarea>
+					    </div>
+			      	</div>					   
+		      </div>
+		    </div>
+	      </div>
+	      
+	      <div class="modal-body">
+	      	<select class="form-control" id="cur_approver_id" style="width:40%;margin-left: 30%">
+	      		<option value="0">请选择审批人</option>
+		    	<foreach name="approve_users" item="vo2" key="k2">   
+		    	<option value="{{$vo2.user_id}}" >{{$vo2.real_name}}</option>
+		    	</foreach>
+	    	</select>
+	      </div>
+	      
+	      <!-- 理由 -->
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="confirm_btn">确定</button>
+	        <input type="hidden" value="" id="att_type" />
+	        <input type="hidden" value="" id="att_id" />
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 请假弹框 -->
+</div>
+<!-- E-页面主要部分 -->
+
+<script>
+jQuery(document).ready(function($) {
+	var click=true;
+	$('#confirm_btn').on("click",function(){
+		var start_date = $("#start_date").val();
+		var start_time = $("#start_time").val();
+		var end_date = $("#end_date").val();
+		var end_time = $("#end_time").val();
+		var v_type = $("#v_type").val();
+		var reason = $("#reason").val();
+		var cur_approver_id = $("#cur_approver_id").val();
+		var att_type = $("#att_type").val();
+		var att_id = $("#att_id").val();
+		if(start_date=="" || start_time=="" || end_date=="" || end_time==""){
+			alert("起止时间请填写完整！");
+			return false;
+		}
+		if(cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		if(click){
+			click = false;
+			$.ajax({
+				url:"{{:U('Attendance/va_add')}}",
+				type:"post",
+				dataType:'json', 
+				data:{'start_date':start_date,"start_time":start_time, "end_date":end_date, "end_time":end_time,"v_type":v_type,"reason":reason,"cur_approver_id":cur_approver_id,"att_type":att_type,"att_id":att_id},
+				success:function(data){
+					if(data.status == 1){
+						alert("操作成功！",window.location.href);
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+	
+	$(".add_att").on("click",function(){
+		$('#leave').modal('show');
+		$("#start_time").val('');
+		$("#end_time").val('');
+		var att_id = $(this).attr('data-id');
+		var type = $(this).attr('data-type');
+		var time = $(this).attr('data-time');
+		var date = $(this).attr('data-date');
+		$("#start_date").val(date);
+		$("#end_date").val(date);
+		if(type == "start"){
+			$("#start_time").val("09:30");
+			$("#end_time").val(time);
+			$("#att_type").val(1);
+		}else{
+			$("#start_time").val(time);
+			$("#end_time").val("18:30");
+			$("#att_type").val(2);
+		}
+		$("#att_id").val(att_id);
+	});
+	
+	$("#v_type").change(function(){
+		if($(this).val() == '7'){
+			$("#v_type_msg").show();
+		}else{
+			$("#v_type_msg").hide();
+		}
+	})
+});
+</script>

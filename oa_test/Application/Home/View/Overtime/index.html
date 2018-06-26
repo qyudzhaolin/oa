@@ -1,0 +1,340 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<script src="https://cdn.bootcss.com/jquery.form/3.51/jquery.form.js"></script>
+<style>
+.file_click {width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: 1;opacity: 0;cursor: pointer;}
+.modal-body {padding: 5px 15px;}
+.panel {margin-bottom: 5px}
+</style>
+<!-- S-页面主要部分 -->
+<div class="mainContent">
+	<ol class="breadcrumb">
+	  <li class="active">加班管理</li>
+	</ol>
+	<!-- S-搜索框部分 -->
+
+    <form action="" method="get">
+	<div class="search_main form-inline">
+		<div class="form-group">
+	        <label for="exampleInputName2">起止时间：</label>
+	        <input type="text" class="form-control" placeholder="开始日期" name="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}">
+	    </div>
+		<div class="form-group">
+	        <label for="exampleInputName2">至</label>
+	        <input type="text" class="form-control" placeholder="结束日期" name="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+	    </div>
+	    <if condition="$is_vo_power">
+		<div class="form-group">
+	        <label for="exampleInputName2">员工姓名：</label>
+	        <input type="text" class="form-control" placeholder="员工姓名" name="keyword" value="{{$Think.get.keyword}}">
+	    </div>
+	    <div class="form-group">
+	        <label for="exampleInputName2">是否通过:</label>
+	        <select class="form-control" name="status">
+				<option value="0">请选择</option>
+		    	<option value="1" <if condition="$Think.get.status eq 1">selected="selected"</if>>待审批</option>
+		    	<option value="2" <if condition="$Think.get.status eq 2">selected="selected"</if>>已通过</option>
+		    	<option value="3" <if condition="$Think.get.status eq 3">selected="selected"</if>>未通过</option>
+	    	</select>
+	    </div>
+		</if>
+		<div class="form-group">
+	        <label for="exampleInputName2">加班时长:</label>
+	        <select class="form-control" name="v_type">
+				<option value="0">加班时长</option>
+		    	<foreach name="o_type_arr" item="vo1" key="k1">   
+		    	<option value="{{$k1}}" <eq name="k1" value="$Think.get.o_type">selected="selected"</eq>>{{$vo1}}</option>
+		    	</foreach>
+	    	</select>
+	    </div>
+	    <div class="form-group">	    	
+			<button class="btn btn-primary" type="submit" id="search">查询</button>
+	    </div>
+	    <div class="form-group">	    	
+			<a class="btn btn-primary add_att" href="#">新增</a>
+			<if condition="$is_approver">
+				<a class="btn btn-primary" href="{{:U('Overtime/approve')}}">审批任务</a>
+			</if>
+	    </div>
+	</div>
+	</form>
+	<!-- E-搜索框部分 -->
+	<div class="table">
+		<div class="min-width1000">
+			<!-- S-表格部分 -->	
+			<table class="table-striped table-bordered table-hover ">
+				<colgroup>
+					<col width="5%">
+					<if condition="$is_vo_power">
+					<col width="5%">
+					</if>
+					<col width="8%">
+					<col width="12%">
+					<col width="8%">
+					<col width="10%">
+					<col width="8%">
+					<col width="8%">
+				</colgroup>
+				<thead>
+					<tr id="table_head">
+						<th>编号</th>
+						<if condition="$is_vo_power">
+						<th>姓名</th>
+						</if>
+						<th>加班日期</th>
+					    <th>加班时长</th>
+					    <th>加班理由</th>
+					    <th>状态</th>
+					    <th>申请时间</th>
+					    <th>操作</th>
+					</tr>
+				</thead>
+				<tbody>  
+					<foreach name="list" item="vo" key="k">   
+	                   <tr class="table_bd active">
+						<td>{{$k+1}}</td>
+						<if condition="$is_vo_power">
+						<td>{{$vo.real_name}}</td>
+						</if>
+						<td>{{$vo.o_date}}</td>
+						<td>{{$vo.type_name}}</td>
+						<td>{{$vo.reason}}</td>
+						<td>{{$vo.status_name}}
+						<notempty name="vo.no_agree_reason">
+						<br/><font style="color:red">{{$vo.no_agree_reason}}</font>
+						</notempty>
+						</td>
+						<td>{{$vo.crt_time}}</td>
+						<td class="operate" id="{{$vo.o_id}}">
+						    <if condition="$is_vo_power or $vo.status eq '1'">
+							    <if condition="$vo.status_name neq '已过期'">
+							    	<a href="javascript:;" class="edit" onclick="edit_v({{$vo.o_id}})">修改</a>
+							    </if>
+							</if>
+							
+							<if condition="$is_vo_power and $vo.status_name eq '已过期'">
+							<a href="javascript:;" class="edit" onclick="pass({{$vo.o_id}})">通过</a>
+							</if>
+						</td>
+					</tr>    
+				  </foreach> 
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="Pagination">{{$page}}</div>
+	<!-- E-表格部分 -->	
+
+	<!-- 请假弹框 -->
+	<div class="modal fade" id="leave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h3 class="modal-title" id="myModalLabel">加班申请</h3>
+	      </div>
+	      <!-- 起止时间 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">加班日期</h3>
+		      </div>
+		      <div class="panel-body" style="padding-left:0px">
+			    <div class="col-md-5 col-sm-5 col-md-5">
+			    	<input type="text" class="form-control" placeholder="开始日期" id="o_date" onclick="WdatePicker()" value="">
+			    </div>
+		      </div>
+		    </div>
+	      </div>
+	      <!-- 起止时间 -->
+	      
+	      
+	      
+	      <!-- 请假类型 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">选择加班时长</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+						    <select class="form-control" id="o_type">
+							    <foreach name="o_type_arr" item="vo1" key="k1">   
+						    	<option value="{{$k1}}" <eq name="k1" value="$Think.get.o_type">selected="selected"</eq>>{{$vo1}}</option>
+						    	</foreach>
+					    	</select>
+					    </div>
+			      	</div>
+		      </div>
+		    </div>
+	      </div>
+	      <!-- 请假类型 -->
+	      <!-- 理由 -->
+	      <div class="modal-body">
+			<div class="panel panel-success">
+		      <div class="panel-heading">
+		        <h3 class="panel-title">理由</h3>
+		      </div>
+		      <div class="panel-body">
+			      	<div class="row no_border">
+					    <div class="col-md-10 col-sm-10 col-md-10">
+					    	<textarea class="form-control" style="resize:none;" id="reason"></textarea>
+					    </div>
+			      	</div>					   
+		      </div>
+		    </div>
+	      </div>
+	      
+	      <div class="modal-body">
+	      	<select class="form-control" id="cur_approver_id" style="width:40%;margin-left: 30%">
+	      		<option value="0">请选择审批人</option>
+		    	<foreach name="approve_users" item="vo2" key="k2">   
+		    	<option value="{{$vo2.user_id}}" >{{$vo2.real_name}}</option>
+		    	</foreach>
+	    	</select>
+	      </div>
+	      
+	      <!-- 理由 -->
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="confirm_btn">确定</button>
+	        <input type="hidden" value="" id="o_id" />
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 请假弹框 -->
+
+</div>
+<!-- E-页面主要部分 -->
+
+<script>
+jQuery(document).ready(function($) {
+	//删除
+	$("body").on("click",".table_bd .operate .deleat",function(){
+		//当点击确定时 返回 true 
+		if(!window.confirm("确定要删除吗?")){
+			return false;
+		}
+		var o_id = $(this).parent().attr('id');
+		
+		$.ajax({
+			url:"{{:U('Overtime/ov_delete')}}",
+			type:"post",
+			dataType:'json', 
+			data:{'o_id':o_id},
+			success:function(data){
+				if(data.status == 1){
+					alert("操作成功！", window.location.href);
+				}else{
+					alert(data.msg);
+					return false;
+				}
+			}
+		});
+	});
+	
+	$(".add_att").on("click",function(){
+		$("#reason").val('');
+		$("#o_type").find("option[value='0']").attr("selected",true);
+		$("#cur_approver_id").find("option[value='0']").attr("selected",true);
+		$("#o_id").val('');
+		$("#o_date").val('');
+		$('#leave').modal('show');
+	});
+	
+	$('#confirm_btn').on("click",function(){
+		var o_type = $("#o_type").val();
+		var reason = $("#reason").val();
+		var cur_approver_id = $("#cur_approver_id").val();
+		var o_id = $("#o_id").val();
+		var o_date = $("#o_date").val();
+		if(o_date==""){
+			alert("请选择加班日期！");
+			return false;
+		}
+		if(reason.length==0 ){
+			alert("请填写原因！");
+			return false;
+		}
+		if(cur_approver_id==0) {
+			alert("请选择审批人！");
+			return false;
+		}
+		var click= true;
+		if(click){
+			click = false;
+			$("#loading").show();
+			$.ajax({
+				url:"{{:U('Overtime/ov_add')}}",
+				type:"post",
+				dataType:'json', 
+				data:{"o_date":o_date,"o_type":o_type,"reason":reason,"cur_approver_id":cur_approver_id,"o_id":o_id},
+				success:function(data){
+					$("#loading").hide();
+					if(data.status == 1){
+						alert("操作成功！","{{:U('Overtime/index')}}");
+					}else{
+						alert(data.msg);
+						click = true;
+						return false;
+					}
+				}
+			});
+		}
+	});
+});
+
+function edit_v(o_id){
+	$("#o_id").val(o_id);
+	$.ajax({
+		url:"{{:U('Overtime/getov')}}",
+		type:"post",
+		dataType:'json', 
+		data:{'o_id':o_id},
+		success:function(data){
+			if(data.status == 1){
+				var overtime=data.overtime;
+				$("#o_date").val(overtime.o_date);
+				$('#o_type option').each(function(){
+					if($(this).val() == overtime.o_type){
+						$(this).attr("selected","selected");
+					}
+				});
+				
+				$("#reason").val(overtime.reason);
+				$('#cur_approver_id option').each(function(){
+					if($(this).val() == overtime.cur_approver_id){
+						$(this).attr("selected","selected");
+					}
+				});
+			}
+		}
+	});
+	
+	$('#leave').modal('show');
+}
+
+function pass(o_id){
+	$("#loading").show();
+	$.ajax({
+		url:"{{:U('Overtime/pass')}}",
+		type:"post",
+		dataType:'json', 
+		data:{'o_id':o_id},
+		success:function(data){
+			$("#loading").hide();
+			if(data.status == 1){
+				alert("操作成功！",window.location.href);
+			}else{
+				alert(data.msg);
+				click = true;
+				return false;
+			}
+		}
+	});
+	
+}
+</script>

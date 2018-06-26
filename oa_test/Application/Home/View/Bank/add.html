@@ -1,0 +1,73 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/client_add.css">
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li><a href="{{:U('Bank/index')}}">银行信息</a></li>
+			  <li class="active">新增/修改银行</li>
+			</ol>
+			<!-- S-填写部分 -->
+			<form action="{{:U('Bank/save')}}" method="post" name="forms" id="forms">	
+				<input type="hidden" value="{{$info.bank_id}}" name="bank_id" id="bank_id" >
+				<input type="hidden" value="{{:U('Bank/index')}}" name="back_url" id="back_url" >			
+				<div class="list_main">		
+				
+					<div class="row list">
+					  <div class="col-xs-2 name">银行名称</div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="col-xs-3">
+					    	<input type="text" class="form-control" value="{{$info.bank_name}}" id="bank_name" placeholder="XX银行">
+					    </div>
+					  </div>
+					</div>
+					<div class="row list">
+					  <div class="col-xs-2 name"></div>
+					  <div class="col-xs-10 input_text">
+					  	<div class="Submit_btn">
+					      <button type="button" class="btn btn-default" id="Submit">保存</button>&nbsp;&nbsp;&nbsp;
+					      <button type="reset" class="btn btn-default" id="reset">重置</button>				    	
+					    </div>
+					  </div>
+					</div>
+
+				</div>
+			</form>
+			<!-- E-填写部分 -->
+		</div>
+		<!-- E-页面主要部分 -->
+		<script type="text/javascript">
+		$(function(){
+			//提交
+			$("#Submit").click(function(event) {
+				//银行名称
+				var bank_name=$("#bank_name").val();
+				if (bank_name=="") {
+					alert("请填写银行名称");
+					return false;
+				};
+				//表单提交
+				//$('#forms').submit();
+				var url = $('#forms').attr('action');
+				var bank_id = $('#bank_id').val();
+				$.ajax({
+					url:url,
+					type:'post',
+					data:{
+						bank_name:bank_name,
+						bank_id:bank_id,
+					},
+					dataType:'json',
+					success:function(res){
+						alert(res.msg);
+						if(res.code==1){
+							$('#closeAlert1').click(function(){
+								var backurl = $('#back_url').val();
+								window.location.href=backurl;
+							})
+						}
+					}
+				});
+			});
+			//删除
+			
+		});
+		</script>

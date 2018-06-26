@@ -1,0 +1,215 @@
+<link rel="stylesheet" type="text/css" href="__CSS__/supplier.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/page.css">
+<link rel="stylesheet" type="text/css" href="__CSS__/sp_assignment.css">
+<script charset="utf-8" src="__PUBLIC__/datetime/WdatePicker.js"></script>
+<style>
+.error_index{border:1px solid red}
+</style>	<!--E-头部 -->
+		<!-- S-页面主要部分 -->
+		<div class="mainContent">
+			<ol class="breadcrumb">
+			  <li class="active">名片申请记录</li>
+			</ol>
+			<!-- S-搜索框部分 -->
+			<form action="" method="get">
+			<div class="search_main  form-inline">
+				<div class="form-group">
+			        <label for="exampleInputName2">起止时间：</label>
+			        <input type="text" class="form-control" placeholder="开始日期" name="start_date" id="start_date" onclick="WdatePicker()" value="{{$Think.get.start_date}}">
+			    </div>
+			    <div class="form-group">
+			        <label for="exampleInputName2">至</label>
+			        <input type="text" class="form-control" placeholder="结束日期" name="end_date" id="end_date" onclick="WdatePicker()" value="{{$Think.get.end_date}}">
+			    </div>
+			    <div class="form-group">
+			        <label for="exampleInputName2">姓名：</label>
+			        <input type="text" class="form-control" placeholder="姓名" name="name" value="{{$search.name}}">
+			    </div>
+			    <div class="form-group">
+			        <label for="exampleInputName2">状态：</label>
+			        <select class="form-control" name="get_status">
+						<option value="">状态</option>
+						<option value="0" <eq name="search.get_status" value="0">selected</eq>>已提交</option>
+						<option value="1" <eq name="search.get_status" value="1">selected</eq>>已接受</option>
+						<option value="2" <eq name="search.get_status" value="2">selected</eq>>已完成</option>
+					</select>
+			    </div>
+			    <div class="form-group">
+			    	<button class="btn btn-primary" type="submit" id="search">查询</button>
+			    	<a id="get_goods_btn" class="btn btn-primary" href="{{:U('CardRecord/add')}}" >名片申请</a>
+			    </div>
+			</div>
+			</form>
+			<!-- E-搜索框部分 -->
+			<!-- S-表格部分 -->
+			<div class="table">
+				<div class="min-width1000">
+					<form class="form-inline">
+					<table class="table-striped table-bordered table-hover ">
+						<thead>
+							<tr id="table_head">
+								<th>序号</th>
+								<th>姓名</th>
+								<th>职位</th>
+								<th>电话</th>
+								<th>手机号</th>
+								<th>邮箱</th>
+								<th>公司地址</th>
+								<th>申请时间</th>
+							    <th>状态</th>
+							    <th>操作者</th>
+							    <th>备注</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>  
+							<volist name="list" id="vo" key="key">
+		                    <tr class="table_bd active">
+								<td>
+									<!--div class="checkbox-nice">
+									<label style="width:100%;height:100%" for="m-checkbox-{{$vo.id}}"><input id="m-checkbox-{{$vo.id}}" name="checkmenu[]" value="{{$vo.id}}" type="checkbox">
+									{{$key}}</label>
+									</div-->
+									{{$key}}
+								</td>
+								<td>
+									{{$vo.name}}<notempty name="vo.en_name"> &nbsp;- {{$vo.en_name}}</notempty>
+								</td>
+								<td>
+									{{$vo.title}}<notempty name="vo.en_title"> &nbsp;- {{$vo.en_title}}</notempty>
+								</td>
+								<td>
+									{{$vo.tel}}							
+								</td>
+								<td class="">
+									{{$vo.phone}}
+								</td>
+								<td>
+									{{$vo.email}}			
+								</td>
+								<td>
+									{{$vo.address}}			
+								</td>
+								<td>
+									{{$vo.crt_time|date='Y-m-d H:i',###}}
+								</td>
+								<td>
+									<eq name="vo.get_status" value="1">已接受</eq>
+									<eq name="vo.get_status" value="2">已完成</eq>
+									<eq name="vo.get_status" value="0">已提交</eq>
+								</td>
+								<td>
+									{{$vo.deal_name}}
+								</td>
+								<td>
+									{{$vo.remark}}
+								</td>
+								
+								<td class="operate">
+									<eq name="vo.get_status" value="2">
+									<else/>
+									<a class="edit" href="{{:U('CardRecord/add',array('id'=>$vo['id']))}}" value="{{$vo.id}}">修改</a>
+									<if condition="$is_admin OR $user_id eq 172 OR $user_id eq 173  OR $depart_id eq 42">
+									<a href="javascript:void(0)" value="{{$vo.id}}" url="{{:U('CardRecord/del')}}" class="deleat">删除</a>
+									<a href="javascript:;" class="changebtn edit" data-id="{{$vo.id}}" data-toggle="modal" data-target="#exampleModal">更新状态</a>
+									
+									</if>
+									</eq>
+									
+								</td>
+								
+							</tr>
+							
+							</volist> 
+							<!--tr>
+								<td colspan="8" class="text-center">
+								数量：{{$sum.page_count_num|default=0}} &nbsp;&nbsp;&nbsp;&nbsp;
+								总价：{{$sum.page_count_price|default=0}} 元
+								</td>
+							</tr-->
+						</tbody>
+					</table>
+					
+					</form>
+				</div>
+			</div>
+			
+			<div class="Pagination">{{$page}}</div>
+			
+			<!-- E-表格部分 -->
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="exampleModalLabel">新增分类</h4>
+				  </div>
+				  <div class="modal-body">
+					<form>
+					  <div class="form-group">
+						<label for="cat_name" class="control-label">状态:</label>
+							<label>
+							  <input type="radio" name="get_status" value="1"> 已接受
+							</label>
+							<label>
+							  <input type="radio" name="get_status" value="2"> 已完成
+							</label>
+					  </div>
+					  <input type="hidden" value="0" id="recordid" name="recordid" >
+					</form>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="closebtn">关闭</button>
+					<button type="button" class="btn btn-primary" id="modalsave">保存</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div>
+		<!-- E-页面主要部分 -->
+		<script>
+		$(".changebtn").click(function() {
+			$('#recordid').val($(this).data('id'));
+			
+		});
+		$("#modalsave").click(function() {
+			var id = $('#recordid').val();
+			var get_status = $('input[name="get_status"]:checked').val();
+			$.ajax({
+				url: "{{:U('CardRecord/changestatus')}}",
+				data:{id:id,get_status:get_status},
+				type:'post',
+				cache:false,
+				dataType:'json',
+				success:function(data) {
+				  if(data.code==1)
+				  {
+					 alert("更新成功！");
+					//刷新当前页面
+					window.location.reload();
+				  }else{
+					alert(data.msg);
+				  }
+				}
+			});
+		});
+		//删除
+		$(".deleat").on("click",function(){
+			var _this = $(this);
+			//当点击确定时 返回 true 
+			if(window.confirm("确定要删除吗?")){
+				//$(this).parents(".table_bd").remove();
+				$.ajax({
+					url:$(this).attr('url'),
+					data:{id:_this.attr('value')},
+					dataType:'json',
+					success:function(res){
+						alert(res.msg);
+						if(res.code==1){
+							location.reload();
+						}
+					}
+				})
+			}	
+		});
+		</script>

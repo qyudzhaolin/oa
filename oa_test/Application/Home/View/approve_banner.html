@@ -1,0 +1,52 @@
+<foreach name="approve_arr.approve_title_arr" item="vo" key="k">
+<td>
+	<empty name="approve_arr.approve_user_arr.$k">
+	--
+	<else/>
+	<eq name="approve_arr.approve_user_arr.$k.result" value="1">
+		<eq name="approve_arr.type" value="seal">
+			同意
+			<else/>
+			<eq name="approve_arr.approve_user_arr.$k.user_lvl_id" value="4">已打款<else/>同意</eq>
+		</eq>
+		
+		
+		（{{$approve_arr.approve_user_arr.$k.user_real_name}}）<notempty name="approve_arr.approve_user_arr.$k.opinion"><br/>备注：{{$approve_arr.approve_user_arr.$k.opinion}}</notempty>
+		<p>{{$approve_arr.approve_user_arr.$k.time|date='Y-m-d H:i:s',###}}</p>
+	<else/>
+		<eq name="approve_arr.approve_user_arr.$k.result" value="-1">
+		不同意（{{$approve_arr.approve_user_arr.$k.user_real_name}}）<notempty name="approve_arr.approve_user_arr.$k.opinion"><br/>理由：{{$approve_arr.approve_user_arr.$k.opinion}}</notempty>
+		<p>{{$approve_arr.approve_user_arr.$k.time|date='Y-m-d H:i:s',###}}</p>
+		<else/>
+			<eq name="user_id" value="$approve_arr.approve_user_arr.$k.user_id">
+				<eq name="approve_arr.approve_user_arr.$k.user_lvl_id" value="4">
+					<eq name="approve_arr.type" value="seal">
+						<button type="button" class="btn btn-success btn-sm" value="1" val="{{$k+1}}">同意</button>
+					<else/>
+						<button type="button" class="btn btn-success btn-sm" value="1" val="{{$k+1}}">确认打款</button>
+					</eq>
+				<else/>
+				<button type="button" class="btn btn-success btn-sm" value="1" val="{{$k+1}}">同意</button>
+				<button type="button" class="btn btn-danger btn-sm" value="-1" val="{{$k+1}}">不同意</button>
+				</eq>
+			<else/>
+			<eq name="approve_arr.approve_user_arr.$k.user_lvl_id" value="4">
+				<eq name="approve_arr.type" value="seal">
+					等待审批
+				<else/>
+					待打款
+				</eq>
+			<else/>等待审批</eq>
+			（{{$approve_arr.approve_user_arr.$k.user_real_name}}）
+			</eq>
+		</eq>
+	</eq>
+	</empty>
+	<php>
+	$approve_user_row = $approve_arr['approve_user_arr'][$k];
+	if($approve_user_row['user_lvl_id']==2 && $approve_user_row['user_id']==$user_id && $approve_user_row['result']!=0 && (!$approve_arr['approve_user_arr'][$k+1] || $approve_arr['approve_user_arr'][$k+1]['result']==0)){
+		echo '<button type="button" class="btn btn-warning" value="1" val="3" style="padding: 5px 10px;">返回</button>';
+	}
+	</php>
+</td>
+</foreach>
